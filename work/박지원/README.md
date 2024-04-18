@@ -1,0 +1,20 @@
+# 박지원 일일 작업 내용 정산
+
+## 2주차
+
+### 04-18
+
+1. 컴포넌트 UI 목업 디자인
+
+- 메인페이지
+
+![figmaimage.png](./figmaimage.png)
+
+
+- 스크립트페이지
+
+![scriptimage.png](./scriptimage.png)
+
+- 동화보기페이지
+
+![bookimage.png](./bookimage.png)
