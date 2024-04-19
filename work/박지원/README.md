@@ -18,3 +18,14 @@
 - 동화보기페이지
 
 ![bookimage.png](./bookimage.png)
+
+
+### 04-19
+
+1. 필드 트립 참여
+
+![fieldtripimage.png](./fieldtripimage.png)
+
+2. 중간발표 ppt제작
+
+![pptimage.png](./pptimage.png)
