@@ -36,8 +36,8 @@
 
 - 메인페이지 알림
 
-![alertimage.png](./alertimage.png)
+![alarmimage.png](./alarmimage.png)
 
 - 랜딩페이지 작업중
 
-![landingimage.png](./landingimage.png)
+![landingmakingimage.png](./landingmakingimage.png)
