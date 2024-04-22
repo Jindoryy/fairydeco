@@ -29,3 +29,15 @@
 2. 중간발표 ppt제작
 
 ![pptimage.png](./pptimage.png)
+
+### 04-20
+
+1. 페이지 목업 작업
+
+- 메인페이지 알림
+
+![alertimage.png](./alertimage.png)
+
+- 랜딩페이지 작업중
+
+![landingimage.png](./landingimage.png)
