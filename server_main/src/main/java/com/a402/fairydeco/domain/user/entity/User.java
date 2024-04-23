@@ -24,6 +24,4 @@ public class User extends BaseEntity {
   @Column(name = "user_id")
   private Integer id;
 
-
-
 }
