@@ -35,4 +35,4 @@ ex) 예시사진
     1) gerrit admin 계정 비밀번호 설정
     2) EC2의 gerrit repository 생성 및 gitlab과 연동
     3) 로컬 개발 환경 설정 맞추기
-    4) notion에 gerrit 관련 자료 정리 
+    4) notion에 gerrit 관련 자료 정리!
