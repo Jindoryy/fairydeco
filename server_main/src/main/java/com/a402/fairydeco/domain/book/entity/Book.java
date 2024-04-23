@@ -53,10 +53,10 @@ public class Book extends BaseEntity {
     @Column(name = "book_prompt")
     private String prompt;
 
-    @Column(name = "book_picture_url", nullable = false)
+    @Column(name = "book_picture_url")
     private String pictureUrl;
 
-    @Column(name = "book_picture_name", nullable = false)
+    @Column(name = "book_picture_name")
     private String pictureName;
 
     @Enumerated(EnumType.STRING)
