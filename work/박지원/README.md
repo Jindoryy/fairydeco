@@ -28,7 +28,7 @@
 
 ![pptimage.png](./pptimage.png)
 
-### 04-20
+### 04-22
 
 1. 페이지 목업 작업
 
@@ -40,7 +40,7 @@
 
 ![landingmakingimage.png](./landingmakingimage.png)
 
-### 04-21
+### 04-23
 
 1. 페이지 작업
 
