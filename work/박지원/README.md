@@ -47,3 +47,15 @@
 - 랜딩 페이지 작업
 
 ![landingimage.png](./landingimage.png)
+
+### 04-24
+
+1. frontend 초기셋팅
+
+- tailwindCSS 세팅
+
+- DaisyUI 세팅
+
+- 동화 보기 페이지 figma 수정
+
+![bookdetailimage.png](./bookdetailimage.png)
