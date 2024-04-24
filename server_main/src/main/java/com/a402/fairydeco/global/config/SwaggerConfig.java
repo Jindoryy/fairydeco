@@ -13,9 +13,9 @@ public class SwaggerConfig {
   public OpenAPI openAPI() {
 
     Info info = new Info()
-        .title("HorseRacing API Document")
+        .title("FairyDeco API Document")
         .version("v1")
-        .description("HorseRacing API 명세서");
+        .description("FairyDeco API 명세서");
     return new OpenAPI()
         .components(new Components())
         .info(info);
