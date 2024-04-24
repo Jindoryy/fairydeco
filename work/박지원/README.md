@@ -47,3 +47,23 @@
 - 랜딩 페이지 작업
 
 ![landingimage.png](./landingimage.png)
+
+### 04-24
+
+1. frontend 초기셋팅
+
+- tailwindCSS 세팅
+
+- DaisyUI 세팅
+
+2. Figma 수정
+
+- 동화 보기 페이지 figma 수정
+
+![bookdetailimage.png](./bookdetailimage.png)
+
+3. Next.js 학습중
+
+- twiter 클론코딩 중
+
+![cloneimage.png](./cloneimage.png)
