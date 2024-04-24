@@ -64,6 +64,6 @@
 
 3. Next.js 학습중
 
-- twiter 클론코딩
+- twiter 클론코딩 중
 
 ![cloneimage.png](./cloneimage.png)
