@@ -63,4 +63,10 @@ public class Book extends BaseEntity {
     @Column(name = "book_complete", nullable = false)
     private CompleteStatus complete = CompleteStatus.STORY; //default 'STORY'
 
+    @Column(name = "book_cover_url")
+    private String coverUrl;
+
+    @Column(name = "book_cover_name")
+    private String coverName;
+
 }
