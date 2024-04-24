@@ -39,7 +39,6 @@ public class Book extends BaseEntity {
     @JoinColumn(name = "child_id")
     private Child child;
 
-    @Setter
     @Column(name = "book_name", nullable = false)
     private String name;
 
@@ -68,5 +67,10 @@ public class Book extends BaseEntity {
 
     @Column(name = "book_cover_name")
     private String coverName;
+
+
+    public void updateBookName(String name){
+        this.name = name;
+    }
 
 }
