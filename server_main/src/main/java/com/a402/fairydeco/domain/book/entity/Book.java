@@ -72,5 +72,4 @@ public class Book extends BaseEntity {
     public void updateBookName(String name){
         this.name = name;
     }
-
 }
