@@ -10,7 +10,6 @@
 
 ![figmaimage.png](./figmaimage.png)
 
-
 - 스크립트페이지
 
 ![scriptimage.png](./scriptimage.png)
@@ -18,7 +17,6 @@
 - 동화보기페이지
 
 ![bookimage.png](./bookimage.png)
-
 
 ### 04-19
 
@@ -30,7 +28,7 @@
 
 ![pptimage.png](./pptimage.png)
 
-### 04-20
+### 04-22
 
 1. 페이지 목업 작업
 
@@ -41,3 +39,11 @@
 - 랜딩페이지 작업중
 
 ![landingmakingimage.png](./landingmakingimage.png)
+
+### 04-23
+
+1. 페이지 작업
+
+- 랜딩 페이지 작업
+
+![landingimage.png](./landingimage.png)
