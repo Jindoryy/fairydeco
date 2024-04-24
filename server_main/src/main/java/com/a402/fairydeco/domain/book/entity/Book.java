@@ -68,7 +68,7 @@ public class Book extends BaseEntity {
     @Column(name = "book_cover_name")
     private String coverName;
 
-
+    // 동화 제목 변경
     public void updateBookName(String name){
         this.name = name;
     }
