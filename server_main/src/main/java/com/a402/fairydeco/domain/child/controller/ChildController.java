@@ -1,5 +1,6 @@
 package com.a402.fairydeco.domain.child.controller;
 
+import com.a402.fairydeco.domain.child.dto.ChildListResponse;
 import com.a402.fairydeco.domain.child.dto.ChildNameListResponse;
 import com.a402.fairydeco.domain.child.service.ChildService;
 import com.a402.fairydeco.domain.user.entity.User;
@@ -27,7 +28,17 @@ public class ChildController {
     private final UserService userService;
     private final ChildService childService;
 
-    @Operation(summary = "아이 이름 리스트", description = "메인페이지 지은이에 필요한 아이 이름 목록을 조회한다.")
+
+    @Operation(summary = "내 아이 리스트", description = "내 아이 전체 목록을 조회한다.")
+    @GetMapping("/list/{userId}")
+    public SuccessResponse<List<ChildListResponse>> getChildList(@PathVariable Integer userId) {
+        if(!userService.isExistUser(userId)) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND_ERROR);
+        }
+        return new SuccessResponse<>(childService.findChildList(userId));
+    }
+
+    @Operation(summary = "내 아이 이름 리스트", description = "메인페이지 지은이에 필요한 아이 이름 목록을 조회한다.")
     @GetMapping("/name-list/{userId}")
     public SuccessResponse<List<ChildNameListResponse>> getChildNameList(@PathVariable Integer userId) {
 
