@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    assetPrefix: 'https://fairydeco.site',
-  };
+const nextConfig = {};
 
 export default nextConfig;
