@@ -67,3 +67,9 @@
 - twiter 클론코딩 중
 
 ![cloneimage.png](./cloneimage.png)
+
+### 04-25
+
+1. Next.js 교보재 강의 수강
+
+2. Figma 완료(로그인, 회원가입, 마이페이지 수정)
