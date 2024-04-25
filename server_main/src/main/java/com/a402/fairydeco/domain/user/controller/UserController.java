@@ -1,6 +1,7 @@
 package com.a402.fairydeco.domain.user.controller;
 
 import com.a402.fairydeco.domain.user.dto.UserLoginIdRequest;
+import com.a402.fairydeco.domain.user.dto.UserRegistRequest;
 import com.a402.fairydeco.domain.user.service.UserService;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+
+    @Operation(summary = "회원가입", description = "회원을 등록한다.")
+    @PostMapping("/signup")
+    public SuccessResponse<String> signUpUser(@RequestBody UserRegistRequest userRegistRequest) {
+        userService.registUser(userRegistRequest);
+        return new SuccessResponse<>("success");
+    }
 
     @Operation(summary = "아이디 중복 확인", description = "회원가입에 필요한 아이디의 중복을 확인한다.")
     @PostMapping("/checkId")

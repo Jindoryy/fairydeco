@@ -51,6 +51,7 @@ public class User extends BaseEntity {
   @Setter
   @Column(name = "user_voice_time")
   @ColumnDefault("0")
-  private Integer voiceTime;
+  @Builder.Default
+  private Integer voiceTime = 0;
 
 }
