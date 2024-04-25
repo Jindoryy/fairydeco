@@ -33,13 +33,16 @@ public class ChildController {
     private final UserService userService;
     private final ChildService childService;
 
+    private void checkUserExists(Integer userId) {
+        if (!userService.isExistUserById(userId)) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND_ERROR);
+        }
+    }
 
     @Operation(summary = "내 아이 리스트", description = "내 아이 전체 목록을 조회한다.")
     @GetMapping("/list/{userId}")
     public SuccessResponse<List<ChildListResponse>> getChildList(@PathVariable Integer userId) {
-        if(!userService.isExistUser(userId)) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND_ERROR);
-        }
+        checkUserExists(userId);
 
         return new SuccessResponse<>(childService.findChildList(userId));
     }
@@ -47,9 +50,7 @@ public class ChildController {
     @Operation(summary = "내 아이 이름 리스트", description = "메인페이지 지은이에 필요한 아이 이름 목록을 조회한다.")
     @GetMapping("/name-list/{userId}")
     public SuccessResponse<List<ChildNameListResponse>> getChildNameList(@PathVariable Integer userId) {
-        if (!userService.isExistUser(userId)) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND_ERROR);
-        }
+        checkUserExists(userId);
 
         return new SuccessResponse<>(childService.findChildNameList(userId));
     }
@@ -57,9 +58,7 @@ public class ChildController {
     @Operation(summary = "아이 등록", description = "마이페이지에서 아이를 추가로 등록한다.")
     @PostMapping("")
     public SuccessResponse<List<ChildListResponse>> addChild(@RequestBody ChildAddRequest childAddRequest) {
-        if (!userService.isExistUser(childAddRequest.getUserId())) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND_ERROR);
-        }
+        checkUserExists(childAddRequest.getUserId());
 
         return new SuccessResponse<>(childService.saveChild(childAddRequest));
     }
