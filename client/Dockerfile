@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Next.js 빌드 결과물과 정적 파일을 /app에 복사
 COPY ./client/.next /app/.next
-COPY ./client/public /app/public
+# COPY ./client/public /app/public
 
 # nginx 설정 파일 복사
 COPY nginx.conf /etc/nginx/nginx.conf
