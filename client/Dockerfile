@@ -1,11 +1,17 @@
-# nginx 이미지 사용
-FROM nginx:latest
+# Node.js 20 버전의 Alpine 이미지 사용
+FROM node:20-alpine
 
-# nginx 설정 파일
-COPY nginx.conf /etc/nginx/nginx.conf
+# root에 /app 폴더 생성
+RUN mkdir /app
 
-# Jenkins에서 빌드한 정적 파일을 이미지로 복사
-COPY ./build /usr/share/nginx/html
+# work dir 고정
+WORKDIR /app
 
-# nginx 실행
-CMD ["nginx", "-g", "daemon off;"]
+# Next.js 빌드 결과물과 정적 파일을 /app에 복사
+COPY ./.next ./.next
+COPY ./public ./public
+COPY ./node_modules ./node_modules
+COPY ./package.json ./package.json
+
+# 애플리케이션 실행
+CMD ["npm", "start"]

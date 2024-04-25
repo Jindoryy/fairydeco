@@ -56,6 +56,20 @@
 
 - DaisyUI 세팅
 
+2. Figma 수정
+
 - 동화 보기 페이지 figma 수정
 
 ![bookdetailimage.png](./bookdetailimage.png)
+
+3. Next.js 학습중
+
+- twiter 클론코딩 중
+
+![cloneimage.png](./cloneimage.png)
+
+### 04-25
+
+1. Next.js 교보재 강의 수강
+
+2. Figma 완료(로그인, 회원가입, 마이페이지 수정)

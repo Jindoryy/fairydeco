@@ -36,3 +36,12 @@ ex) 예시사진
     2) EC2의 gerrit repository 생성 및 gitlab과 연동
     3) 로컬 개발 환경 설정 맞추기
     4) notion에 gerrit 관련 자료 정리!
+
+
+## 2024-04-24 수요일
+
+- 팀내 gerrit 사용법 확정(노션에 정리)
+
+- openAi 탐색 후 config 파일 생성
+- openAi 코드 적용
+- story 작성 코드 적용
