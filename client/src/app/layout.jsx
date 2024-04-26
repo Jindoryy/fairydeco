@@ -14,7 +14,6 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="ko">
-            <script src="https://unpkg.com/@phosphor-icons/web"></script>
             <body className={inter.className}>{children}</body>
         </html>
     )
