@@ -60,7 +60,7 @@ public class Book extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "book_complete", nullable = false)
-    private CompleteStatus complete = CompleteStatus.STORY; //default 'STORY'
+    private final CompleteStatus complete = CompleteStatus.STORY; //default 'STORY'
 
     @Column(name = "book_cover_url")
     private String coverUrl;
