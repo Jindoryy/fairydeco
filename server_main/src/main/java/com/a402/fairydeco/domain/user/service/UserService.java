@@ -7,6 +7,8 @@ import com.a402.fairydeco.domain.user.dto.UserLoginIdRequest;
 import com.a402.fairydeco.domain.user.dto.UserRegistRequest;
 import com.a402.fairydeco.domain.user.entity.User;
 import com.a402.fairydeco.domain.user.repository.UserRepository;
+import com.a402.fairydeco.global.common.exception.CustomException;
+import com.a402.fairydeco.global.common.exception.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +43,12 @@ public class UserService {
     }
 
     public void registUser(UserRegistRequest userRegistRequest) {
+
+        //아이디 중복 확인
+        Optional<User> userOptional = userRepository.findByLoginId(userRegistRequest.getLoginId());
+        if (userOptional.isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_USER_LOGIN_ID);
+        }
 
         User user = User.builder()
             .loginId(userRegistRequest.getLoginId())

@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -48,10 +49,10 @@ public class User extends BaseEntity {
   @Column(name = "user_gender")
   private GenderStatus gender;
 
-  @Setter
   @Column(name = "user_voice_time")
   @ColumnDefault("0")
   @Builder.Default
   private Integer voiceTime = 0;
 
+  public void setVoiceTime(Integer voiceTime) { this.voiceTime = voiceTime; }
 }

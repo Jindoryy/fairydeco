@@ -32,7 +32,9 @@ public enum ErrorCode {
 
     INFO_ALREADY_EXISTS(409, "이미 존재하는 정보입니다."),
 
-    SERVICE_ERROR(500, "로그인 장애! 고객센터로 문의 주세요!");
+    SERVICE_ERROR(500, "로그인 장애! 고객센터로 문의 주세요!"),
+
+    DUPLICATE_USER_LOGIN_ID(404, "중복된 아이디가 존재합니다.");
 
     private final int status;
 
