@@ -2,6 +2,14 @@
 
 ## 2주차
 
+### 04-26
+
+1. Nextjs SSR 배포 완료
+2. SpringBoot 서버 배포 완료
+3. MySQL DB 배포 완료
+4. nginx, env 설정 완료
+5. Nextjs 디렉토리 설정 완료
+
 ### 04-25
 
 1. jenkins 배포 스크립트 작성 및 테스트 완료
