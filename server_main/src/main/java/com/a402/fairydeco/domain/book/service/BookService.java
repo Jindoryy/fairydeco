@@ -14,14 +14,17 @@ import com.a402.fairydeco.global.common.dto.StoryRequest;
 import com.a402.fairydeco.global.common.dto.StoryResponse;
 import com.a402.fairydeco.global.common.exception.CustomException;
 import com.a402.fairydeco.global.common.exception.ErrorCode;
+import com.a402.fairydeco.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -33,15 +36,12 @@ public class BookService {
     private final BookRepository bookRepository;
     private final PageRepository pageRepository;
     private final ChildRepository childRepository;
-//    private final FileUtil fileUtil;
 
     @Value("${openai.model}")
     private String model;
     @Value("${openai.api.url}")
     private String apiURL;
-
-    private final RestTemplate template;
-
+    private final RestTemplate restTemplate;
 
     @Transactional
     public BookStory register(BookRegister bookRegister) throws IOException {
@@ -85,14 +85,12 @@ public class BookService {
                 "    *대본은 디테일이 중요해. 필요한 단어나 배경지식이 있다면 외부에서 검색해서 스토리의 완성도를 더 깊이있게 만들어줘\n" +
                 "    *소제목 없이 대본만 보여줘\n" +
                 "    *각 대본의 끝에는 끝! 이 단어를 넣어줘\n================================================\n";
-
         Book savedBook;
         // 이미지 null이면 프롬프트로 그냥 더하고 
         // 이미지 있으면 이미지 따로저장 + 이미지분석으로 prompt 가져옴
         if (bookRegister.getBookPicture() != null) {
             // image to text 메서드
 //             prompt =
-
             Book book = Book.builder()
                     .child(childRepository.findById(bookRegister.getChildId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
                     .maker(bookRegister.getBookMaker())
@@ -106,22 +104,21 @@ public class BookService {
             prompt += bookRegister.getBookPrompt();
             Book book = Book.builder()
                     .child(childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR)))
+                    .name(bookRegister.getBookMaker()+"의 이야기")
                     .maker(bookRegister.getBookMaker())
                     .genre(GenreStatus.valueOf(bookRegister.getBookGenre()))
-                    .prompt(prompt)
+                    .prompt(bookRegister.getBookPrompt())
                     .build();
             savedBook = bookRepository.save(book);
         }
-
         // 동화 ai로 제작
         prompt += "장르는 " + savedBook.getGenre() + ", 주인공은 " + savedBook.getMaker() + ", 스토리는 " + savedBook.getPrompt();
         // 스토리 생성
         StoryRequest request = new StoryRequest(model, prompt);
-        StoryResponse storyResponse = template.postForObject(apiURL, request, StoryResponse.class);
+        StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
         String story = storyResponse.getChoices().get(0).getMessage().getContent();
 
         String[] bookStories = story.split("끝!"); // 8개로 나눔
-
         Page[] pages = new Page[8];
         PageStory[] pageStories = new PageStory[8];
 
@@ -138,7 +135,6 @@ public class BookService {
                     .pageStory(pages[i].getStory())
                     .build();
         }
-
         // 이제 return 데이터 builder 진행
         BookStory bookStory = BookStory.builder()
                 .bookId(savedBook.getId())

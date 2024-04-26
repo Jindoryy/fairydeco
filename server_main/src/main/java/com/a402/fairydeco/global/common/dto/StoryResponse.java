@@ -1,24 +1,29 @@
 package com.a402.fairydeco.global.common.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class StoryResponse {
     private List<Choice> choices;
 
+    @Builder
+    StoryResponse(List<Choice> choices){
+        this.choices = choices;
+    }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Getter
     public static class Choice {
         private int index;
         private StoryMessage message;
+
+        @Builder
+        public Choice(int index, StoryMessage message){
+            this.index = index;
+            this.message = message;
+        }
 
     }
 }
