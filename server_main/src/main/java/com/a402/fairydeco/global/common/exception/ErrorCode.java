@@ -32,7 +32,11 @@ public enum ErrorCode {
 
     INFO_ALREADY_EXISTS(409, "이미 존재하는 정보입니다."),
 
-    SERVICE_ERROR(500, "로그인 장애! 고객센터로 문의 주세요!");
+    SERVICE_ERROR(500, "로그인 장애! 고객센터로 문의 주세요!"),
+
+    CHILD_NOT_FOUND_ERROR(404,"존재하지 않는 아이입니다"),
+
+    BOOK_NOT_FOUND_ERROR(404, "존재하지 않는 동화책입니다");
 
     private final int status;
 

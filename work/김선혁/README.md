@@ -45,3 +45,11 @@ ex) 예시사진
 - openAi 탐색 후 config 파일 생성
 - openAi 코드 적용
 - story 작성 코드 적용
+
+
+## 2024-04-25 목요일
+
+- openAi와 Spring Boot 연동
+- openAi 이용해서 prompt를 story로 변환
+- story 8컷으로 나누고 동화 및 페이지 객체 생성
+  ![img.png](./img.png)

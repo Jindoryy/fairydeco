@@ -4,3 +4,9 @@ spring:
       - optional:file:.env[.properties]
   profiles:
     active: db, s3, swagger
+
+openai:
+  model: ${OPENAI_MODEL}
+  api:
+    key: ${OPENAI_API_KEY}
+    url: ${OPENAI_API_URL}
