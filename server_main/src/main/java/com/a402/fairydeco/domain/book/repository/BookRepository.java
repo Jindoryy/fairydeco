@@ -13,7 +13,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     List<Book> findTop20ByCompleteOrderByIdDesc(CompleteStatus completeStatus);
 
-    List<Book> findByChildAndCompleteAndPictureUrlNotNull(Child child, CompleteStatus completeStatus);
+    List<Book> findByChildAndCompleteAndPictureUrlNotNullOrderByIdDesc(Child child, CompleteStatus completeStatus);
 
     List<Book> findByChildOrderByIdDesc(Child child);
 }

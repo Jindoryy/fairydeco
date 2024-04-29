@@ -2,6 +2,22 @@
 
 ## 2주차
 
+### 04-26
+
+1. Nextjs SSR 배포 완료
+2. SpringBoot 서버 배포 완료
+3. MySQL DB 배포 완료
+4. nginx, env 설정 완료
+5. Nextjs 디렉토리 설정 완료
+
+### 04-25
+
+1. jenkins 배포 스크립트 작성 및 테스트 완료
+2. nginx 설정 완료
+3. 도메인 적용 및 SSL 적용 완료
+4. Nextjs 클라이언트 배포 완료
+5. 현재 도메인 주소로 접속시 Nextjs 서버가 404 에러 발생하는 문제 해결 중
+
 ### 04-23
 
 1. LightSail 설정

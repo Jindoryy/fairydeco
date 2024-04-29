@@ -9,3 +9,9 @@
 # 240422
 - API 명세서 작성
 - ![writeapi.png](./writeapi.png)
+
+# 240425
+- 아이 등록 api
+- 아이 이름 수정 api
+- 아이디 중복 확인 api
+- 회원가입 api -> 유효성 검사는 내일
