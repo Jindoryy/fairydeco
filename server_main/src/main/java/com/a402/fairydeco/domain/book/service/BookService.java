@@ -6,6 +6,7 @@ import com.a402.fairydeco.domain.book.dto.BookStory;
 import com.a402.fairydeco.domain.book.dto.GenreStatus;
 import com.a402.fairydeco.domain.book.entity.Book;
 import com.a402.fairydeco.domain.book.repository.BookRepository;
+import com.a402.fairydeco.domain.child.entity.Child;
 import com.a402.fairydeco.domain.child.repository.ChildRepository;
 import com.a402.fairydeco.domain.page.dto.PageStory;
 import com.a402.fairydeco.domain.page.entity.Page;
@@ -27,6 +28,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,6 +45,7 @@ public class BookService {
     @Value("${openai.api.url}")
     private String apiURL;
     private final RestTemplate restTemplate;
+    private final FileUtil fileUtil;
 
     @Transactional
     public BookStory register(BookRegister bookRegister) throws IOException {
@@ -53,6 +57,7 @@ public class BookService {
 
         String pictureName = "";
         String pictureUrl = "";
+        Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
         String prompt = "<스토리 작성 프롬프트>\n" +
                 "넌 지금부터 스토리텔링 전문가야. 많은 사람이 흥미를 느낄만한 글을 작성해 줘야 해. 이 프롬프트를 전송하면 아래의 단계를 진행해 줘.\n" +
                 "\n" +
@@ -80,9 +85,8 @@ public class BookService {
                 "\n" +
                 "\n" +
                 "주의사항:\n" +
-                "    *아이들이 보기 좋게 동화처럼 반전이나 교훈을 주는 식으로 마무리 해줘.\n" +
-                "    *각 씬의 대본 8컷으로 300자 이상 구체적으로 작성해야해. 그리고 한글로 작성해야해.\n" +
-                "    *대본은 디테일이 중요해. 필요한 단어나 배경지식이 있다면 외부에서 검색해서 스토리의 완성도를 더 깊이있게 만들어줘\n" +
+                "    *"+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+child.getGender()+"자 아이에게 맞춰 동화처럼 반전이나 교훈을 주는 식으로 마무리 해줘.\n" +
+                "    *각 씬의 대본은 8컷으로 300자 이상 구체적으로 작성해야해. 그리고 한글로 작성해야해.\n" +
                 "    *소제목 없이 대본만 보여줘\n" +
                 "    *각 대본의 끝에는 끝! 이 단어를 넣어줘\n================================================\n";
         Book savedBook;
@@ -96,15 +100,15 @@ public class BookService {
                     .maker(bookRegister.getBookMaker())
                     .genre(GenreStatus.valueOf(bookRegister.getBookGenre()))
                     .prompt(prompt)
-//                    .pictureUrl(fileUtil.uploadFile(bookRegister.getBookPicture()))
-//                    .pictureName(bookRegister.getBookPicture().getOriginalFilename())
+                    .pictureUrl(fileUtil.uploadFile(bookRegister.getBookPicture()))
+                    .pictureName(bookRegister.getBookPicture().getOriginalFilename())
                     .build();
             savedBook = bookRepository.save(book);
         } else {
             prompt += bookRegister.getBookPrompt();
             Book book = Book.builder()
                     .child(childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR)))
-                    .name(bookRegister.getBookMaker()+"의 이야기")
+                    .name(bookRegister.getBookMaker() + "의 이야기")
                     .maker(bookRegister.getBookMaker())
                     .genre(GenreStatus.valueOf(bookRegister.getBookGenre()))
                     .prompt(bookRegister.getBookPrompt())
@@ -121,9 +125,11 @@ public class BookService {
         String[] bookStories = story.split("끝!"); // 8개로 나눔
         Page[] pages = new Page[8];
         PageStory[] pageStories = new PageStory[8];
-
+        for(int i = 0;i<bookStories.length;i++){
+            System.out.println(bookStories[i]);
+        }
         // 먼저 만들어진 story를 8개로 나눈후에
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < bookStories.length; i++) {
             Page page = Page.builder()
                     .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
                     .story(bookStories[i].trim()) //공백제거
@@ -143,5 +149,6 @@ public class BookService {
                 .build();
         return bookStory;
     }
+
 
 }

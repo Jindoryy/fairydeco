@@ -35,7 +35,6 @@ public class Page extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Setter
     @Column(name = "page_story")
     private String story;
 
@@ -44,5 +43,9 @@ public class Page extends BaseEntity {
 
     @Column(name = "page_image_name")
     private String imageName;
+
+    public void updateStory(String Story){
+        this.story = story;
+    }
 
 }
