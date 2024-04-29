@@ -10,6 +10,7 @@ import com.a402.fairydeco.domain.book.dto.BookStoryDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
 import com.a402.fairydeco.domain.book.service.BookService;
+import com.a402.fairydeco.domain.book.service.OpenAiService;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
 import com.a402.fairydeco.global.util.FileUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,11 +34,12 @@ import java.io.IOException;
 public class BookController {
 
     private final BookService bookService;
+    private final OpenAiService openAiService;
     private FileUtil fileUtil;
 
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
         public SuccessResponse<BookStory> register(BookRegister bookRegister) throws IOException {
-        return new SuccessResponse<>(bookService.register(bookRegister));
+        return new SuccessResponse<>(openAiService.register(bookRegister));
     }
 
     @PostMapping("test")

@@ -41,7 +41,6 @@ public class Child extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Setter
     @Column(name = "child_name", nullable = false)
     private String name;
 
