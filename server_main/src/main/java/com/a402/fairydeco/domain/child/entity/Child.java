@@ -21,6 +21,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Table(name = "child")
 @Entity
@@ -28,6 +29,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 public class Child extends BaseEntity {
 
     @Id
@@ -39,7 +41,6 @@ public class Child extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Setter
     @Column(name = "child_name", nullable = false)
     private String name;
 
@@ -49,4 +50,6 @@ public class Child extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "child_gender")
     private GenderStatus gender;
+
+    public void setName(String name) { this.name = name; }
 }

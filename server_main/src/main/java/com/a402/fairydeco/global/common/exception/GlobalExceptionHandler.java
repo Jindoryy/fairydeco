@@ -21,4 +21,13 @@ public class GlobalExceptionHandler {
             HttpStatusCode.valueOf(errorCode.getStatus()));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<FailResponse<Map<String, String>>> handleIllegalArgument(IllegalArgumentException exc) {
+        String message = exc.getMessage();
+
+        return new ResponseEntity<>(
+            FailResponse.of("404", message),
+            HttpStatusCode.valueOf(404));
+    }
+
 }

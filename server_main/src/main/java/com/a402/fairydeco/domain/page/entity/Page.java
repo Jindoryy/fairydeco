@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Table(name = "page")
 @Entity
@@ -24,6 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 public class Page extends BaseEntity {
 
     @Id
@@ -35,7 +37,6 @@ public class Page extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Setter
     @Column(name = "page_story")
     private String story;
 
@@ -44,5 +45,9 @@ public class Page extends BaseEntity {
 
     @Column(name = "page_image_name")
     private String imageName;
+
+    public void updateStory(String story){
+        this.story = story;
+    }
 
 }
