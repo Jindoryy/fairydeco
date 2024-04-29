@@ -4,9 +4,9 @@ import Prompt from './components/prompt'
 
 export default function Home() {
     return (
-        <div>
+        <div className="w-dvw h-dvh">
             <Header></Header>
-            <div className="flex flex-col items-center justify-center ">
+            <div className="flex flex-col items-center justify-center">
                 <Prompt />
             </div>
         </div>

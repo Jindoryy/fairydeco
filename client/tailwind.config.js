@@ -24,6 +24,9 @@ module.exports = {
             fontFamily: {
                 ourFont: ['TTHakgyoansimMonggeulmonggeulR'],
             },
+            boxShadow: {
+                customShadow: '0 2px 2px 0 #C4B6B5',
+            },
         },
     },
     plugins: [daisyui],
