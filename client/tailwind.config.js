@@ -13,8 +13,12 @@ module.exports = {
                 customPink: '#FCEAE9',
                 customPurple: '#CA54C9',
                 customGreen: '#A1C09F',
+                customLigntGreen: '#E9FFE5',
                 customRed: '#DC2823',
                 customGray: '#807A7A',
+                customBlue: '#F3F4FF',
+                customOrange: '#F5AD35',
+                customBlueBorder: '#B5B8FF',
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

@@ -79,12 +79,12 @@ export default function Mypage() {
     }
 
     return (
-        <div>
+        <div className="font-ourFont">
             <Header></Header>
-            <div className="py-5 text-5xl">우리 가족</div>
-            <div className="mx-3 flex justify-around rounded-lg bg-green-100 py-5 text-3xl">
+            <div className="mx-5 py-5 text-5xl">우리 가족</div>
+            <div className="bg-customLigntGreen mx-7 flex h-1/3 justify-around rounded-lg px-5 py-5 text-3xl">
                 <div className="flex-grow px-5">
-                    <div>부모님</div>
+                    <div className="text-4xl">부모님</div>
                     {/* 부모님의 아이디와 학습 진행도를 표시 */}
                     <div>
                         <div>아이디 : {userInfo.user.userLoginId}</div>
@@ -92,11 +92,17 @@ export default function Mypage() {
                         <div>성별 : {userInfo.user.userGender}</div>
                         <div>생년월일 : {userInfo.user.userBirth}</div>
                     </div>
-                    <div>목소리 학습 중 : {voiceLearningPercent}%</div>
+                    <div>
+                        <span className="text-customOrange">목소리</span> 학습
+                        중 :{' '}
+                        <span className="text-customOrange">
+                            {voiceLearningPercent}%
+                        </span>
+                    </div>
                     {/* 게이지바 구현 */}
-                    <div className="h-10 w-full rounded-lg border-4 border-solid border-orange-300 bg-white">
+                    <div className="border-customOrange h-10 w-full rounded-lg border-4 border-solid bg-white">
                         <div
-                            className="h-full rounded-l bg-orange-300"
+                            className="bg-customOrange h-full rounded-l"
                             style={{ width: `${voiceLearningPercent}%` }} // 퍼센트에 따라 너비 조정
                         ></div>
                     </div>
@@ -111,7 +117,11 @@ export default function Mypage() {
                         {userInfo.childResponseList.map((child, index) => (
                             <a
                                 role="tab"
-                                className={`tab ${selectedTab === index ? 'tab-active' : ''}`}
+                                className={`tab ${
+                                    selectedTab === index
+                                        ? 'bg-customBlue border-customBlueBorder border-4 border-solid'
+                                        : 'border-customBlueBorder border-4 border-solid bg-white'
+                                }`}
                                 onClick={() => handleTabClick(index)}
                                 key={child.childId}
                             >
@@ -121,7 +131,12 @@ export default function Mypage() {
                         {/* 항상 추가되는 "기타" 탭 */}
                         <a
                             role="tab"
-                            className={`tab ${selectedTab === userInfo.childResponseList.length ? 'tab-active' : ''}`}
+                            className={`tab ${
+                                selectedTab ===
+                                userInfo.childResponseList.length
+                                    ? 'bg-customBlue border-customBlueBorder border-4 border-solid'
+                                    : 'border-customBlueBorder border-4 border-solid bg-white'
+                            }`}
                             onClick={() =>
                                 handleTabClick(
                                     userInfo.childResponseList.length
@@ -133,8 +148,8 @@ export default function Mypage() {
                     </div>
 
                     {/* 선택된 탭의 아이 정보 */}
-                    <div className="rounded-lg bg-blue-100 py-5 text-3xl">
-                        <div>아이 정보</div>
+                    <div className="bg-customBlue border-customBlueBorder rounded-lg border-2 border-solid px-3 py-5 text-3xl">
+                        <div className="text-4xl">아이</div>
                         <div>
                             이름 :{' '}
                             {userInfo.childResponseList[selectedTab].childName}
