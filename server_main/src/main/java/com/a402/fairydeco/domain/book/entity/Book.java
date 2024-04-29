@@ -3,7 +3,9 @@ package com.a402.fairydeco.domain.book.entity;
 import com.a402.fairydeco.domain.book.dto.CompleteStatus;
 import com.a402.fairydeco.domain.book.dto.GenreStatus;
 import com.a402.fairydeco.domain.child.entity.Child;
+import com.a402.fairydeco.domain.page.entity.Page;
 import com.a402.fairydeco.global.common.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,7 +16,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,6 +72,9 @@ public class Book extends BaseEntity {
 
     @Column(name = "book_cover_name")
     private String coverName;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Page> pageList = new ArrayList<>();
 
     // 동화 제목 변경
     public void updateBookName(String name){

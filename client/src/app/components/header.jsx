@@ -1,10 +1,18 @@
 import Image from 'next/image'
+import { SignIn } from '@phosphor-icons/react/dist/ssr'
 
 export default function Header() {
     return (
-        <div className="bg-customYellow h-20% flex items-center justify-between px-4">
-            <Image src="/image/logo.png" alt="Logo" width={100} height={100} />
-            <div>버튼</div>
+        <div className="bg-customYellow flex h-20 items-center justify-between px-4">
+            <div className="relative h-5/6 w-40">
+                <Image
+                    src="/image/logo.png"
+                    alt="Logo"
+                    layout="fill"
+                    objectFit="cover"
+                />
+            </div>
+            <SignIn size={40}></SignIn>
         </div>
     )
 }
