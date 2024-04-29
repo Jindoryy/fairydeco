@@ -38,7 +38,9 @@ public enum ErrorCode {
 
     CHILD_NOT_FOUND_ERROR(404,"존재하지 않는 아이입니다"),
 
-    BOOK_NOT_FOUND_ERROR(404, "존재하지 않는 동화책입니다");
+    BOOK_NOT_FOUND_ERROR(404, "존재하지 않는 동화책입니다"),
+
+    PAGE_NOT_FOUND_ERROR(404, "존재하지 않는 페이지입니다");
 
     private final int status;
 
