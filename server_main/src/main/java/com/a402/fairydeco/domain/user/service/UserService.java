@@ -11,6 +11,8 @@ import com.a402.fairydeco.domain.child.repository.ChildRepository;
 import com.a402.fairydeco.domain.user.dto.MyPageResponse;
 import com.a402.fairydeco.domain.user.dto.UserIdRequest;
 import com.a402.fairydeco.domain.user.dto.UserLoginIdRequest;
+import com.a402.fairydeco.domain.user.dto.UserLoginRequest;
+import com.a402.fairydeco.domain.user.dto.UserLoginResponse;
 import com.a402.fairydeco.domain.user.dto.UserRegistRequest;
 import com.a402.fairydeco.domain.user.dto.MyPageUserDTO;
 import com.a402.fairydeco.domain.user.entity.User;
@@ -121,4 +123,23 @@ public class UserService {
             .build();
     }
 
+    public UserLoginResponse loginUser(UserLoginRequest userLoginRequest) {
+
+        User user = userRepository.findByLoginId(userLoginRequest.getLoginId())
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND));
+
+        UserLoginResponse userLoginResponse;
+
+        if (user.getPassword().equals(userLoginRequest.getPassword())) {
+            //로그인 성공
+            userLoginResponse = UserLoginResponse.builder()
+                .userId(user.getId())
+                .build();
+        } else {
+            //로그인 실패
+            throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+        }
+
+        return userLoginResponse;
+    }
 }
