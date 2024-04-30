@@ -220,7 +220,7 @@ export default function Prompt() {
                 </div>
                 <div>
                     <button
-                        class="btn btn-sm mb-2 mt-4 h-12 w-44 bg-customYellow text-base shadow-customShadow hover:bg-customYellow"
+                        className="btn btn-sm mb-2 mt-4 h-12 w-44 bg-customYellow text-base shadow-customShadow hover:bg-customYellow"
                         onClick={makeStory}
                     >
                         동화 만들기 <CaretRight size={20} />
