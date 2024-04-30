@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,6 +36,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final ChildRepository childRepository;
     private final BookRepository bookRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public String isDuplicateId(UserLoginIdRequest userLoginIdRequest) {
         Optional<User> userOptional = userRepository.findByLoginId(userLoginIdRequest.getLoginId());
@@ -55,7 +60,7 @@ public class UserService {
 
         User user = User.builder()
             .loginId(userRegistRequest.getLoginId())
-            .password(userRegistRequest.getPassword())
+            .password(bCryptPasswordEncoder.encode(userRegistRequest.getPassword())) //패스워드 암호화
             .name(userRegistRequest.getName())
             .birth(userRegistRequest.getBirth())
             .gender(userRegistRequest.getGender())
@@ -75,6 +80,27 @@ public class UserService {
         }
 
         childRepository.saveAll(childList);
+    }
+
+    public UserLoginResponse loginUser(UserLoginRequest userLoginRequest) {
+
+        User user = userRepository.findByLoginId(userLoginRequest.getLoginId())
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND));
+
+        UserLoginResponse userLoginResponse;
+
+        //패스워드 복호화 후 일치 검증
+        if (bCryptPasswordEncoder.matches(userLoginRequest.getPassword(), user.getPassword())) {
+            //로그인 성공
+            userLoginResponse = UserLoginResponse.builder()
+                .userId(user.getId())
+                .build();
+        } else {
+            //로그인 실패
+            throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
+        }
+
+        return userLoginResponse;
     }
 
     public MyPageResponse findMyPageList(UserIdRequest userIdRequest) {
@@ -121,25 +147,5 @@ public class UserService {
             .user(userResponse)
             .childList(childList)
             .build();
-    }
-
-    public UserLoginResponse loginUser(UserLoginRequest userLoginRequest) {
-
-        User user = userRepository.findByLoginId(userLoginRequest.getLoginId())
-            .orElseThrow(() -> new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND));
-
-        UserLoginResponse userLoginResponse;
-
-        if (user.getPassword().equals(userLoginRequest.getPassword())) {
-            //로그인 성공
-            userLoginResponse = UserLoginResponse.builder()
-                .userId(user.getId())
-                .build();
-        } else {
-            //로그인 실패
-            throw new CustomException(ErrorCode.NO_AUTHENTICATED_USER_FOUND);
-        }
-
-        return userLoginResponse;
     }
 }
