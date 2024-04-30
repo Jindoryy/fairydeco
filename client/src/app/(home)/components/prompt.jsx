@@ -63,7 +63,7 @@ export default function Prompt() {
     }
 
     return (
-        <div className="h-[600px] w-11/12 font-ourFont">
+        <div className="h-[600px] w-11/12">
             <div className="m-1 mt-7 text-3xl font-bold">
                 AI동화를 꾸며보아요!
             </div>
