@@ -64,4 +64,46 @@ router.get('/test', storyController.test);
  */
 router.post('/create-image', imageController.createImage);
 
+/**
+ * @swagger
+ * /stories/book-creation:
+ *   post:
+ *     summary: 동화 이미지 생성 및 저장
+ *     description: 주어진 유저 ID와 동화 ID를 바탕으로 동화의 각 페이지에 대한 이미지를 생성하고 저장합니다.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - storyId
+ *             properties:
+ *               userId:
+ *                 type: integer
+ *                 description: 유저의 ID
+ *                 example: 1
+ *               storyId:
+ *                 type: integer
+ *                 description: 동화의 ID
+ *                 example: 100
+ *     responses:
+ *       200:
+ *         description: 이미지 생성 및 저장이 시작되었습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "동화 제작 중..."
+ *       500:
+ *         description: 서버 오류로 인해 이미지 생성을 시작할 수 없습니다.
+ */
+router.post('/book-creation', imageController.bookCreation);
 module.exports = router;

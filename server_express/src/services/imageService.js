@@ -14,10 +14,13 @@ const s3Client = new S3Client({
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     }
-  });
+});
 
 async function generateImage(pageStory, pageId) {
   try {
+    // 이미지 생성 요청 전에 15초 기다림
+    await new Promise(resolve => setTimeout(resolve, 15000)); // 15초 대기
+    
     const imageResponse = await openai.images.generate({
         model: "dall-e-3",
         prompt: pageStory,
