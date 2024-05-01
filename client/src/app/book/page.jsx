@@ -1,42 +1,79 @@
-'use client'
+/*
+ * Basic sample
+ */
 
-import { useRef, useEffect } from 'react'
-import $ from 'jquery'
-import 'turn.js'
-import styles from './components/Flipbook.module.css' // CSS 모듈 임포트
+function addPage(page, book) {
+    var id,
+        pages = book.turn('pages')
 
-const Flipbook = ({ options = {} }) => {
-    const bookRef = useRef(null)
+    // Create a new element for this page
+    var element = $('<div />', {})
 
-    useEffect(() => {
-        const book = bookRef.current
-        if (book) {
-            $(book).turn(options)
+    // Add the page to the flipbook
+    if (book.turn('addPage', element, page)) {
+        // Add the initial HTML
+        // It will contain a loader indicator and a gradient
+        element.html('<div class="gradient"></div><div class="loader"></div>')
 
-            const handleResize = () => {
-                book.style.width = ''
-                book.style.height = ''
-                $(book).turn('size', book.clientWidth, book.clientHeight)
-            }
-
-            window.addEventListener('resize', handleResize)
-
-            return () => {
-                $(book).turn('destroy')
-                window.removeEventListener('resize', handleResize)
-            }
-        }
-    }, [options])
-
-    return (
-        <div className={styles.flipbook} ref={bookRef}>
-            {pages.map((page, index) => (
-                <div key={index} className={styles.page}>
-                    <img src={page} draggable="false" alt="" />
-                </div>
-            ))}
-        </div>
-    )
+        // Load the page
+        loadPage(page, element)
+    }
 }
 
-export default Flipbook
+function loadPage(page, pageElement) {
+    // Create an image element
+
+    var img = $('<img />')
+
+    img.mousedown(function (e) {
+        e.preventDefault()
+    })
+
+    img.load(function () {
+        // Set the size
+        $(this).css({ width: '100%', height: '100%' })
+
+        // Add the image to the page after loaded
+
+        $(this).appendTo(pageElement)
+
+        // Remove the loader indicator
+
+        pageElement.find('.loader').remove()
+    })
+
+    // Load the page
+
+    img.attr('src', 'pages/' + page + '.jpg')
+}
+
+function loadLargePage(page, pageElement) {
+    var img = $('<img />')
+
+    img.load(function () {
+        var prevImg = pageElement.find('img')
+        $(this).css({ width: '100%', height: '100%' })
+        $(this).appendTo(pageElement)
+        prevImg.remove()
+    })
+
+    // Loadnew page
+
+    img.attr('src', 'pages/' + page + '-large.jpg')
+}
+
+function loadSmallPage(page, pageElement) {
+    var img = pageElement.find('img')
+
+    img.css({ width: '100%', height: '100%' })
+
+    img.unbind('load')
+    // Loadnew page
+
+    img.attr('src', 'pages/' + page + '.jpg')
+}
+
+// http://code.google.com/p/chromium/issues/detail?id=128488
+function isChrome() {
+    return navigator.userAgent.indexOf('Chrome') != -1
+}
