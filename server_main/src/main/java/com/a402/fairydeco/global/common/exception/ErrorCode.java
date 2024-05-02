@@ -42,7 +42,13 @@ public enum ErrorCode {
 
     BOOK_NOT_FOUND_ERROR(404, "존재하지 않는 동화책입니다"),
 
-    PAGE_NOT_FOUND_ERROR(404, "존재하지 않는 페이지입니다");
+    PAGE_NOT_FOUND_ERROR(404, "존재하지 않는 페이지입니다"),
+
+    SSE_CONNECT_FAIL_ERROR(404, "SSE CONNECT에 실패했습니다."),
+
+    SSE_SEND_FAIL_ERROR(404, "SSE SEND에 실패했습니다."),
+
+    SSE_USER_NOT_FOUND_ERROR(404, "SSE SseEmitter에 등록된 유저가 아닙니다.");
 
     private final int status;
 

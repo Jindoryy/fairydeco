@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class SseService {
 
-    private static final long TIMEOUT = 60 * 60 * 1000L;
+    private static final long TIMEOUT = 60 * 60 * 1000L; //1시간
     private final EmitterRepository emitterRepository;
     private final UserRepository userRepository;
 
@@ -54,7 +54,7 @@ public class SseService {
         } catch (IOException e) {
             System.out.println("연결 실패");
             emitterRepository.deleteById(userId);
-            throw new CustomException(ErrorCode.FORBIDDEN_ERROR); //connect 실패 커스텀 에러 추가해서 변경할 것
+            throw new CustomException(ErrorCode.SSE_CONNECT_FAIL_ERROR);
         }
     }
 
@@ -68,11 +68,11 @@ public class SseService {
             } catch (IOException e) {
                 System.out.println("send 실패");
                 emitterRepository.deleteById(userId);
-                throw new CustomException(ErrorCode.SERVICE_ERROR); //send 실패 커스텀 에러 추가해서 변경할 것
+                throw new CustomException(ErrorCode.SSE_SEND_FAIL_ERROR);
             }
         }, () -> {
             System.out.println("SseEmitter User Not Found");
-            throw new CustomException(ErrorCode.SERVICE_ERROR); //SseEmitter에 유저 없음 에러코드로 변경할 것
+            throw new CustomException(ErrorCode.SSE_USER_NOT_FOUND_ERROR);
         });
 
 //        //Optional이 null 일 경우의 exception 처리가 안되어있음
@@ -88,7 +88,7 @@ public class SseService {
 //        } catch (IOException e) {
 //            System.out.println("send 실패");
 //            emitterRepository.deleteById(userId);
-//            throw new CustomException(ErrorCode.SERVICE_ERROR); //나중에 커스텀 에러 추가해서 변경할 것
+//            throw new CustomException(ErrorCode.SSE_SEND_FAIL_ERROR);
 //        }
     }
 
