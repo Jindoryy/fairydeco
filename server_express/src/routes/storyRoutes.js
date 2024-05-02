@@ -78,13 +78,13 @@ router.post('/create-image', imageController.createImage);
  *             type: object
  *             required:
  *               - userId
- *               - storyId
+ *               - bookId
  *             properties:
  *               userId:
  *                 type: integer
  *                 description: 유저의 ID
  *                 example: 1
- *               storyId:
+ *               bookId:
  *                 type: integer
  *                 description: 동화의 ID
  *                 example: 100

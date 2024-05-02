@@ -16,7 +16,7 @@ async function connectDB() {
         });
     } catch (err) {
         console.error('Error connecting: ' + err.stack);
-        throw err;
+        return null;
     }
 }
 
