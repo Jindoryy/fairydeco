@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
     Heart,
     GlobeHemisphereEast,
@@ -12,13 +13,32 @@ import {
 
 export default function Prompt() {
     const [writer, setWriter] = useState('')
+    const [kids, setKids] = useState([])
     const [uploadImage, setUploadImage] = useState(false)
     const [category, setCategory] = useState('ADVENTURE')
     const categories = ['ADVENTURE', 'FANTASY', 'MYSTERY', 'ROMANCE']
     const [story, setStory] = useState('')
-    const [kidImage, setKidImage] = useState(null)
+    const [kidImage, setKidImage] = useState('')
+    const [bookId, setBookId] = useState(0)
+
+    const getKids = async () => {
+        try {
+            const response = await axios.get(
+                'http://k10a402.p.ssafy.io:8081/child/name-list/1'
+            )
+            setKids(response.data.data)
+            setWriter(response.data.data[0].childName)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(() => {
+        getKids()
+    }, [])
 
     const handleSelectWriter = (writerName) => {
+        console.log(kids)
         let selectedWriter = writerName.target.value
         setWriter(selectedWriter)
     }
@@ -54,12 +74,41 @@ export default function Prompt() {
         reader.readAsDataURL(file)
     }
 
+    const getStory = async () => {
+        const selectedKid = kids.find((el) => el.childName === writer)
+        const id = selectedKid ? selectedKid.childId : null
+        if (story == '') setStory(null)
+        if (kidImage == '') setKidImage(null)
+
+        const bookFormData = new FormData()
+        bookFormData.append('childId', id)
+        bookFormData.append('bookMaker', writer)
+        bookFormData.append('bookGenre', category)
+        bookFormData.append('bookPrompt', story)
+        bookFormData.append('bookPicture', kidImage)
+        try {
+            const { data } = await axios.post(
+                'https://k10a402.p.ssafy.io/book',
+                bookFormData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            )
+            console.log(data)
+            setBookId(data.data.bookId)
+        } catch (error) {
+            console.error('Error fetching data:', error)
+        }
+    }
     const makeStory = () => {
         if (!story && !kidImage) {
             alert('이야기나 그림 하나라도 입력해주세요!')
             return
         }
-        console.log('스크립트 제작 api연결')
+
+        getStory()
     }
 
     return (
@@ -83,8 +132,11 @@ export default function Prompt() {
                             className="outline:border-customPink select select-sm ml-3 h-12 w-11/12 max-w-xs border-customPink text-xl focus:border-customPink focus:outline-customPink"
                             onChange={handleSelectWriter}
                         >
-                            <option className="text-xl">박아들</option>
-                            <option className="text-xl">박딸</option>
+                            {kids.map((el, index) => (
+                                <option key={index} className="text-xl">
+                                    {el.childName}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="h-28 w-2/3 rounded-2xl bg-white p-2 shadow-customShadow">
