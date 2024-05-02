@@ -36,6 +36,8 @@ public enum ErrorCode {
 
     DUPLICATE_USER_LOGIN_ID(404, "중복된 아이디가 존재합니다."),
 
+    
+
     CHILD_NOT_FOUND_ERROR(404,"존재하지 않는 아이입니다"),
 
     BOOK_NOT_FOUND_ERROR(404, "존재하지 않는 동화책입니다"),

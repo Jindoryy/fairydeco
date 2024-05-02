@@ -8,6 +8,8 @@ import com.a402.fairydeco.domain.child.entity.Child;
 import com.a402.fairydeco.domain.child.repository.ChildRepository;
 import com.a402.fairydeco.domain.user.entity.User;
 import com.a402.fairydeco.domain.user.repository.UserRepository;
+import com.a402.fairydeco.global.common.exception.CustomException;
+import com.a402.fairydeco.global.common.exception.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,15 @@ public class ChildService {
     private final ChildRepository childRepository;
     private final UserRepository userRepository;
 
+    private User getUserById(Integer userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
+    }
+
     public List<ChildListResponse> findChildList(Integer userId) {
+
+        User user = getUserById(userId);
+
         List<ChildListResponse> childListResponses = new ArrayList<>();
         List<Child> childList = childRepository.findByUserId(userId);
 
@@ -41,6 +51,8 @@ public class ChildService {
 
     public List<ChildNameListResponse> findChildNameList(Integer userId) {
 
+        User user = getUserById(userId);
+
         List<ChildNameListResponse> childNameListResponses = new ArrayList<>();
         List<Child> childList = childRepository.findByUserId(userId);
 
@@ -60,8 +72,7 @@ public class ChildService {
 
     public List<ChildListResponse> saveChild(ChildAddRequest childAddRequest) {
 
-        User user = userRepository.findById(childAddRequest.getUserId())
-            .orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = getUserById(childAddRequest.getUserId());
 
         Child child = Child.builder()
             .user(user)
