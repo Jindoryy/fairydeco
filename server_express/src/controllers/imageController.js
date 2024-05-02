@@ -26,20 +26,24 @@ async function createImage(req, res) {
 }
 
 async function bookCreation(req, res) {
-    const { userId, storyId } = req.body;
+    const startTime = new Date();
+    console.log(`CHECK : BOOK CREATION STARTED AT ${startTime.toISOString()}`);
+    const { userId, bookId } = req.body;
+    console.log("PHASE 1 : IMAGE CREATE START");
+    console.log("Input BookId :" + `${bookId}`);
     const connection = await connectDB();
     if (!connection) {
         res.status(500).send('Database connection failed');
         return;
     }
-
+    console.log("PHASE 2 : DB CONNECTION SUCCESS");
     try {
-        const [results] = await connection.query('SELECT page_id, page_story FROM page WHERE book_id = ?', [storyId]);
+        const [results] = await connection.query('SELECT page_id, page_story FROM page WHERE book_id = ?', [bookId]);
         if (results.length === 0) {
             await connection.end();
-            return res.status(404).send('No pages found for the given story ID');
+            return res.status(404).send('No pages found for the given BOOK ID');
         }
-
+        console.log("PHASE 3 : DB RETRIVAL SUCCESS, RETURN SUCCESS RESPONSE");
         res.status(200).send({ success: true, message: "동화 제작 중..." });
 
         const imageUrls = [];
@@ -51,7 +55,7 @@ async function bookCreation(req, res) {
 
             // 모든 이미지 생성 요청을 동시에 처리
             const batchImageUrls = await Promise.all(currentPageBatch.map(page =>
-                imageService.generateImage(page.page_story, page.page_id)
+                imageService.generateImage(page.page_story, page.page_id, bookId)
             ));
 
             // URL 결과를 총 배열에 추가
@@ -62,13 +66,22 @@ async function bookCreation(req, res) {
                 await new Promise(resolve => setTimeout(resolve, 20000)); // 20초 대기
             }
         }
-
+        console.log("PHASE 4 : IMAGE CREATE & S3 UPLOAD SUCCESS");
         // DB 업데이트는 모든 이미지 생성 후에 진행
         await Promise.all(results.map((page, index) => {
             return connection.query('UPDATE page SET page_image_url = ? WHERE page_id = ?', [imageUrls[index], page.page_id]);
         }));
 
-        console.log(`All images uploaded and DB updated for storyId ${storyId}`);
+        console.log("PHASE 5 : TITLE IMAGE CREATE & S3 UPLOAD START");
+        await new Promise(resolve => setTimeout(resolve, 20000)); // 20초 대기
+        const allPageStories = results.map(page => page.page_story.replace(/^\d{1,2}\.\s/, '')).join(' ');
+        const coverImageUrl = await imageService.generateTitleImage(allPageStories, bookId);
+        console.log("PHASE 6 : TITLE IMAGE CREATE & S3 UPLOAD SUCCESS");
+        await connection.query('UPDATE book SET book_cover_url = ? WHERE book_id = ?', [coverImageUrl, bookId]);
+        console.log("PHASE 7 : TITLE IMAGE DB UPDATE SUCCESS");
+        const endTime = new Date(); // endTime을 처리 완료 후에 정의
+        console.log(`CHECK : BOOK CREATION ENDED AT ${endTime.toISOString()}`);
+        console.log(`TOTAL TIME TAKEN: ${(endTime.getTime() - startTime.getTime()) / 1000} seconds`);
     } catch (error) {
         console.error('Failed to create or upload images:', error);
         res.status(500).send('Failed to create or upload images');
