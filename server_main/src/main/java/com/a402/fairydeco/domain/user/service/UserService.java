@@ -1,17 +1,27 @@
 package com.a402.fairydeco.domain.user.service;
 
+import com.a402.fairydeco.domain.book.dto.MyPageBookDTO;
+import com.a402.fairydeco.domain.book.entity.Book;
+import com.a402.fairydeco.domain.book.repository.BookRepository;
 import com.a402.fairydeco.domain.child.dto.ChildListRequest;
+import com.a402.fairydeco.domain.child.dto.ChildListResponse;
+import com.a402.fairydeco.domain.child.dto.MyPageChildListDTO;
 import com.a402.fairydeco.domain.child.entity.Child;
 import com.a402.fairydeco.domain.child.repository.ChildRepository;
+import com.a402.fairydeco.domain.user.dto.MyPageResponse;
+import com.a402.fairydeco.domain.user.dto.UserIdRequest;
 import com.a402.fairydeco.domain.user.dto.UserLoginIdRequest;
 import com.a402.fairydeco.domain.user.dto.UserRegistRequest;
+import com.a402.fairydeco.domain.user.dto.MyPageUserDTO;
 import com.a402.fairydeco.domain.user.entity.User;
 import com.a402.fairydeco.domain.user.repository.UserRepository;
 import com.a402.fairydeco.global.common.exception.CustomException;
 import com.a402.fairydeco.global.common.exception.ErrorCode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +31,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ChildRepository childRepository;
-
-    public boolean isExistUserById(Integer userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-
-        if (userOptional.isPresent()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    private final BookRepository bookRepository;
 
     public String isDuplicateId(UserLoginIdRequest userLoginIdRequest) {
         Optional<User> userOptional = userRepository.findByLoginId(userLoginIdRequest.getLoginId());
@@ -73,4 +74,51 @@ public class UserService {
 
         childRepository.saveAll(childList);
     }
+
+    public MyPageResponse findMyPageList(UserIdRequest userIdRequest) {
+
+        User user = userRepository.findById(userIdRequest.getUserId())
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
+
+        List<Child> children = childRepository.findByUserId(userIdRequest.getUserId());
+
+        MyPageUserDTO userResponse = MyPageUserDTO.builder()
+            .userLoginId(user.getLoginId())
+            .userName(user.getName())
+            .userBirth(user.getBirth())
+            .userGender(user.getGender())
+            .build();
+
+        List<MyPageChildListDTO> childList = children.stream()
+            .map(child -> {
+                List<Book> books = bookRepository.findByChild(child);
+
+                List<MyPageBookDTO> bookList = books.stream()
+                    .map(book -> MyPageBookDTO.builder()
+                        .bookId(book.getId())
+                        .bookName(book.getName())
+                        .bookMaker(book.getMaker())
+                        .bookPictureUrl(book.getPictureUrl())
+                        .bookCoverUrl(book.getCoverUrl())
+                        .bookCreatedAt(LocalDate.from(book.getCreatedAt()))
+                        .bookComplete(book.getComplete())
+                        .build())
+                    .collect(Collectors.toList());
+
+                return MyPageChildListDTO.builder()
+                    .childId(child.getId())
+                    .childName(child.getName())
+                    .childBirth(child.getBirth())
+                    .childGender(child.getGender())
+                    .bookList(bookList)
+                    .build();
+
+            }).toList();
+
+        return MyPageResponse.builder()
+            .user(userResponse)
+            .childList(childList)
+            .build();
+    }
+
 }

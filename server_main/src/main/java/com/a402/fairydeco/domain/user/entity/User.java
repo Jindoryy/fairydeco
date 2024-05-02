@@ -1,7 +1,9 @@
 package com.a402.fairydeco.domain.user.entity;
 
+import com.a402.fairydeco.domain.child.entity.Child;
 import com.a402.fairydeco.domain.user.dto.GenderStatus;
 import com.a402.fairydeco.global.common.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,9 +11,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +58,9 @@ public class User extends BaseEntity {
   @ColumnDefault("0")
   @Builder.Default
   private Integer voiceTime = 0;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Child> childList = new ArrayList<>();
 
   public void setVoiceTime(Integer voiceTime) { this.voiceTime = voiceTime; }
 }

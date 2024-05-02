@@ -21,7 +21,7 @@ public class PageController {
     private final PageService pageService;
 
 
-    @PutMapping
+    @PutMapping("/story")
     public SuccessResponse<String> updateStory(@RequestParam(value = "pageId") int pageId,
                                                @RequestParam(value = "pageStory") String pageStory){
         return new SuccessResponse<>(pageService.updateStory(pageId, pageStory));

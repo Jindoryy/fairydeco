@@ -16,4 +16,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<Book> findByChildAndCompleteAndPictureUrlNotNullOrderByIdDesc(Child child, CompleteStatus completeStatus);
 
     List<Book> findByChildOrderByIdDesc(Child child);
+
+    List<Book> findByChild(Child child);
 }

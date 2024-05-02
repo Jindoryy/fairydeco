@@ -1,5 +1,7 @@
 package com.a402.fairydeco.domain.user.controller;
 
+import com.a402.fairydeco.domain.user.dto.MyPageResponse;
+import com.a402.fairydeco.domain.user.dto.UserIdRequest;
 import com.a402.fairydeco.domain.user.dto.UserLoginIdRequest;
 import com.a402.fairydeco.domain.user.dto.UserRegistRequest;
 import com.a402.fairydeco.domain.user.service.UserService;
@@ -32,5 +34,12 @@ public class UserController {
     public SuccessResponse<String> checkUserId(@RequestBody UserLoginIdRequest userLoginIdRequest) {
 
         return new SuccessResponse<>(userService.isDuplicateId(userLoginIdRequest));
+    }
+
+    @Operation(summary = "마이페이지 정보", description = "마이페이지에 필요한 정보를 반환한다.")
+    @PostMapping("/mypage")
+    public SuccessResponse<MyPageResponse> getMyPage(@RequestBody UserIdRequest userIdRequest) {
+
+        return new SuccessResponse<>(userService.findMyPageList(userIdRequest));
     }
 }
