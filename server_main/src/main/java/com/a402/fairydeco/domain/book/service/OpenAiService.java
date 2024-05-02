@@ -57,13 +57,13 @@ public class OpenAiService {
                 "단계:\n" +
                 "\n" +
                 "1. 장르 선택" +
-                "    리스트 (각 장르를 2개 이상 결합해도 돼): 각 장르를 설명하지마.\n" +
+                "    리스트 : 각 장르를 설명하지마.\n" +
                 "    로맨스: 사랑과 관계에 관한 이야기는 많은 사람들에게 호소력이 있습니다.\n" +
                 "    모험: 긴장감과 활동적인 장면은 흥미롭고, 역동적인 시청 경험을 제공합니다.\n" +
                 "    판타지: 마법과 다른 세계의 모험은 탈출 주의적인 경험을 제공합니다.\n" +
                 "    미스터리: 미스터리를 좋아하고 해결하는 과정에서의 긴장감을 즐기는 관객에게 인기가 있습니다.\n" +
                 "\n" +
-                "2. 장르에 맞는 씬을 무조건 8개로 나누고 각 씬별 대본을 작성해 줘. 대본은 아래의 구조로 작성해 줘.\n" +
+                "2. 장르에 맞는 씬을 최소 8페이지로 나누고 각 씬별 대본을 작성해 줘. 대본은 아래의 구조로 작성해 줘.\n" +
                 "    **구조:**\n" +
                 "    **큰 구조는 댄 하몬의 하몬 써클을 참고해서 작성해 줘. 글의 구조만 참고하는 거야.**\n" +
                 "    **The Story Circle’s 8 Steps:**\n" +
@@ -79,8 +79,9 @@ public class OpenAiService {
                 "\n" +
                 "주의사항:\n" +
                 "    *"+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+child.getGender()+"자 아이에게 맞춰 동화처럼 반전이나 교훈을 주는 식으로 마무리 해줘.\n" +
-                "    *각 씬의 대본은 8컷으로 300자 이상 구체적으로 작성해야해. 그리고 한글로 작성해야해.\n" +
+                "    *각 씬의 대본은 8컷으로 구체적으로 작성해야해. 그리고 한글로 작성해야해.\n" +
                 "    *소제목 없이 대본만 보여줘\n" +
+                "    *씬의 대본은 각각 무조건 250자 이상으로 작성해줘\n" +
                 "    *각 대본의 끝에는 끝! 이 단어를 넣어줘\n================================================\n";
         Book savedBook;
         // 이미지 null이면 프롬프트로 그냥 더하고
@@ -98,7 +99,6 @@ public class OpenAiService {
                     .build();
             savedBook = bookRepository.save(book);
         } else {
-            prompt += bookRegister.getBookPrompt();
             Book book = Book.builder()
                     .child(childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR)))
                     .name(bookRegister.getBookMaker()+"의 이야기")
@@ -125,7 +125,7 @@ public class OpenAiService {
         for (int i = 0; i < bookStories.length; i++) {
             Page page = Page.builder()
                     .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
-                    .story(bookStories[i].trim()) //공백제거
+                    .story(bookStories[i].trim().substring(3,bookStories[i].trim().length())) //공백제거
                     .build();
             pages[i] = pageRepository.save(page);
             // pages를 save하면서 동시에 pageStory형태로 builder
