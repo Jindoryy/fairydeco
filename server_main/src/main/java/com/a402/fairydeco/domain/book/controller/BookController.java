@@ -1,6 +1,9 @@
 package com.a402.fairydeco.domain.book.controller;
 
+import static com.a402.fairydeco.global.common.exception.ErrorCode.PAGE_NOT_FOUND_ERROR;
+
 import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
+import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
 import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookLandingListResponse;
 import com.a402.fairydeco.domain.book.dto.BookMainListResponse;
@@ -11,6 +14,7 @@ import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
 import com.a402.fairydeco.domain.book.service.BookService;
 import com.a402.fairydeco.domain.book.service.OpenAiService;
+import com.a402.fairydeco.global.common.dto.FailResponse;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
 import com.a402.fairydeco.global.util.FileUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -89,4 +93,9 @@ public class BookController {
         return new SuccessResponse<>(bookService.findBook(bookId));
     }
 
+    @Operation(summary = "동화 이미지 생성", description = "완성된 동화 정보를 반환한다.")
+    @PostMapping("/image")
+    public SuccessResponse<?> createBookImage(@RequestBody BookCreateRequestDto request){
+        return new SuccessResponse<>(bookService.createBookImage(request));
+    }
 }
