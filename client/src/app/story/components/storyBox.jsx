@@ -11,9 +11,11 @@ import { Pagination } from 'swiper/modules'
 export default function StoryBox({ story }) {
     const [newStory, setNewStory] = useState([])
     const [focusStory, setFocusStory] = useState('')
+    const [tempStory, setTempStory] = useState([])
 
     useEffect(() => {
         setNewStory(story)
+        setTempStory(story)
     }, [story])
 
     const handleText = (event) => {
@@ -24,6 +26,8 @@ export default function StoryBox({ story }) {
     }
     const getChangeStory = async (pageId) => {
         console.log('change')
+        console.log(typeof pageId)
+        console.log(focusStory)
         try {
             const response = await axios.put(
                 'http://k10a402.p.ssafy.io:8081/page/story',

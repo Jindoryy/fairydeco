@@ -77,18 +77,18 @@ export default function Prompt() {
     const getStory = async () => {
         const selectedKid = kids.find((el) => el.childName === writer)
         const id = selectedKid ? selectedKid.childId : null
-        if (story == '') setStory(null)
-        if (kidImage == '') setKidImage(null)
+        if (story == '') setStory('')
+        if (kidImage == '') setKidImage('')
 
         const bookFormData = new FormData()
         bookFormData.append('childId', id)
         bookFormData.append('bookMaker', writer)
         bookFormData.append('bookGenre', category)
         bookFormData.append('bookPrompt', story)
-        bookFormData.append('bookPicture', kidImage)
+        // bookFormData.append('bookPicture', kidImage)
         try {
             const { data } = await axios.post(
-                'https://k10a402.p.ssafy.io/book',
+                'http://k10a402.p.ssafy.io/book',
                 bookFormData,
                 {
                     headers: {
