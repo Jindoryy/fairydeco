@@ -6,14 +6,20 @@ import axios from 'axios'
 import GuideText from './components/guideText'
 import TitleBox from './components/titleBox'
 import StoryBox from './components/storyBox'
+import ImageButton from './components/imageButton'
 
 export default function Story() {
     const pathname = usePathname()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
-    let bookId = parseInt(
-        pathname.charAt(pathname.length - 2) +
-            pathname.charAt(pathname.length - 1)
-    )
+    let bookId = pathname
+        .split('')
+        .reverse()
+        .join('')
+        .split('/')[0]
+        .split('')
+        .reverse()
+        .join('')
+    console.log(bookId)
     const [title, setTitle] = useState('')
     const [story, setStory] = useState([])
 
@@ -41,6 +47,7 @@ export default function Story() {
             <GuideText />
             <TitleBox title={title} bookId={bookId} />
             <StoryBox story={story} />
+            <ImageButton bookId={bookId} />
         </div>
     )
 }
