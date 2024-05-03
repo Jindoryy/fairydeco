@@ -78,34 +78,19 @@ public class OpenAiService {
             savedBook = bookRepository.save(book);
         }
         // 동화 ai로 제작
-        String hero = "";
-        if(savedBook.getMaker().length() == 3){
-            hero = savedBook.getMaker().substring(1,3);
-        }
-        else if(savedBook.getMaker().length() ==2){
-            hero = savedBook.getMaker().substring(1,2);
-        }
-        else if(savedBook.getMaker().length() == 4){
-            hero = savedBook.getMaker().substring(2,4);
-        }
-        else{
-            hero = savedBook.getMaker();
-        }
-        String genre ="";
-        if(savedBook.getGenre().toString().equals("ADVENTURE")){
-            genre = "모험";
-        }
-        else if(savedBook.getGenre().toString().equals("MYSTERY")){
-            genre = "미스테리";
-        }
-        else if(savedBook.getGenre().toString().equals("ROMANCE")){
-            genre = "로맨스";
-        }
-        else{
-            genre = "판타지";
-        }
-        System.out.println(genre);
-        prompt += "장르는 " + genre + ", 주인공은 "+hero+", "+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+child.getGender()+" 아이가 보기 좋은 동화를 8컷으로 만들어줘  "+ ", 줄거리는 " + savedBook.getPrompt();
+        String hero = savedBook.getMaker();
+        if(savedBook.getMaker().length() == 3){hero = savedBook.getMaker().substring(1,3);}
+        else if(savedBook.getMaker().length() ==2){hero = savedBook.getMaker().substring(1,2);}
+        else if(savedBook.getMaker().length() == 4){hero = savedBook.getMaker().substring(2,4);}
+        String genre ="판타지";
+        if(savedBook.getGenre().toString().equals("ADVENTURE")){genre = "모험";}
+        else if(savedBook.getGenre().toString().equals("MYSTERY")){genre = "미스테리";}
+        else if(savedBook.getGenre().toString().equals("ROMANCE")){genre = "로맨스";}
+        String gender = "남";
+        if(child.getGender().toString().equals("WOMAN")){gender = "여";}
+
+
+        prompt += "장르는 " + genre + ", 주인공은 "+hero+", "+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+gender+"자 아이가 보기 좋은 동화를 8컷으로 만들어줘  "+ ", 줄거리는 " + savedBook.getPrompt();
         // 스토리 생성
         StoryRequest request = new StoryRequest(model, prompt);
         StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
@@ -121,7 +106,7 @@ public class OpenAiService {
         for (int i = 0; i < bookStories.length; i++) {
             Page page = Page.builder()
                     .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
-                    .story(bookStories[i].trim().substring(3,bookStories[i].trim().length())) //공백제거
+                    .story(bookStories[i].trim().substring(3,bookStories[i].trim().length()).replaceAll("\r\n", " ")) //공백제거
                     .build();
             pages[i] = pageRepository.save(page);
             // pages를 save하면서 동시에 pageStory형태로 builder
