@@ -39,7 +39,7 @@ public class BookController {
 
     private final BookService bookService;
     private final OpenAiService openAiService;
-    private FileUtil fileUtil;
+    private final FileUtil fileUtil;
 
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
         public SuccessResponse<BookStory> register(BookRegister bookRegister) throws IOException {
