@@ -5,7 +5,7 @@ const axios = require("axios");
 require('dotenv').config();
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY_IMAGE,
 });
 
 const s3Client = new S3Client({

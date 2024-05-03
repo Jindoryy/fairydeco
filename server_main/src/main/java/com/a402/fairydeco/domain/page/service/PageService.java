@@ -8,6 +8,7 @@ import com.a402.fairydeco.domain.book.entity.Book;
 import com.a402.fairydeco.domain.book.repository.BookRepository;
 import com.a402.fairydeco.domain.child.repository.ChildRepository;
 import com.a402.fairydeco.domain.page.dto.PageStory;
+import com.a402.fairydeco.domain.page.dto.StoryUpdate;
 import com.a402.fairydeco.domain.page.entity.Page;
 import com.a402.fairydeco.domain.page.repository.PageRepository;
 import com.a402.fairydeco.global.common.dto.StoryRequest;
@@ -30,11 +31,10 @@ public class PageService {
     private final PageRepository pageRepository;
 
     @Transactional
-    public String updateStory(int pageId, String pageStory){
-        Page page = pageRepository.findById(pageId).orElseThrow(() -> new CustomException(ErrorCode.PAGE_NOT_FOUND_ERROR));
-        System.out.println(page.getStory());
-        page.updateStory(pageStory);
-        return pageStory;
+    public String updateStory(StoryUpdate storyUpdate){
+        Page page = pageRepository.findById(storyUpdate.getPageId()).orElseThrow(() -> new CustomException(ErrorCode.PAGE_NOT_FOUND_ERROR));
+        page.updateStory(storyUpdate.getPageStory());
+        return storyUpdate.getPageStory();
     }
 
 
