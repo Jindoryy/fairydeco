@@ -17,18 +17,30 @@ export default function StoryBox({ story }) {
         console.log(story)
     }, [story])
 
-    const handleText = (event) => {
-        setFocusStory(event.target.value)
+    const handleText = (event, pageId) => {
+        const updatedStory = newStory.map((storyItem) => {
+            if (storyItem.pageId === pageId) {
+                return {
+                    ...storyItem,
+                    pageStory: event.target.value,
+                }
+            }
+            return storyItem
+        })
+        setNewStory(updatedStory)
     }
     const handleStoryChange = async (pageId, pageStory) => {
-        console.log()
         try {
             const response = await axios.put(`${apiUrl}/page/story`, {
                 pageId: pageId,
                 pageStory: pageStory,
             })
+            let pageNumber = newStory.findIndex((el) => el.pageId === pageId)
+
             if (response.data.status === 'success') {
-                alert('수정 되었습니다.')
+                console.log(response.data)
+                console.log(pageNumber)
+                alert(`${pageNumber + 1}번 이야기가 수정 되었습니다.`)
             } else {
                 alert('수정이 실패했습니다. 다시 한 번 시도해주세요')
             }
@@ -79,7 +91,9 @@ export default function StoryBox({ story }) {
                                     scrollbarColor: '#F4EA00 #FFFDEA',
                                     rounded: '2',
                                 }}
-                                onChange={handleText}
+                                onChange={(event) =>
+                                    handleText(event, story.pageId)
+                                }
                             ></textarea>
                         </SwiperSlide>
                     ))}

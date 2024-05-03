@@ -26,6 +26,7 @@ export default function Prompt() {
     const [bookId, setBookId] = useState()
 
     const getKids = async () => {
+        //유저 아이디 변경 필요
         try {
             const response = await axios.get(`${apiUrl}/child/name-list/1`)
             setKids(response.data.data)
@@ -84,8 +85,13 @@ export default function Prompt() {
         bookFormData.append('childId', id)
         bookFormData.append('bookMaker', writer)
         bookFormData.append('bookGenre', category)
-        bookFormData.append('bookPrompt', story)
-        // bookFormData.append('bookPicture', kidImage)
+        if (story == '') {
+            console.log(kidImage)
+            bookFormData.append('bookPicture', kidImage)
+        } else {
+            console.log(story)
+            bookFormData.append('bookPrompt', story)
+        }
         try {
             const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
                 headers: {
@@ -149,7 +155,7 @@ export default function Prompt() {
                         </div>
                         <div className="ml-4 mr-4 mt-2 flex flex-row justify-between">
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-44 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={` btn btn-outline btn-sm h-12 w-44 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'ADVENTURE'
                                         ? 'bg-customPink'
                                         : ''
@@ -161,6 +167,7 @@ export default function Prompt() {
                                 <GlobeHemisphereEast
                                     className="text-customPurple"
                                     size={30}
+                                    weight="fill"
                                 ></GlobeHemisphereEast>
                                 모험
                             </button>
@@ -175,6 +182,7 @@ export default function Prompt() {
                                 <StarAndCrescent
                                     className="text-customPurple"
                                     size={30}
+                                    weight="fill"
                                 ></StarAndCrescent>
                                 판타지
                             </button>
@@ -189,6 +197,7 @@ export default function Prompt() {
                                 <Heart
                                     className="text-customPurple"
                                     size={30}
+                                    weight="fill"
                                 ></Heart>{' '}
                                 로맨스
                             </button>
@@ -203,6 +212,7 @@ export default function Prompt() {
                                 <Ghost
                                     className="text-customPurple"
                                     size={30}
+                                    weight="fill"
                                 ></Ghost>{' '}
                                 미스터리
                             </button>
@@ -229,19 +239,17 @@ export default function Prompt() {
                                 <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white">
                                     <input
                                         type="file"
-                                        className="file-input file-input-bordered file-input-accent w-full max-w-xs "
+                                        className="file-input file-input-bordered file-input-accent mr-4 w-full max-w-xs"
                                         onChange={handleFileChange}
                                     />
                                     {kidImage && (
                                         <Image
                                             src={kidImage}
                                             alt="Kid Image"
-                                            style={{
-                                                width: '100px',
-                                                height: '100px',
-                                                marginLeft: '5px',
-                                                borderRadius: '5px',
-                                            }}
+                                            width={100}
+                                            height={100}
+                                            className="rounded-lg"
+                                            objectFit="cover"
                                         />
                                     )}
                                 </div>
