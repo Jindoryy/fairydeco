@@ -1,6 +1,7 @@
 package com.a402.fairydeco.domain.book.service;
 
 
+import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
 import com.a402.fairydeco.domain.book.dto.BookRegister;
 import com.a402.fairydeco.domain.book.dto.BookStory;
 import com.a402.fairydeco.domain.book.dto.GenreStatus;
@@ -15,9 +16,12 @@ import com.a402.fairydeco.global.common.dto.StoryResponse;
 import com.a402.fairydeco.global.common.exception.CustomException;
 import com.a402.fairydeco.global.common.exception.ErrorCode;
 import com.a402.fairydeco.global.util.FileUtil;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +53,8 @@ public class BookService {
     private final BookRepository bookRepository;
     private final ChildRepository childRepository;
 
+    @Value("${EXPRESS_SERVER_URL}")
+    private String EXPRESS_SERVER_URL;
     public List<BookMainListResponse> findBookMainList(Integer bookId) {
 
         List<BookMainListResponse> bookMainListResponses = new ArrayList<>();
@@ -180,5 +186,33 @@ public class BookService {
             .bookNextId(bookNextId)
             .pageList(pageList)
             .build();
+    }
+
+    public Boolean createBookImage(BookCreateRequestDto request) {
+        Optional<Book> optionalBook = bookRepository.findByChild_User_IdAndId(request.getUserId(), request.getBookId());
+        if (!optionalBook.isPresent()) {
+            return false;
+        } else {
+            try {
+                // 기능 진행1: stories/book-creation으로 POST 요청 보내기
+                String url = EXPRESS_SERVER_URL;
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+                // 응답이 정상이면 true 반환
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    // 기능 진행2: 정상 응답이 오면 true 반환
+                    return true;
+                } else {
+                    // 기능 진행3: 에러 처리
+                    System.out.println("Error: " + response.getStatusCodeValue());
+                    return false;
+                }
+            } catch (Exception e) {
+                // 기능 진행3: 에러 처리
+                e.printStackTrace();
+                return false;
+            }
+        }
     }
 }
