@@ -82,7 +82,7 @@ export default function Mypage() {
         <div className="font-ourFont">
             <Header></Header>
             <div className="mx-5 py-5 text-5xl">우리 가족</div>
-            <div className="bg-customLigntGreen mx-7 flex h-1/3 justify-around rounded-lg px-5 py-5 text-3xl">
+            <div className="mx-7 flex h-1/3 justify-around rounded-lg bg-customLigntGreen px-5 py-5 text-3xl">
                 <div className="flex-grow px-5">
                     <div className="text-4xl">부모님</div>
                     {/* 부모님의 아이디와 학습 진행도를 표시 */}
@@ -100,9 +100,9 @@ export default function Mypage() {
                         </span>
                     </div>
                     {/* 게이지바 구현 */}
-                    <div className="border-customOrange h-10 w-full rounded-lg border-4 border-solid bg-white">
+                    <div className="h-10 w-full rounded-lg border-4 border-solid border-customOrange bg-white">
                         <div
-                            className="bg-customOrange h-full rounded-l"
+                            className="h-full rounded-l bg-customOrange"
                             style={{ width: `${voiceLearningPercent}%` }} // 퍼센트에 따라 너비 조정
                         ></div>
                     </div>
@@ -119,8 +119,8 @@ export default function Mypage() {
                                 role="tab"
                                 className={`tab ${
                                     selectedTab === index
-                                        ? 'bg-customBlue border-customBlueBorder border-4 border-solid'
-                                        : 'border-customBlueBorder border-4 border-solid bg-white'
+                                        ? 'border-4 border-solid border-customBlueBorder bg-customBlue'
+                                        : 'border-4 border-solid border-customBlueBorder bg-white'
                                 }`}
                                 onClick={() => handleTabClick(index)}
                                 key={child.childId}
@@ -134,8 +134,8 @@ export default function Mypage() {
                             className={`tab ${
                                 selectedTab ===
                                 userInfo.childResponseList.length
-                                    ? 'bg-customBlue border-customBlueBorder border-4 border-solid'
-                                    : 'border-customBlueBorder border-4 border-solid bg-white'
+                                    ? 'border-4 border-solid border-customBlueBorder bg-customBlue'
+                                    : 'border-4 border-solid border-customBlueBorder bg-white'
                             }`}
                             onClick={() =>
                                 handleTabClick(
@@ -148,7 +148,7 @@ export default function Mypage() {
                     </div>
 
                     {/* 선택된 탭의 아이 정보 */}
-                    <div className="bg-customBlue border-customBlueBorder rounded-lg border-2 border-solid px-3 py-5 text-3xl">
+                    <div className="rounded-lg border-2 border-solid border-customBlueBorder bg-customBlue px-3 py-5 text-3xl">
                         <div className="text-4xl">아이</div>
                         <div>
                             이름 :{' '}

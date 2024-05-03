@@ -61,7 +61,7 @@ export default function Prompt() {
         if (uploadImage) setUploadImage(false)
         else setUploadImage(true)
         setStory('')
-        setKidImage(null)
+        setKidImage('')
     }
 
     const handleFileChange = (event) => {
@@ -79,7 +79,6 @@ export default function Prompt() {
         const selectedKid = kids.find((el) => el.childName === writer)
         const id = selectedKid ? selectedKid.childId : null
         if (story == '') setStory('')
-        if (kidImage == '') setKidImage('')
 
         const bookFormData = new FormData()
         bookFormData.append('childId', id)
