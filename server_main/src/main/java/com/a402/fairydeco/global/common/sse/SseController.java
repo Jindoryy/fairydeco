@@ -42,10 +42,12 @@ public class SseController {
     @Operation(summary = "send 테스트")
     @GetMapping("/test/send")
     public SuccessResponse<String> testSend(@RequestParam Integer userId) {
-        //userId, 동화id .. ?
+        //Node 서버에서 rest로 쏠 api
+        //인자가 userId, 동화id .. ?
         sseService.send(userId);
 
-        //String 대신 알림에 보여줄 정보 DTO로 반환
+        //String 대신 알림에 보여줄 정보 ResponseDTO로 반환
+        //ResponseDTO : userId, bookId, bookName, bookCoverUrl 필요
         return new SuccessResponse<>("send ok");
     }
 
