@@ -25,6 +25,7 @@ public class FileUtil {
   @Value("${cloud.aws.s3.base-url}")
   private String baseUrl;
 
+
   public String uploadFile(MultipartFile file) {
 
     try {
@@ -39,10 +40,13 @@ public class FileUtil {
       putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
       amazonS3Client.putObject(putObjectRequest);
       return baseUrl + fileName;
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
     }
     return null;
   }
+
+
 
   public void deleteFile(String fileName) {
     try {
