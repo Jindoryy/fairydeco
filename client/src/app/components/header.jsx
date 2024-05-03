@@ -6,7 +6,12 @@ export default function Header() {
     return (
         <div className="flex h-20 w-full items-center justify-between bg-customYellow px-4">
             <div className="relative h-5/6 w-40">
-                <Image src="/image/logo.png" alt="Logo" fill priority />
+                <Image
+                    src="/image/logo.png"
+                    alt="Logo"
+                    width={130}
+                    height={10}
+                />
             </div>
             <Link href="/login">
                 <SignIn size={40}></SignIn>
