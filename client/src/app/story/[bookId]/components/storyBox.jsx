@@ -9,34 +9,25 @@ import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 
 export default function StoryBox({ story }) {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [newStory, setNewStory] = useState([])
-    const [focusStory, setFocusStory] = useState('')
-    const [tempStory, setTempStory] = useState([])
 
     useEffect(() => {
         setNewStory(story)
-        setTempStory(story)
+        console.log(story)
     }, [story])
 
     const handleText = (event) => {
         setFocusStory(event.target.value)
     }
-    const handleStoryChange = (pageId) => {
-        getChangeStory(pageId)
-    }
-    const getChangeStory = async (pageId) => {
-        console.log('change')
-        console.log(typeof pageId)
-        console.log(focusStory)
+    const handleStoryChange = async (pageId, pageStory) => {
+        console.log()
         try {
-            const response = await axios.put(
-                'http://k10a402.p.ssafy.io:8081/page/story',
-                {
-                    pageId: pageId,
-                    pageStory: focusStory,
-                }
-            )
-            if (response.data.status == 'success') {
+            const response = await axios.put(`${apiUrl}/page/story`, {
+                pageId: pageId,
+                pageStory: pageStory,
+            })
+            if (response.data.status === 'success') {
                 alert('수정 되었습니다.')
             } else {
                 alert('수정이 실패했습니다. 다시 한 번 시도해주세요')
@@ -70,7 +61,10 @@ export default function StoryBox({ story }) {
                                     <button
                                         className="btn-ms btn ml-8 w-[100px] border-2 border-[#F4EA00] bg-white text-lg hover:border-[#F4EA00] hover:bg-white focus:outline-none"
                                         onClick={() =>
-                                            handleStoryChange(story.pageId)
+                                            handleStoryChange(
+                                                story.pageId,
+                                                story.pageStory
+                                            )
                                         }
                                     >
                                         수정
