@@ -12,11 +12,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImgPromptDto {
 
     private String prompt;
-    private String ImageUrl;
+    private String imageUrl;
+    private String imageName;
 
     @Builder
-    public ImgPromptDto(String prompt, String ImageUrl){
+    public ImgPromptDto(String prompt, String imageUrl, String imageName){
         this.prompt = prompt;
-        this.ImageUrl = ImageUrl;
+        this.imageUrl = imageUrl;
+        this.imageName = imageName;
     }
 }

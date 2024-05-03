@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -41,8 +42,9 @@ public class OpenAiService {
     private String model;
     @Value("${openai.api.url}")
     private String apiURL;
-    @Value("${openai.api.key.image}")
+    @Value("${openai.api.image}")
     private String openAiImageApiKey;
+
     private final RestTemplate restTemplate;
     private final FileUtil fileUtil;
 
@@ -63,14 +65,14 @@ public class OpenAiService {
         // 이미지 있으면 이미지 따로저장 + 이미지분석으로 prompt 가져옴
         if (bookRegister.getBookPicture() != null) {
             // image to text 메서드
-//             prompt =
+             ImgPromptDto imgPromptDto = createPromptKidImg(bookRegister.getBookPicture());
             Book book = Book.builder()
                 .child(childRepository.findById(bookRegister.getChildId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
                 .maker(bookRegister.getBookMaker())
                 .genre(GenreStatus.valueOf(bookRegister.getBookGenre()))
-                .prompt(prompt)
-//                    .pictureUrl(fileUtil.uploadFile(bookRegister.getBookPicture()))
-//                    .pictureName(bookRegister.getBookPicture().getOriginalFilename())
+                .prompt(imgPromptDto.getPrompt())
+                    .pictureUrl(imgPromptDto.getImageUrl())
+                    .pictureName(imgPromptDto.getImageName())
                 .build();
             savedBook = bookRepository.save(book);
         } else {
@@ -145,22 +147,23 @@ public class OpenAiService {
         return bookStory;
     }
 
-    public ImgPromptDto createPromptKidImg(BookRegister bookRegister) throws IOException {
+    public ImgPromptDto createPromptKidImg(MultipartFile image) throws IOException {
         // 이미지를 S3에 업로드하고 URL을 얻음
-        String imageUrl = fileUtil.uploadFile(bookRegister.getBookPicture());
+        String imageUrl = fileUtil.uploadFile(image);
+        String imageName = image.getOriginalFilename();
         // 동화 스토리 생성
-        String prompt = generateStory(imageUrl, bookRegister.getBookPrompt());
+        String prompt = generateStory(imageUrl);
 
-        ImgPromptDto response = new ImgPromptDto(prompt, imageUrl);
+        ImgPromptDto response = new ImgPromptDto(prompt, imageUrl, imageName);
         return response;
     }
 
-    public String generateStory(String imageUrl, String prompt) {
+    public String generateStory(String imageUrl) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(openAiImageApiKey);  // API 키를 헤더에 추가
 
-        String requestBody = buildRequestBody(imageUrl, prompt);
+        String requestBody = buildRequestBody(imageUrl);
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
         StoryResponse response = restTemplate.postForObject(
@@ -170,11 +173,10 @@ public class OpenAiService {
         return response.getChoices().get(0).getMessage().getContent();
     }
 
-    private String buildRequestBody(String imageUrl, String prompt) {
+    private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-            "이 이미지를 분석하여 어린이들이 좋아할 동화에 어울리는 배경과 상황을 설명해주세요. 그리고 이 배경에서 일어날 수 있는 교훈적이고 모험적인 이야기의 초안을 만들어주세요. 이미지를 통해 보여지는 요소들을 활용하여, 주인공이 겪게 될 모험과 그 모험에서 얻을 수 있는 교훈에 대해서도 포함시켜주세요. 이미지 설명으로 시작합니다: %s",
-            prompt);
+            "이 이미지를 분석하여 어린이들이 좋아할 동화에 어울리는 배경과 상황을 설명해주세요. 그리고 이 배경에서 일어날 수 있는 교훈적이고 모험적인 이야기의 초안을 만들어주세요. 이미지를 통해 보여지는 요소들을 활용하여, 주인공이 겪게 될 모험과 그 모험에서 얻을 수 있는 교훈에 대해서도 포함시켜주세요. 이미지 설명으로 시작합니다: %s");
         return String.format(
             "{\"model\": \"gpt-4-turbo\", \"messages\": [{\"role\": \"user\", \"content\": [{\"type\": \"text\", \"text\": \"%s\"}, {\"type\": \"image_url\", \"image_url\": {\"url\": \"%s\"}}]}], \"max_tokens\": 300}",
             detailedPrompt, imageUrl);

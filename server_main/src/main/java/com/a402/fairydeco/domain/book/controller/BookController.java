@@ -39,18 +39,12 @@ public class BookController {
 
     private final BookService bookService;
     private final OpenAiService openAiService;
-    private final FileUtil fileUtil;
 
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
         public SuccessResponse<BookStory> register(BookRegister bookRegister) throws IOException {
         return new SuccessResponse<>(openAiService.register(bookRegister));
     }
 
-    @PostMapping("test")
-    public SuccessResponse<BookStory> test(MultipartFile file) throws IOException {
-        fileUtil.uploadFile(file);
-        return null;
-    }
     @Operation(summary = "최신 동화 목록 20개", description = "메인페이지에서 사용할 최신 동화 목록과 그 정보를 20개 반환한다. 최초 로딩 시 bookId는 0으로 요청한다.")
     @GetMapping("/main-list/{bookId}")
     public SuccessResponse<List<BookMainListResponse>> getBookMainList(@PathVariable Integer bookId) {
