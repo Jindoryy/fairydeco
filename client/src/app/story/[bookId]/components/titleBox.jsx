@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 export default function TitleBox({ title, bookId }) {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [newTitle, setNewTitle] = useState('')
 
     useEffect(() => {
@@ -20,13 +21,10 @@ export default function TitleBox({ title, bookId }) {
 
     const changeTitle = async () => {
         try {
-            const response = await axios.put(
-                'http://k10a402.p.ssafy.io:8081/book/title',
-                {
-                    bookId: bookId,
-                    bookName: newTitle,
-                }
-            )
+            const response = await axios.put(`${apiUrl}/book/title`, {
+                bookId: bookId,
+                bookName: newTitle,
+            })
             if (response.data.status == 'success') {
                 alert('수정 되었습니다.')
             } else {

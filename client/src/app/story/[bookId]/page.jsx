@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import axios from 'axios'
 
 import GuideText from './components/guideText'
@@ -7,14 +8,20 @@ import TitleBox from './components/titleBox'
 import StoryBox from './components/storyBox'
 
 export default function Story() {
+    const pathname = usePathname()
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    let bookId = parseInt(
+        pathname.charAt(pathname.length - 2) +
+            pathname.charAt(pathname.length - 1)
+    )
     const [title, setTitle] = useState('')
     const [story, setStory] = useState([])
 
-    const bookId = 4
-    const getStory = async () => {
+    const getStory = async (bookId) => {
+        console.log(bookId)
         try {
             const response = await axios.get(
-                `http://k10a402.p.ssafy.io:8081/book/story-detail/${bookId}`
+                `${apiUrl}/book/story-detail/${bookId}`
             )
             const book = response.data.data
             setTitle(book.bookName)
@@ -25,7 +32,7 @@ export default function Story() {
     }
 
     useEffect(() => {
-        getStory()
+        getStory(bookId)
     }, [])
 
     useEffect(() => {}, [title, story])
