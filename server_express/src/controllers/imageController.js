@@ -78,7 +78,8 @@ async function bookCreation(req, res) {
         const coverImageUrl = await imageService.generateTitleImage(allPageStories, bookId);
         console.log("PHASE 6 : TITLE IMAGE CREATE & S3 UPLOAD SUCCESS");
         await connection.query('UPDATE book SET book_cover_url = ? WHERE book_id = ?', [coverImageUrl, bookId]);
-        console.log("PHASE 7 : TITLE IMAGE DB UPDATE SUCCESS");
+        await connection.query(`UPDATE book SET book_complete = 'COMPLETE' WHERE book_id = ?`, [bookId]);
+        console.log("PHASE 7 : TITLE IMAGE DB UPDATE & BOOK STATUS UPDATE SUCCESS");
         const endTime = new Date(); // endTime을 처리 완료 후에 정의
         console.log(`CHECK : BOOK CREATION ENDED AT ${endTime.toISOString()}`);
         console.log(`TOTAL TIME TAKEN: ${(endTime.getTime() - startTime.getTime()) / 1000} seconds`);
