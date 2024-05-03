@@ -1,74 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import Header from '../components/header'
+import { useState, useEffect } from 'react'
+import KidsPaint from './components/kidspaint'
+import axios from 'axios'
 import { PencilSimpleLine } from '@phosphor-icons/react/dist/ssr'
 
 export default function Mypage() {
-    // 부모님의 정보를 담을 상태를 생성합니다.
-    const [userInfo, setUserInfo] = useState({
-        user: {
-            userLoginId: 'kimmommy',
-            userName: '김엄마',
-            userGender: 'WOMAN',
-            userBirth: '1988-09-18',
-        },
-        childResponseList: [
-            {
-                childId: 1,
-                childName: '김아들',
-                childBirth: '2008-08-08',
-                childGender: 'MAN',
-                bookList: [
-                    {
-                        bookId: 1,
-                        bookName: '건희의 모험',
-                        bookMaker: '김아들',
-                        bookPictureUrl: '',
-                        bookCoverUrl: '',
-                        bookCreatedAt: '',
-                        bookComplete: 'STORY',
-                    },
-                    {
-                        bookId: 2,
-                        bookName: '건희의 모험2',
-                        bookMaker: '김아들',
-                        bookPictureUrl: null,
-                        bookCoverUrl: '',
-                        bookCreatedAt: '',
-                        bookComplete: 'STORY',
-                    },
-                ],
-            },
-            {
-                childId: 2,
-                childName: '김딸',
-                childBirth: '2010-10-10',
-                childGender: 'WOMAN',
-                bookList: [
-                    {
-                        bookId: 1,
-                        bookName: '건희의 모험',
-                        bookMaker: '김딸',
-                        bookPictureUrl: '',
-                        bookCoverUrl: '',
-                        bookCreatedAt: '',
-                        bookComplete: 'STORY',
-                    },
-                    {
-                        bookId: 2,
-                        bookName: '건희의 모험2',
-                        bookMaker: '김딸',
-                        bookPictureUrl: null,
-                        bookCoverUrl: '',
-                        bookCreatedAt: '',
-                        bookComplete: 'STORY',
-                    },
-                ],
-            },
-        ],
-    })
+    const [userInfo, setUserInfo] = useState(null)
 
+    const URL = `http://k10a402.p.ssafy.io:8081/user/mypage`
+
+    useEffect(() => {
+        const postUserData = async () => {
+            try {
+                const response = await axios.post(URL, { userId: 1 }) // POST 요청을 보내고 데이터로 객체를 전달합니다.
+
+                setUserInfo(response.data.data) // 응답 데이터를 상태에 저장합니다.
+                console.log(response.data.data)
+            } catch (error) {
+                console.error('Error making POST request:', error) // 오류 처리
+            }
+        }
+        postUserData() // 컴포넌트가 마운트될 때 POST 요청을 수행합니다.
+    }, [])
     // 탭 상태
     const [selectedTab, setSelectedTab] = useState(0) // 탭 0은 첫 번째 아이를 가리킴
 
@@ -80,7 +34,6 @@ export default function Mypage() {
 
     return (
         <div className="font-ourFont tracking-wider">
-            <Header></Header>
             <div className="mx-5 py-10 text-6xl">우리 가족</div>
             <div className="mx-7 flex h-[550px] justify-around rounded-lg bg-customLigntGreen p-10 text-3xl">
                 <div className="mx-5 flex-grow pr-5">
@@ -88,10 +41,10 @@ export default function Mypage() {
                     <br />
                     {/* 부모님의 아이디와 학습 진행도를 표시 */}
                     <div>
-                        <div>아이디 : {userInfo.user.userLoginId}</div>
-                        <div>이름 : {userInfo.user.userName}</div>
-                        <div>성별 : {userInfo.user.userGender}</div>
-                        <div>생년월일 : {userInfo.user.userBirth}</div>
+                        <div>아이디 : {userInfo?.user.userLoginId}</div>
+                        <div>이름 : {userInfo?.user.userName}</div>
+                        <div>성별 : {userInfo?.user.userGender}</div>
+                        <div>생년월일 : {userInfo?.user.userBirth}</div>
                     </div>
                     <br />
                     <div className="mr-12">
@@ -117,7 +70,7 @@ export default function Mypage() {
                         role="tablist"
                         className="tabs tabs-lifted mr-4 flex justify-end "
                     >
-                        {userInfo.childResponseList.map((child, index) => (
+                        {userInfo?.childList?.map((child, index) => (
                             <input
                                 type="radio"
                                 className={`tab mx-[3px] h-[50px] !w-[100px] !border-x-[3px] !border-t-[3px] !border-customBlueBorder text-lg ${
@@ -135,20 +88,16 @@ export default function Mypage() {
                         <input
                             type="radio"
                             className={`tab h-[50px] !w-[100px] !border-x-[3px] !border-t-[3px] !border-customBlueBorder ${
-                                selectedTab ===
-                                userInfo.childResponseList.length
+                                selectedTab === userInfo?.childList?.length
                                     ? 'tab-active !bg-customBlue'
                                     : 'bg-white'
                             }`}
                             checked={
-                                selectedTab ===
-                                userInfo.childResponseList.length
+                                selectedTab === userInfo?.childList?.length
                             }
                             aria-label="+"
                             onClick={() =>
-                                handleTabClick(
-                                    userInfo.childResponseList.length
-                                )
+                                handleTabClick(userInfo?.childList?.length)
                             }
                         />
                     </div>
@@ -158,29 +107,26 @@ export default function Mypage() {
                         role="tabpanel"
                         className="h-[350px] rounded-box border-4 border-customBlueBorder bg-customBlue p-10"
                     >
-                        {selectedTab < userInfo.childResponseList.length ? (
+                        {selectedTab < userInfo?.childList?.length ? (
                             <div>
                                 <div className="text-5xl">아이</div>
                                 <br />
                                 <div>
                                     이름:{' '}
-                                    {
-                                        userInfo.childResponseList[selectedTab]
-                                            .childName
-                                    }
+                                    {userInfo?.childList[selectedTab].childName}
                                 </div>
                                 <PencilSimpleLine size={32} />
                                 <div>
                                     성별:{' '}
                                     {
-                                        userInfo.childResponseList[selectedTab]
+                                        userInfo?.childList[selectedTab]
                                             .childGender
                                     }
                                 </div>
                                 <div>
                                     생년월일:{' '}
                                     {
-                                        userInfo.childResponseList[selectedTab]
+                                        userInfo?.childList[selectedTab]
                                             .childBirth
                                     }
                                 </div>
@@ -191,6 +137,7 @@ export default function Mypage() {
                     </div>
                 </div>
             </div>
+            <KidsPaint />
         </div>
     )
 }

@@ -2,67 +2,75 @@
 
 import { useEffect, useState } from 'react'
 import Script from 'next/script'
-import Header from '../components/header'
 
 const TurnPage = () => {
     const [jQueryLoaded, setJQueryLoaded] = useState(false)
-    const [data, setData] = useState(null) // 데이터를 저장할 상태 생성
+    const [data, setData] = useState(null)
 
-    const URL = `http://k10a402.p.ssafy.io:8081/book/book-detail/3`
+    const URL = `http://k10a402.p.ssafy.io:8081/book/book-detail/4`
 
-    // 데이터를 가져와서 상태에 저장
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(URL)
                 const jsonData = await response.json()
-                setData(jsonData) // 가져온 데이터를 상태에 저장
+                setData(jsonData)
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
         }
 
-        fetchData() // useEffect가 마운트될 때 데이터 가져오기
+        fetchData()
     }, [])
 
     useEffect(() => {
         if (jQueryLoaded && data) {
             const $ = window.jQuery
-            const book = $('#book') // book 요소 선택
-            const pageList = (data?.data?.pageList + 1) * 2
+            const book = $('#book')
+            const numberOfPages = 18
 
-            const addPage = (page, book) => {
+            const addPage = (page, content) => {
                 if (!book.turn('hasPage', page)) {
-                    const isEven = page % 2 === 0
-                    const content = isEven
-                        ? `<img src="${pageList[page - 1]?.pageimageUrl}" alt="Image for page ${page}" class="h-full w-full object-cover"/>`
-                        : `<div class="text-center text-3xl text-gray-500">${pageList[page - 1]?.pageStory}</div>`
-
                     const element = $('<div />', {
-                        class: `page ${isEven ? 'bg-gradient-to-r from-white to-gray-300' : 'bg-gradient-to-l from-white to-gray-300'}`,
+                        class: `page flex items-center justify-center ${page % 2 === 0 ? 'bg-gradient-to-r from-white to-gray-300' : 'bg-gradient-to-l from-white to-gray-300'}`,
                         id: `page-${page}`,
                     }).html(content)
 
                     book.turn('addPage', element, page)
-
-                    setTimeout(() => {
-                        element.html(
-                            `<div class="data text-center text-3xl text-gray-500">Data for page ${page}</div>`
-                        )
-                    }, 1000)
                 }
             }
 
             book.turn({
                 acceleration: true,
-                pages: pageList.length,
+                pages: numberOfPages,
                 elevation: 50,
                 gradients: !$.isTouch,
                 when: {
                     turning: (e, page) => {
+                        // Ensure `page` is within a valid range
                         const range = book.turn('range', page)
-                        for (let p = range[0]; p <= range[1]; p++) {
-                            addPage(p, book)
+                        const validStart = Math.max(2, range[0])
+                        const validEnd = Math.min(numberOfPages, range[1])
+
+                        for (let p = validStart; p <= validEnd; p++) {
+                            const pageIndex = Math.floor((p - 2) / 2)
+
+                            const pageContent =
+                                pageIndex < data.data.pageList.length
+                                    ? p % 2 === 0
+                                        ? data.data.pageList[pageIndex]
+                                              ?.pageimageUrl
+                                        : data.data.pageList[pageIndex]
+                                              ?.pageStory
+                                    : null
+
+                            const content = pageContent
+                                ? p % 2 === 0
+                                    ? `<img src="${pageContent}" alt="Page Image" />`
+                                    : `<div>${pageContent}</div>`
+                                : '<div>No Content Available</div>'
+
+                            addPage(p, content)
                         }
                     },
                     turned: (e, page) => {
@@ -71,7 +79,7 @@ const TurnPage = () => {
                 },
             })
 
-            $('#number-pages').html(pageList.length)
+            $('#number-pages').html(numberOfPages)
 
             $('#page-number').keydown((e) => {
                 if (e.keyCode === 13) {
@@ -91,19 +99,10 @@ const TurnPage = () => {
         }
     }, [jQueryLoaded, data])
 
-    if (!data) {
-        // 데이터가 로드되지 않았을 때
-        return <div>Loading...</div>
-    }
-
     return (
         <>
-            <Header />
-            <div className="h-[400px] w-11/12 font-ourFont">
-                {JSON.stringify(data?.data)}
-            </div>
+            {/* <div>{JSON.stringify(data?.data)}</div> */}
             <div className="flex min-h-screen flex-col items-center justify-center font-ourFont">
-                {/* Flex container, center items */}
                 <Script
                     src="http://code.jquery.com/jquery-3.7.1.min.js"
                     onLoad={() => setJQueryLoaded(true)}
@@ -114,12 +113,29 @@ const TurnPage = () => {
                     id="book"
                     className="relative flex h-[600px] w-[1200px] items-center justify-center bg-white"
                 >
-                    {/* 표지 */}
                     <div className="cover flex h-full items-center justify-center bg-customBlueBorder">
-                        <h1 className="text-5xl text-white">
-                            {' '}
-                            {data?.data?.bookName}
-                        </h1>
+                        <img
+                            src={data?.data?.bookCoverUrl}
+                            alt="Cover"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        />
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                zIndex: 1,
+                            }}
+                        >
+                            <h1 className="text-5xl text-white">
+                                {data ? data.data.bookName : 'Loading...'}
+                            </h1>
+                        </div>
                     </div>
                 </div>
 
@@ -140,4 +156,5 @@ const TurnPage = () => {
         </>
     )
 }
+
 export default TurnPage
