@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import {
@@ -229,7 +230,7 @@ export default function Prompt() {
                                         onChange={handleFileChange}
                                     />
                                     {kidImage && (
-                                        <img
+                                        <Image
                                             src={kidImage}
                                             alt="Kid Image"
                                             style={{
