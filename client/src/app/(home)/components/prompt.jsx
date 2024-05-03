@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import {
     Heart,
@@ -13,6 +14,8 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 
 export default function Prompt() {
+    const router = useRouter()
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [writer, setWriter] = useState('')
     const [kids, setKids] = useState([])
     const [uploadImage, setUploadImage] = useState(false)
@@ -20,13 +23,11 @@ export default function Prompt() {
     const categories = ['ADVENTURE', 'FANTASY', 'MYSTERY', 'ROMANCE']
     const [story, setStory] = useState('')
     const [kidImage, setKidImage] = useState('')
-    const [bookId, setBookId] = useState(0)
+    const [bookId, setBookId] = useState()
 
     const getKids = async () => {
         try {
-            const response = await axios.get(
-                'http://k10a402.p.ssafy.io:8081/child/name-list/1'
-            )
+            const response = await axios.get(`${apiUrl}/child/name-list/1`)
             setKids(response.data.data)
             setWriter(response.data.data[0].childName)
         } catch (error) {
@@ -78,7 +79,6 @@ export default function Prompt() {
     const getStory = async () => {
         const selectedKid = kids.find((el) => el.childName === writer)
         const id = selectedKid ? selectedKid.childId : null
-        if (story == '') setStory('')
 
         const bookFormData = new FormData()
         bookFormData.append('childId', id)
@@ -87,17 +87,19 @@ export default function Prompt() {
         bookFormData.append('bookPrompt', story)
         // bookFormData.append('bookPicture', kidImage)
         try {
-            const { data } = await axios.post(
-                'http://k10a402.p.ssafy.io/book',
-                bookFormData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            )
+            const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
             console.log(data)
-            setBookId(data.data.bookId)
+            if (data.status == 'success') {
+                setBookId(data.data.bookId)
+                console.log(data.data.bookId)
+                pageRoute(data.data.bookId)
+            } else {
+                alert('이야기 생성에 실패했어요 다시 한 번 해주세요!')
+            }
         } catch (error) {
             console.error('Error fetching data:', error)
         }
@@ -107,10 +109,12 @@ export default function Prompt() {
             alert('이야기나 그림 하나라도 입력해주세요!')
             return
         }
-
         getStory()
     }
 
+    const pageRoute = (storyId) => {
+        router.push(`/story/${storyId}`)
+    }
     return (
         <div className="h-[600px] w-11/12">
             <div className="m-1 mt-7 text-3xl font-bold">
