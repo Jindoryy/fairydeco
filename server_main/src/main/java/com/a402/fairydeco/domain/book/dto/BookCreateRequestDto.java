@@ -9,4 +9,5 @@ public class BookCreateRequestDto {
 
     private Integer userId;
     private Integer bookId;
+
 }

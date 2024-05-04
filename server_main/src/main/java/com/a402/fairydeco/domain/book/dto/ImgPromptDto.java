@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @NoArgsConstructor
 @Getter
@@ -16,9 +15,10 @@ public class ImgPromptDto {
     private String imageName;
 
     @Builder
-    public ImgPromptDto(String prompt, String imageUrl, String imageName){
+    public ImgPromptDto(String prompt, String imageUrl, String imageName) {
         this.prompt = prompt;
         this.imageUrl = imageUrl;
         this.imageName = imageName;
     }
+
 }

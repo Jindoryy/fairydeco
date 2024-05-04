@@ -18,5 +18,4 @@ public class PageStory {
         this.pageStory = pageStory;
     }
 
-
 }

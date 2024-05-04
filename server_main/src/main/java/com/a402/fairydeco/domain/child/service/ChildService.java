@@ -23,6 +23,7 @@ public class ChildService {
     private final UserRepository userRepository;
 
     private User getUserById(Integer userId) {
+
         return userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR));
     }
@@ -46,6 +47,7 @@ public class ChildService {
                 .childGender(child.getGender())
                 .build());
         }
+
         return childListResponses;
     }
 
@@ -95,4 +97,5 @@ public class ChildService {
 
         childRepository.save(child);
     }
+
 }

@@ -6,7 +6,6 @@ import com.a402.fairydeco.domain.child.entity.Child;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
 
@@ -21,4 +20,5 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<Book> findByChild(Child child);
 
     Optional<Book> findByChild_User_IdAndId(Integer userId, Integer bookId);
+
 }

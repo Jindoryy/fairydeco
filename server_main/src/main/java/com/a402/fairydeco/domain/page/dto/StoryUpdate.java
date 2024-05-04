@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class StoryUpdate {
+
     private int pageId;
     private String pageStory;
 
@@ -15,6 +16,5 @@ public class StoryUpdate {
         this.pageId = pageId;
         this.pageStory = pageStory;
     }
-
 
 }

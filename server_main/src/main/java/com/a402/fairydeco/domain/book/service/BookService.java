@@ -1,34 +1,8 @@
 package com.a402.fairydeco.domain.book.service;
 
 
-import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
-import com.a402.fairydeco.domain.book.dto.BookRegister;
-import com.a402.fairydeco.domain.book.dto.BookStory;
-import com.a402.fairydeco.domain.book.dto.GenreStatus;
-import com.a402.fairydeco.domain.book.entity.Book;
-import com.a402.fairydeco.domain.book.repository.BookRepository;
-import com.a402.fairydeco.domain.child.repository.ChildRepository;
-import com.a402.fairydeco.domain.page.dto.PageStory;
-import com.a402.fairydeco.domain.page.entity.Page;
-import com.a402.fairydeco.domain.page.repository.PageRepository;
-import com.a402.fairydeco.global.common.dto.StoryRequest;
-import com.a402.fairydeco.global.common.dto.StoryResponse;
-import com.a402.fairydeco.global.common.exception.CustomException;
-import com.a402.fairydeco.global.common.exception.ErrorCode;
-import com.a402.fairydeco.global.util.FileUtil;
-import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
+import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
 import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookLandingListResponse;
 import com.a402.fairydeco.domain.book.dto.BookMainListResponse;
@@ -36,14 +10,22 @@ import com.a402.fairydeco.domain.book.dto.BookStoryDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
 import com.a402.fairydeco.domain.book.dto.CompleteStatus;
+import com.a402.fairydeco.domain.book.entity.Book;
+import com.a402.fairydeco.domain.book.repository.BookRepository;
 import com.a402.fairydeco.domain.child.entity.Child;
+import com.a402.fairydeco.domain.child.repository.ChildRepository;
 import com.a402.fairydeco.domain.page.dto.PageAllListResponse;
 import com.a402.fairydeco.domain.page.dto.PageListResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -80,6 +62,7 @@ public class BookService {
     }
 
     private BookMainListResponse buildBookMainListResponse(Book book) {
+
         return BookMainListResponse.builder()
             .bookId(book.getId())
             .bookName(book.getName())
@@ -160,13 +143,14 @@ public class BookService {
             .orElseThrow(() -> new IllegalArgumentException("Book Not Found"));
 
         List<Book> bookList = bookRepository.findByChildOrderByIdDesc(book.getChild());
+
         int currentIndex = bookList.indexOf(book);
         int nextBookIndex = currentIndex + 1;
         Integer bookNextId = null;
+
         if (nextBookIndex < bookList.size()) {
             bookNextId = bookList.get(nextBookIndex).getId();
         }
-        System.out.println(bookNextId);
 
         List<PageAllListResponse> pageList = book.getPageList().stream()
             .map(page -> PageAllListResponse.builder()

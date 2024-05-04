@@ -1,8 +1,6 @@
 package com.a402.fairydeco.domain.book.dto;
 
 import com.a402.fairydeco.domain.page.dto.PageAllListResponse;
-import com.a402.fairydeco.domain.page.entity.Page;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
