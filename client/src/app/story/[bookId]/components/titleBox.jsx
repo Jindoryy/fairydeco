@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 export default function TitleBox({ title, bookId }) {
-    const apiUrl = "https://fairydeco.site/api"
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [newTitle, setNewTitle] = useState('')
 
     useEffect(() => {

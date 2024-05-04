@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export default function ImageButton({ bookId }) {
     const router = useRouter()
-    const apiUrl = "https://fairydeco.site/api"
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const handleMakeStory = () => {
         console.log(bookId)
         getImage()
