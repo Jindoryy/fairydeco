@@ -21,7 +21,9 @@ async function createImage(req, res) {
     } catch (error) {
       console.error('Failed to create or upload image:', error);
       res.status(500).send('Failed to create or upload image');
-    }
+    } finally {
+      await connection.end();
+  }
   });
 }
 
@@ -80,13 +82,22 @@ async function bookCreation(req, res) {
         await connection.query('UPDATE book SET book_cover_url = ? WHERE book_id = ?', [coverImageUrl, bookId]);
         await connection.query(`UPDATE book SET book_complete = 'COMPLETE' WHERE book_id = ?`, [bookId]);
         console.log("PHASE 7 : TITLE IMAGE DB UPDATE & BOOK STATUS UPDATE SUCCESS");
+        try {
+          await axios.get(`http://k10a402.p.ssafy.io:8081/book/end/${bookId}`);
+          console.log(`CHECK : SIGNAL SENT TO SPRING BOOT SERVER FOR BOOK ID ${bookId}`);
+        } catch (error) {
+          console.error('Failed to send signal to Spring Boot server:', error);
+        }
+
         const endTime = new Date(); // endTime을 처리 완료 후에 정의
         console.log(`CHECK : BOOK CREATION ENDED AT ${endTime.toISOString()}`);
         console.log(`TOTAL TIME TAKEN: ${(endTime.getTime() - startTime.getTime()) / 1000} seconds`);
     } catch (error) {
         console.error('Failed to create or upload images:', error);
         res.status(500).send('Failed to create or upload images');
-    }
+    } finally {
+      await connection.end();
+  }
 }
 
 module.exports = {
