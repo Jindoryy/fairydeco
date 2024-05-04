@@ -23,6 +23,7 @@ export default function Prompt() {
     const categories = ['ADVENTURE', 'FANTASY', 'MYSTERY', 'ROMANCE']
     const [story, setStory] = useState('')
     const [kidImage, setKidImage] = useState('')
+    const [kidImageView, setKidImageView] = useState('')
     const [bookId, setBookId] = useState()
 
     const getKids = async () => {
@@ -37,7 +38,7 @@ export default function Prompt() {
     }
 
     useEffect(() => {
-        getKids()
+       getKids()
     }, [])
 
     const handleSelectWriter = (writerName) => {
@@ -69,10 +70,11 @@ export default function Prompt() {
     const handleFileChange = (event) => {
         const file = event.target.files[0]
         const reader = new FileReader()
+        setKidImage(file)
 
         reader.onload = () => {
             const imageDataURL = reader.result
-            setKidImage(imageDataURL)
+            setKidImageView(imageDataURL)
         }
         reader.readAsDataURL(file)
     }
@@ -242,14 +244,14 @@ export default function Prompt() {
                                         className="file-input file-input-bordered file-input-accent mr-4 w-full max-w-xs"
                                         onChange={handleFileChange}
                                     />
-                                    {kidImage && (
+                                    {kidImageView && (
                                         <Image
-                                            src={kidImage}
+                                            src={kidImageView}
                                             alt="Kid Image"
-                                            width={100}
-                                            height={100}
-                                            className="rounded-lg"
-                                            objectFit="cover"
+                                            width="0"
+                                            height="0"
+                                            sizes="100vw"
+                                            className="w-24 h-24"
                                         />
                                     )}
                                 </div>
