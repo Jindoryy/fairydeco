@@ -1,7 +1,5 @@
 package com.a402.fairydeco.domain.book.controller;
 
-import static com.a402.fairydeco.global.common.exception.ErrorCode.PAGE_NOT_FOUND_ERROR;
-
 import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
 import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
 import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
@@ -14,11 +12,10 @@ import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
 import com.a402.fairydeco.domain.book.service.BookService;
 import com.a402.fairydeco.domain.book.service.OpenAiService;
-import com.a402.fairydeco.global.common.dto.FailResponse;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
-import com.a402.fairydeco.global.util.FileUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -29,9 +26,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor

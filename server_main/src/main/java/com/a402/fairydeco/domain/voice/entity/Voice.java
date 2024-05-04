@@ -34,9 +34,6 @@ public class Voice extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "voice_name", nullable = false)
-    private String name;
-
     @Column(name = "voice_file_url", nullable = false, length = 1000)
     private String fileUrl;
 
