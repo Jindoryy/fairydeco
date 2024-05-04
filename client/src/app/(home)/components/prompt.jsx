@@ -15,7 +15,7 @@ import {
 
 export default function Prompt() {
     const router = useRouter()
-    const apiUrl = process.env.NEXT_PUBLIC_API_URLz
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [writer, setWriter] = useState('')
     const [kids, setKids] = useState([])
     const [uploadImage, setUploadImage] = useState(false)
