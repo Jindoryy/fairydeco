@@ -10,7 +10,7 @@ import ImageButton from './components/imageButton'
 
 export default function Story() {
     const pathname = usePathname()
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const apiUrl = "https://fairydeco.site/api"
     let bookId = pathname
         .split('')
         .reverse()

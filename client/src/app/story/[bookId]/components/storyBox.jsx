@@ -9,7 +9,7 @@ import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 
 export default function StoryBox({ story }) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const apiUrl = "https://fairydeco.site/api"
     const [newStory, setNewStory] = useState([])
 
     useEffect(() => {
