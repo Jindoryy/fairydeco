@@ -14,5 +14,9 @@ WORKDIR /app
 # COPY ./package.json ./package.json
 COPY . .
 
+
+# 환경 변수 설정
+ENV NEXT_PUBLIC_API_URL=https://fairydeco.site/api
+
 # 애플리케이션 실행
-CMD ["npm", "start"]
+CMD ["npm", "run", "start"]
