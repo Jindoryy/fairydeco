@@ -14,9 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MyPageChildListDTO {
+
     private Integer childId;
     private String childName;
     private LocalDate childBirth;
     private GenderStatus childGender;
     private List<MyPageBookDTO> bookList;
+
 }

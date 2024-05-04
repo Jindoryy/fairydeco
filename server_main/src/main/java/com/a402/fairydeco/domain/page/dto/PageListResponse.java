@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PageListResponse {
+
     private Integer pageId;
     private String pageStory;
+
 }

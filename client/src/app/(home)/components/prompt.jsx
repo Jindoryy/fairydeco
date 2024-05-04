@@ -1,6 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import Image from 'next/image'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import axios from 'axios'
 import {
     Heart,
     GlobeHemisphereEast,
@@ -11,14 +14,34 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 
 export default function Prompt() {
+    const router = useRouter()
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [writer, setWriter] = useState('')
+    const [kids, setKids] = useState([])
     const [uploadImage, setUploadImage] = useState(false)
     const [category, setCategory] = useState('ADVENTURE')
     const categories = ['ADVENTURE', 'FANTASY', 'MYSTERY', 'ROMANCE']
     const [story, setStory] = useState('')
-    const [kidImage, setKidImage] = useState(null)
+    const [kidImage, setKidImage] = useState('')
+    const [bookId, setBookId] = useState()
+
+    const getKids = async () => {
+        //유저 아이디 변경 필요
+        try {
+            const response = await axios.get(`${apiUrl}/child/name-list/1`)
+            setKids(response.data.data)
+            setWriter(response.data.data[0].childName)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(() => {
+        getKids()
+    }, [])
 
     const handleSelectWriter = (writerName) => {
+        console.log(kids)
         let selectedWriter = writerName.target.value
         setWriter(selectedWriter)
     }
@@ -40,7 +63,7 @@ export default function Prompt() {
         if (uploadImage) setUploadImage(false)
         else setUploadImage(true)
         setStory('')
-        setKidImage(null)
+        setKidImage('')
     }
 
     const handleFileChange = (event) => {
@@ -54,16 +77,52 @@ export default function Prompt() {
         reader.readAsDataURL(file)
     }
 
+    const getStory = async () => {
+        const selectedKid = kids.find((el) => el.childName === writer)
+        const id = selectedKid ? selectedKid.childId : null
+
+        const bookFormData = new FormData()
+        bookFormData.append('childId', id)
+        bookFormData.append('bookMaker', writer)
+        bookFormData.append('bookGenre', category)
+        if (story == '') {
+            console.log(kidImage)
+            bookFormData.append('bookPicture', kidImage)
+        } else {
+            console.log(story)
+            bookFormData.append('bookPrompt', story)
+        }
+        try {
+            const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            console.log(data)
+            if (data.status == 'success') {
+                setBookId(data.data.bookId)
+                console.log(data.data.bookId)
+                pageRoute(data.data.bookId)
+            } else {
+                alert('이야기 생성에 실패했어요 다시 한 번 해주세요!')
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error)
+        }
+    }
     const makeStory = () => {
         if (!story && !kidImage) {
             alert('이야기나 그림 하나라도 입력해주세요!')
             return
         }
-        console.log('스크립트 제작 api연결')
+        getStory()
     }
 
+    const pageRoute = (storyId) => {
+        router.push(`/story/${storyId}`)
+    }
     return (
-        <div className="h-[600px] w-11/12 font-ourFont">
+        <div className="h-[600px] w-11/12">
             <div className="m-1 mt-7 text-3xl font-bold">
                 AI동화를 꾸며보아요!
             </div>
@@ -83,8 +142,11 @@ export default function Prompt() {
                             className="outline:border-customPink select select-sm ml-3 h-12 w-11/12 max-w-xs border-customPink text-xl focus:border-customPink focus:outline-customPink"
                             onChange={handleSelectWriter}
                         >
-                            <option className="text-xl">박아들</option>
-                            <option className="text-xl">박딸</option>
+                            {kids.map((el, index) => (
+                                <option key={index} className="text-xl">
+                                    {el.childName}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="h-28 w-2/3 rounded-2xl bg-white p-2 shadow-customShadow">
@@ -93,7 +155,7 @@ export default function Prompt() {
                         </div>
                         <div className="ml-4 mr-4 mt-2 flex flex-row justify-between">
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-44 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={` btn btn-outline btn-sm h-12 w-44 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'ADVENTURE'
                                         ? 'bg-customPink'
                                         : ''
@@ -105,6 +167,7 @@ export default function Prompt() {
                                 <GlobeHemisphereEast
                                     className="text-customPurple"
                                     size={30}
+                                    weight="fill"
                                 ></GlobeHemisphereEast>
                                 모험
                             </button>
@@ -119,6 +182,7 @@ export default function Prompt() {
                                 <StarAndCrescent
                                     className="text-customPurple"
                                     size={30}
+                                    weight="fill"
                                 ></StarAndCrescent>
                                 판타지
                             </button>
@@ -133,6 +197,7 @@ export default function Prompt() {
                                 <Heart
                                     className="text-customPurple"
                                     size={30}
+                                    weight="fill"
                                 ></Heart>{' '}
                                 로맨스
                             </button>
@@ -147,6 +212,7 @@ export default function Prompt() {
                                 <Ghost
                                     className="text-customPurple"
                                     size={30}
+                                    weight="fill"
                                 ></Ghost>{' '}
                                 미스터리
                             </button>
@@ -173,19 +239,17 @@ export default function Prompt() {
                                 <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white">
                                     <input
                                         type="file"
-                                        className="file-input file-input-bordered file-input-accent w-full max-w-xs "
+                                        className="file-input file-input-bordered file-input-accent mr-4 w-full max-w-xs"
                                         onChange={handleFileChange}
                                     />
                                     {kidImage && (
-                                        <img
+                                        <Image
                                             src={kidImage}
                                             alt="Kid Image"
-                                            style={{
-                                                width: '100px',
-                                                height: '100px',
-                                                marginLeft: '5px',
-                                                borderRadius: '5px',
-                                            }}
+                                            width={100}
+                                            height={100}
+                                            className="rounded-lg"
+                                            objectFit="cover"
                                         />
                                     )}
                                 </div>

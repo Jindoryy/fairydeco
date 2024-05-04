@@ -1,30 +1,29 @@
 package com.a402.fairydeco.domain.page.controller;
 
-import com.a402.fairydeco.domain.book.dto.BookRegister;
-import com.a402.fairydeco.domain.book.dto.BookStory;
-import com.a402.fairydeco.domain.book.service.BookService;
+import com.a402.fairydeco.domain.page.dto.StoryUpdate;
 import com.a402.fairydeco.domain.page.service.PageService;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
-import com.a402.fairydeco.global.util.FileUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/page")
-@RestController
+@Tag(name = "Page", description = "페이지 API")
 public class PageController {
 
     private final PageService pageService;
 
+    @Operation(summary = "스토리 수정", description = "동화의 스토리를 수정한다.")
+    @PutMapping("/story")
+    public SuccessResponse<String> updateStory(@RequestBody StoryUpdate storyUpdate){
 
-    @PutMapping
-    public SuccessResponse<String> updateStory(@RequestParam(value = "pageId") int pageId,
-                                               @RequestParam(value = "pageStory") String pageStory){
-        return new SuccessResponse<>(pageService.updateStory(pageId, pageStory));
+        return new SuccessResponse<>(pageService.updateStory(storyUpdate));
     }
 
 }

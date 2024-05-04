@@ -28,6 +28,7 @@ public class UserController {
     @PostMapping("/signup")
     public SuccessResponse<String> signUpUser(@RequestBody UserRegistRequest userRegistRequest) {
         userService.registUser(userRegistRequest);
+
         return new SuccessResponse<>("success");
     }
 

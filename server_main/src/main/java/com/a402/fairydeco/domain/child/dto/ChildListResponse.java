@@ -12,8 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ChildListResponse {
+
     private Integer childId;
     private String childName;
     private LocalDate childBirth;
     private GenderStatus childGender;
+
 }

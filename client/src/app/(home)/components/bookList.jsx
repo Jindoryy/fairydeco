@@ -1,6 +1,6 @@
 export default function BookList() {
     return (
-        <div className="h-96 w-11/12 font-ourFont">
+        <div className="h-96 w-11/12">
             <div className="m-1 mt-7 text-3xl font-bold">
                 AI동화를 읽어보아요!
             </div>
