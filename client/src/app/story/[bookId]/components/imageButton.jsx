@@ -17,7 +17,7 @@ export default function ImageButton({ bookId }) {
             })
             if (response.data.status == 'success') {
                 alert(
-                    '기다려주시면 재밌는 동화를 만들어드릴게요!~ 동화가 만들어지는 데에 10~15분이 소요됩니다. '
+                    '기다려주시면 재밌는 동화를 만들어드릴게요!~ 동화가 만들어지는 데에 3~5분이 소요됩니다. '
                 )
                 router.push('/')
             } else {

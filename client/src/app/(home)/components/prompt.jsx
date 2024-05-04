@@ -157,7 +157,7 @@ export default function Prompt() {
                         </div>
                         <div className="ml-4 mr-4 mt-2 flex flex-row justify-between">
                             <button
-                                className={` btn btn-outline btn-sm h-12 w-44 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={` btn btn-outline btn-sm h-12 w-1/5 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'ADVENTURE'
                                         ? 'bg-customPink'
                                         : ''
@@ -174,7 +174,7 @@ export default function Prompt() {
                                 모험
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-44 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'FANTASY'
                                         ? 'bg-customPink'
                                         : ''
@@ -189,7 +189,7 @@ export default function Prompt() {
                                 판타지
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-44 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'ROMANCE'
                                         ? 'bg-customPink'
                                         : ''
@@ -204,7 +204,7 @@ export default function Prompt() {
                                 로맨스
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-44 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'MYSTERY'
                                         ? 'bg-customPink'
                                         : ''
