@@ -18,6 +18,7 @@ import com.a402.fairydeco.global.common.dto.FailResponse;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
 import com.a402.fairydeco.global.util.FileUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -32,16 +33,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/book")
-@RestController
+@Tag(name = "Book", description = "동화 API")
 public class BookController {
 
     private final BookService bookService;
     private final OpenAiService openAiService;
 
+    @Operation(summary = "동화 만들기", description = "메인페이지에서 스크립트 혹은 아이 그림을 입력 후 동화 스크립트를 생성한다.")
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
         public SuccessResponse<BookStory> register(BookRegister bookRegister) throws IOException {
+
         return new SuccessResponse<>(openAiService.register(bookRegister));
     }
 
@@ -90,6 +94,7 @@ public class BookController {
     @Operation(summary = "동화 이미지 생성", description = "완성된 동화 정보를 반환한다.")
     @PostMapping("/image")
     public SuccessResponse<?> createBookImage(@RequestBody BookCreateRequestDto request){
+
         return new SuccessResponse<>(bookService.createBookImage(request));
     }
 }
