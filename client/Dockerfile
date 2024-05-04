@@ -15,4 +15,4 @@ WORKDIR /app
 COPY . .
 
 # 애플리케이션 실행
-CMD ["npm", "start"]
+CMD ["npm", "run", "start"]
