@@ -29,7 +29,7 @@ export default function Prompt() {
     const getKids = async () => {
         //유저 아이디 변경 필요
         try {
-            const response = await axios.get(`${apiUrl}/child/name-list/1`)
+            const response = await axios.get(`${apiUrl}/child/name-list/2`)
             setKids(response.data.data)
             setWriter(response.data.data[0].childName)
         } catch (error) {
@@ -125,7 +125,7 @@ export default function Prompt() {
     }
     return (
         <div className="h-[600px] w-11/12">
-            <div className="m-1 mt-7 text-3xl font-bold">
+            <div className="m-1 mt-10 text-3xl font-bold">
                 AI동화를 꾸며보아요!
             </div>
             <div className="text-xl">
@@ -157,7 +157,7 @@ export default function Prompt() {
                         </div>
                         <div className="ml-4 mr-4 mt-2 flex flex-row justify-between">
                             <button
-                                className={` btn btn-outline btn-sm h-12 w-1/5 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={` btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm md:text-sm lg:text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'ADVENTURE'
                                         ? 'bg-customPink'
                                         : ''
@@ -174,7 +174,7 @@ export default function Prompt() {
                                 모험
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm md:text-sm lg:text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'FANTASY'
                                         ? 'bg-customPink'
                                         : ''
@@ -189,7 +189,7 @@ export default function Prompt() {
                                 판타지
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm md:text-sm lg:text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'ROMANCE'
                                         ? 'bg-customPink'
                                         : ''
@@ -204,7 +204,7 @@ export default function Prompt() {
                                 로맨스
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm md:text-sm lg:text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
                                     category === 'MYSTERY'
                                         ? 'bg-customPink'
                                         : ''
