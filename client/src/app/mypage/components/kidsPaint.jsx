@@ -1,21 +1,21 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 export default function KidsPaint() {
     const [paint, setPaint] = useState(null)
-    const [isLoading, setIsLoading] = useState(true) // 로딩 상태 추가
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const childId = 1
 
     useEffect(() => {
         const fetchPaint = async () => {
             try {
                 const response = await fetch(
-                    `${apiUrl}/book/child-picture-list/1`
+                    `${apiUrl}/book/child-picture-list/${childId}`
                 )
                 const jsonData = await response.json()
                 setPaint(jsonData)
-                // console.log(paint)
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
@@ -24,22 +24,25 @@ export default function KidsPaint() {
         fetchPaint()
     }, [apiUrl])
 
-    // if (isLoading) {
-    //     return <div>Loading...</div> // 로딩 중 표시
-    // }
-
     return (
         <div>
-            <div className="text-3xl">ㅇㅇ이의 동화</div>
-            <div>
+            <div className="mx-6 my-6 text-3xl">김아들의 동화</div>
+            <div className="mx-6 mb-3">
                 {paint?.data?.length > 0 ? (
-                    <div>
+                    <div className="flex flex-row gap-4">
+                        {' '}
+                        {/* 가로 정렬 및 간격 추가 */}
                         {paint.data.map((item, index) => (
-                            <div key={index}>
-                                <img
+                            <div
+                                key={index}
+                                className="flex flex-col items-center"
+                            >
+                                {' '}
+                                {/* 이미지 정렬 */}
+                                <Image
                                     src={item.bookPictureUrl}
                                     alt={`Book Image ${item.bookId}`}
-                                    style={{ width: '200px', height: '200px' }} // Adjust size as needed
+                                    style={{ width: '200px', height: '200px' }} // 크기 조절
                                 />
                             </div>
                         ))}
