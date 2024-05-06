@@ -130,6 +130,7 @@ public class BookService {
             .toList();
 
         return BookStoryDetailResponse.builder()
+            .userId(book.getChild().getUser().getId())
             .bookId(book.getId())
             .childId(book.getChild().getId())
             .bookName(book.getName())
