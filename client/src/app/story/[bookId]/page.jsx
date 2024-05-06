@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import axios from 'axios'
 
 import GuideText from './components/guideText'
@@ -10,6 +10,7 @@ import ImageButton from './components/imageButton'
 import Header from '../../components/header'
 
 export default function Story() {
+    const router = useRouter()
     const pathname = usePathname()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     let bookId = pathname
@@ -36,6 +37,10 @@ export default function Story() {
             const response = await axios.get(
                 `${apiUrl}/book/story-detail/${bookId}`
             )
+            if (response.data.data.userId != localStorage.getItem("userId")) {
+                alert("접근 권한이 없습니다!")
+                router.push("/")
+            }
             const book = response.data.data
             setTitle(book.bookName)
             setStory(book.pageList)
@@ -44,8 +49,6 @@ export default function Story() {
         }
     }
 
-
-    useEffect(() => {}, [title, story])
     return (
         <div className="flex flex-col items-center justify-center">
             <Header />
