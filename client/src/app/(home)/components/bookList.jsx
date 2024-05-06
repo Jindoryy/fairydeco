@@ -64,7 +64,8 @@ export default function BookList() {
     }
 
     const pageRoute = (bookId) => {
-        router.push(`/book/book-detail/${bookId}`)
+        router.push(`/book/${bookId}`)
+
     }
     return (
         <div className="h-96 w-11/12">
