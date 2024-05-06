@@ -130,8 +130,8 @@ export default function Prompt() {
         router.push(`/story/${storyId}`)
     }
     return (
-        <div className="h-[600px] w-11/12">
-            <div className="m-1 mt-10 text-3xl font-bold">
+        <div className="h-auto w-11/12">
+            <div className="m-1 mt-4 text-3xl font-bold">
                 AI동화를 꾸며보아요!
             </div>
             <div className="text-xl">

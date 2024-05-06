@@ -3,24 +3,11 @@
 @tailwind utilities;
 
 :root {
-
+    color: black;
+    background-color: white;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
 
-    }
-}
-
-body {
-
-}
-
-@layer utilities {
-    .text-balance {
-        text-wrap: balance;
-    }
-}
 
 @font-face {
     font-family: 'TTHakgyoansimMonggeulmonggeulR';
