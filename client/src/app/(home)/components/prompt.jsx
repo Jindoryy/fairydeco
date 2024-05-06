@@ -28,14 +28,14 @@ export default function Prompt() {
     const [bookId, setBookId] = useState()
     const { connect, disconnect } = useSse()
 
-    const [userId, setUserId] = useState("")
+    const [userId, setUserId] = useState('')
     useEffect(() => {
-        let value = localStorage.getItem("userId") || ""
+        let value = localStorage.getItem('userId') || ''
         setUserId(value)
         if (value) {
             getKids(value)
         }
-      }, [])
+    }, [])
 
     const getKids = async (id) => {
         try {
@@ -48,10 +48,8 @@ export default function Prompt() {
         }
     }
 
-
-
     const goLogin = () => {
-        router.push("/login")
+        router.push('/login')
     }
 
     const handleSelectWriter = (writerName) => {
@@ -165,7 +163,7 @@ export default function Prompt() {
                         </div>
                         <div className="ml-4 mr-4 mt-2 flex flex-row justify-between">
                             <button
-                                className={` btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm md:text-sm lg:text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={` btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm hover:border-customPink hover:bg-customPink hover:text-black md:text-sm lg:text-xl ${
                                     category === 'ADVENTURE'
                                         ? 'bg-customPink'
                                         : ''
@@ -182,7 +180,7 @@ export default function Prompt() {
                                 모험
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm md:text-sm lg:text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm hover:border-customPink hover:bg-customPink hover:text-black md:text-sm lg:text-xl ${
                                     category === 'FANTASY'
                                         ? 'bg-customPink'
                                         : ''
@@ -197,7 +195,7 @@ export default function Prompt() {
                                 판타지
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm md:text-sm lg:text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm hover:border-customPink hover:bg-customPink hover:text-black md:text-sm lg:text-xl ${
                                     category === 'ROMANCE'
                                         ? 'bg-customPink'
                                         : ''
@@ -212,7 +210,7 @@ export default function Prompt() {
                                 로맨스
                             </button>
                             <button
-                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm md:text-sm lg:text-xl hover:border-customPink hover:bg-customPink hover:text-black ${
+                                className={`btn btn-outline btn-sm h-12 w-1/5 border-customPink text-sm hover:border-customPink hover:bg-customPink hover:text-black md:text-sm lg:text-xl ${
                                     category === 'MYSTERY'
                                         ? 'bg-customPink'
                                         : ''
@@ -229,97 +227,107 @@ export default function Prompt() {
                         </div>
                     </div>
                 </div>
-                {userId ? <>
-                    <div className="mt-3 h-56 w-11/12">
-                    {uploadImage ? (
-                        <div className="flex items-center justify-between">
-                            <div className="w-1/5">
-                                <div className="mb-1 pl-4 text-2xl font-bold">
-                                    이야기
+                {userId ? (
+                    <>
+                        <div className="mt-3 h-56 w-11/12">
+                            {uploadImage ? (
+                                <div className="flex items-center justify-between">
+                                    <div className="w-1/5">
+                                        <div className="mb-1 pl-4 text-2xl font-bold">
+                                            이야기
+                                        </div>
+                                        <div className="flex h-full min-h-[190px] w-11/12 items-center justify-center rounded-2xl bg-white">
+                                            <button onClick={handleUploadClick}>
+                                                <PlusCircle
+                                                    size={40}
+                                                ></PlusCircle>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="flex w-4/5 flex-col items-start">
+                                        <div className="mb-1 pl-4 text-2xl font-bold">
+                                            그림
+                                        </div>
+                                        <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white">
+                                            <input
+                                                type="file"
+                                                className="file-input file-input-bordered file-input-accent mr-4 w-full max-w-xs"
+                                                onChange={handleFileChange}
+                                            />
+                                            {kidImageView && (
+                                                <Image
+                                                    src={kidImageView}
+                                                    alt="Kid Image"
+                                                    width="0"
+                                                    height="0"
+                                                    sizes="100vw"
+                                                    className="h-24 w-24"
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex h-full min-h-[190px] w-11/12 items-center justify-center rounded-2xl bg-white">
-                                    <button onClick={handleUploadClick}>
-                                        <PlusCircle size={40}></PlusCircle>
-                                    </button>
+                            ) : (
+                                <div className="flex items-center justify-between">
+                                    <div className="flex w-9/12 flex-col items-start">
+                                        <div className="mb-1 pl-4 text-2xl font-bold">
+                                            이야기
+                                        </div>
+                                        <textarea
+                                            onChange={handleStoryChange}
+                                            value={story}
+                                            className="h-full min-h-[190px] w-full resize-none rounded-2xl p-4 text-xl focus:border-none focus:outline-none"
+                                            placeholder="만들고 싶은 이야기를 적어주세요.
+                         예시) 6살 여자아이가 숲으로 모험을 떠나는 동화를 만들어주세요! 여자아이는 흑발에 눈이 크답니다!"
+                                        ></textarea>
+                                    </div>
+                                    <div className="w-1/5">
+                                        <div className="mb-1 pl-4 text-2xl font-bold">
+                                            그림
+                                        </div>
+                                        <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white">
+                                            <button onClick={handleUploadClick}>
+                                                <PlusCircle
+                                                    size={40}
+                                                ></PlusCircle>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex w-4/5 flex-col items-start">
-                                <div className="mb-1 pl-4 text-2xl font-bold">
-                                    그림
-                                </div>
-                                <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white">
-                                    <input
-                                        type="file"
-                                        className="file-input file-input-bordered file-input-accent mr-4 w-full max-w-xs"
-                                        onChange={handleFileChange}
-                                    />
-                                    {kidImageView && (
-                                        <Image
-                                            src={kidImageView}
-                                            alt="Kid Image"
-                                            width="0"
-                                            height="0"
-                                            sizes="100vw"
-                                            className="h-24 w-24"
-                                        />
-                                    )}
-                                </div>
-                            </div>
+                            )}
                         </div>
-                    ) : (
-                        <div className="flex items-center justify-between">
+                        <div>
+                            <button
+                                className="btn btn-sm mb-2 mt-4 h-12 w-44 bg-customYellow text-base shadow-customShadow hover:bg-customYellow"
+                                onClick={makeStory}
+                            >
+                                동화 만들기 <CaretRight size={20} />
+                            </button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="mb-4 flex w-11/12 items-center justify-between">
                             <div className="flex w-9/12 flex-col items-start">
                                 <div className="mb-1 pl-4 text-2xl font-bold">
                                     이야기
                                 </div>
-                                <textarea
-                                    onChange={handleStoryChange}
-                                    value={story}
-                                    className="h-full min-h-[190px] w-full resize-none rounded-2xl p-4 text-xl focus:border-none focus:outline-none"
-                                    placeholder="만들고 싶은 이야기를 적어주세요.
-                         예시) 6살 여자아이가 숲으로 모험을 떠나는 동화를 만들어주세요! 여자아이는 흑발에 눈이 크답니다!"
-                                ></textarea>
+                                <div
+                                    className="flex h-full min-h-[190px] w-full cursor-pointer resize-none items-center justify-center rounded-2xl bg-white p-4 text-2xl"
+                                    onClick={goLogin}
+                                >
+                                    로그인이 필요한 서비스입니다.
+                                </div>
                             </div>
                             <div className="w-1/5">
                                 <div className="mb-1 pl-4 text-2xl font-bold">
                                     그림
                                 </div>
-                                <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white">
-                                    <button onClick={handleUploadClick}>
-                                        <PlusCircle size={40}></PlusCircle>
-                                    </button>
-                                </div>
+                                <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white"></div>
                             </div>
                         </div>
-                    )}
-                </div>
-                <div>
-                    <button
-                        className="btn btn-sm mb-2 mt-4 h-12 w-44 bg-customYellow text-base shadow-customShadow hover:bg-customYellow"
-                        onClick={makeStory}
-                    >
-                        동화 만들기 <CaretRight size={20} />
-                    </button>
-                </div>
-                </> : <>
-                <div className="w-11/12 flex items-center justify-between mb-4">
-                    <div className="flex w-9/12 flex-col items-start">
-                        <div className="mb-1 pl-4 text-2xl font-bold">
-                            이야기
-                        </div>
-                        <div className="bg-white h-full min-h-[190px] w-full resize-none rounded-2xl p-4 flex justify-center items-center text-2xl cursor-pointer" onClick={goLogin}>
-                            로그인이 필요한 서비스입니다.
-                        </div>
-                    </div>
-                    <div className="w-1/5">
-                        <div className="mb-1 pl-4 text-2xl font-bold">
-                            그림
-                        </div>
-                        <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white"></div>
-                    </div>
-                </div>
-                </>}
-               
+                    </>
+                )}
             </div>
         </div>
     )
