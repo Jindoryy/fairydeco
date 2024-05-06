@@ -1,9 +1,9 @@
-body {
+#body {
     background: #ccc;
 }
 #book {
     width: 800px;
-    height: 500px;
+    height: 1600px;
 }
 
 #book .turn-page {

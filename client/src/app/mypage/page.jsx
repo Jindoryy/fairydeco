@@ -7,27 +7,38 @@ import { PencilSimpleLine } from '@phosphor-icons/react/dist/ssr'
 
 export default function Mypage() {
     const [userInfo, setUserInfo] = useState(null)
+    const [showKidsPaint, setShowKidsPaint] = useState(false) // KidsPaint 표시 여부를 위한 상태 추가
 
-    const URL = `http://k10a402.p.ssafy.io:8081/user/mypage`
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
     useEffect(() => {
         const postUserData = async () => {
             try {
-                const response = await axios.post(URL, { userId: 1 }) // POST 요청을 보내고 데이터로 객체를 전달합니다.
-
-                setUserInfo(response.data.data) // 응답 데이터를 상태에 저장합니다.
+                const response = await axios.post(`${apiUrl}/user/mypage`, {
+                    userId: 1,
+                }) // POST 요청을 보내고 데이터로 객체를 전달합니다.
+                setUserInfo(response.data.data)
                 console.log(response.data.data)
             } catch (error) {
-                console.error('Error making POST request:', error) // 오류 처리
+                console.error('Error making POST request:', error)
             }
         }
-        postUserData() // 컴포넌트가 마운트될 때 POST 요청을 수행합니다.
+        postUserData()
     }, [])
-    // 탭 상태
-    const [selectedTab, setSelectedTab] = useState(0) // 탭 0은 첫 번째 아이를 가리킴
 
-    // 목소리 학습 중 퍼센트
+    useEffect(() => {
+        // 3초(3000ms) 후에 KidsPaint를 표시하도록 설정
+        const timer = setTimeout(() => {
+            setShowKidsPaint(true)
+        }, 1000) // 3초 동안 지연
+
+        // 메모리 누수 방지를 위해 타이머 정리
+        return () => clearTimeout(timer)
+    }, []) // 빈 종속성 배열이므로 마운트 시에만 실행
+
+    const [selectedTab, setSelectedTab] = useState(0)
     const voiceLearningPercent = 75
+
     const handleTabClick = (index) => {
         setSelectedTab(index)
     }
@@ -38,44 +49,43 @@ export default function Mypage() {
             <div className="mx-7 flex h-[550px] justify-around rounded-lg bg-customLigntGreen p-10 text-3xl">
                 <div className="mx-5 flex-grow pr-5">
                     <div className="mt-5 text-5xl">부모님</div>
-                    <br />
-                    {/* 부모님의 아이디와 학습 진행도를 표시 */}
+                    {/* 부모님의 정보 */}
                     <div>
-                        <div>아이디 : {userInfo?.user.userLoginId}</div>
-                        <div>이름 : {userInfo?.user.userName}</div>
-                        <div>성별 : {userInfo?.user.userGender}</div>
-                        <div>생년월일 : {userInfo?.user.userBirth}</div>
+                        <div>아이디: {userInfo?.user.userLoginId}</div>
+                        <div>이름: {userInfo?.user.userName}</div>
+                        <div>성별: {userInfo?.user.userGender}</div>
+                        <div>생년월일: {userInfo?.user.userBirth}</div>
                     </div>
                     <br />
-                    <div className="mr-12">
-                        <div className=" text-4xl">
+                    <div>
+                        <div className="text-4xl">
                             <span className="text-customOrange">목소리</span>{' '}
                             학습 중 :{' '}
                             <span className="text-customOrange">
                                 {voiceLearningPercent}%
                             </span>
                         </div>
-                        {/* 게이지바 구현 */}
-                        <div className="h-[80px] w-full rounded-lg border-4 border-solid border-customOrange bg-white">
+                        <div className="h-[80px] w-full rounded-lg border-4 border-customOrange bg-white">
                             <div
                                 className="h-full rounded-l bg-customOrange"
-                                style={{ width: `${voiceLearningPercent}%` }} // 퍼센트에 따라 너비 조정
-                            ></div>
+                                style={{ width: `${voiceLearningPercent}%` }}
+                            />
                         </div>
                     </div>
                 </div>
                 {/* 탭 영역 */}
                 <div className="mx-5 my-5 flex-grow px-5">
+                    {/* 탭 구현 */}
                     <div
                         role="tablist"
-                        className="tabs tabs-lifted mr-4 flex justify-end "
+                        className="tabs tabs-lifted mr-4 flex justify-end"
                     >
                         {userInfo?.childList?.map((child, index) => (
                             <input
                                 type="radio"
-                                className={`tab mx-[3px] h-[50px] !w-[100px] !border-x-[3px] !border-t-[3px] !border-customBlueBorder text-lg ${
+                                className={`tab mx-[3px] h-[50px] !w-[100px] !border-customBlueBorder ${
                                     selectedTab === index
-                                        ? 'tab-active  !bg-customBlue'
+                                        ? 'tab-active !bg-customBlue'
                                         : 'bg-white'
                                 }`}
                                 checked={selectedTab === index}
@@ -84,10 +94,10 @@ export default function Mypage() {
                                 key={child.childId}
                             />
                         ))}
-                        {/* 항상 추가되는 "기타" 탭 */}
+                        {/* 기타 탭 */}
                         <input
                             type="radio"
-                            className={`tab h-[50px] !w-[100px] !border-x-[3px] !border-t-[3px] !border-customBlueBorder ${
+                            className={`tab h-[50px] !w-[100px] !border-customBlueBorder ${
                                 selectedTab === userInfo?.childList?.length
                                     ? 'tab-active !bg-customBlue'
                                     : 'bg-white'
@@ -95,7 +105,6 @@ export default function Mypage() {
                             checked={
                                 selectedTab === userInfo?.childList?.length
                             }
-                            aria-label="+"
                             onClick={() =>
                                 handleTabClick(userInfo?.childList?.length)
                             }
@@ -137,7 +146,7 @@ export default function Mypage() {
                     </div>
                 </div>
             </div>
-            <KidsPaint />
+            {showKidsPaint && <KidsPaint />} {/* 지연된 KidsPaint 표시 */}
         </div>
     )
 }
