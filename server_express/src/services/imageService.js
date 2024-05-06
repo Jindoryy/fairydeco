@@ -27,11 +27,13 @@ async function generateImage(pageStory, pageId, bookId) {
       prompt: `Requirements: 
   - Generate a single image 
   - Pure fairy tale scene 
-  - No text whatsoever
+  - image only without typography
+  - textless
   
   Constraints: 
   - Do not split the scene into multiple parts 
   - No speech bubbles, no English words 
+  - No text whatsoever
   
   Scene description: ${pageStory}`,
       n: 1,
@@ -80,13 +82,15 @@ async function generateTitleImage(pageStories, bookId) {
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
       prompt: `Requirements: 
-  - Generate a single image 
-  - Pure fairy tale scene 
-  - No text whatsoever
-  
-  Constraints: 
-  - Do not split the scene into multiple parts 
-  - No speech bubbles, no English words 
+      - Generate a single image 
+      - Pure fairy tale scene 
+      - image only without typography
+      - textless
+      
+      Constraints: 
+      - Do not split the scene into multiple parts 
+      - No speech bubbles, no English words 
+      - No text whatsoever
   
   Scene description: ${pageStories}`,
       n: 1,
