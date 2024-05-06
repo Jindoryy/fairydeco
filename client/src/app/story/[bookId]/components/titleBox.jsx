@@ -35,7 +35,7 @@ export default function TitleBox({ title, bookId }) {
     }
     return (
         <div className=" m-4 flex h-14 w-2/5 items-center rounded-lg border-2 border-customOrange bg-[#FFE7A8] p-4 pl-4">
-            <div className="text-2xl w-1/6 overflow-hidden">제목 : </div>
+            <div className="w-1/6 overflow-hidden text-2xl">제목 : </div>
             <input
                 className="ml-2 w-5/6 border-black bg-[#FFE7A8] text-2xl focus:border-b focus:outline-none"
                 value={newTitle}
