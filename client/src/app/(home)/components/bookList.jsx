@@ -80,7 +80,7 @@ export default function BookList() {
                     .map((el) => (
                         <div
                             key={el.bookId}
-                            className="relative mb-8 w-1/4 px-10"
+                            className="relative mb-8 w-1/4 px-3"
                         >
                             <div
                                 className="relative cursor-pointer"
