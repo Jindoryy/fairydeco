@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookStoryDetailResponse {
 
+    private Integer userId;
     private Integer bookId;
     private Integer childId;
     private String bookName;
