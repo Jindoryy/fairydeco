@@ -92,7 +92,7 @@ const TurnPage = () => {
 
                                 content = pageContent
                                     ? p % 2 === 0
-                                        ? `<img src="${pageContent}" alt="Page Image" class="object-contain w-full h-full" />`
+                                        ? `<img src="${pageContent}" alt="Page img" class="object-contain w-full h-full" />`
                                         : `<div class="flex flex-col items-center justify-center text-center text-3xl text-black break-keep px-4">${pageContent}</div>`
                                     : '<div class="flex items-center justify-center text-center text-3xl text-red-500">No Content Available</div>'
                             }

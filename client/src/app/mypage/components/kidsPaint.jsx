@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 export default function KidsPaint() {
     const [paint, setPaint] = useState(null)
@@ -38,7 +39,7 @@ export default function KidsPaint() {
                             >
                                 {' '}
                                 {/* 이미지 정렬 */}
-                                <img
+                                <Image
                                     src={item.bookPictureUrl}
                                     alt={`Book Image ${item.bookId}`}
                                     style={{ width: '200px', height: '200px' }} // 크기 조절
