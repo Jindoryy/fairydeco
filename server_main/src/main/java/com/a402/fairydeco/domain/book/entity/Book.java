@@ -25,7 +25,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Table(name = "book")
 @Entity
@@ -76,7 +75,6 @@ public class Book extends BaseEntity {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Page> pageList = new ArrayList<>();
 
-    // 동화 제목 변경
     public void updateBookName(String name){
         this.name = name;
     }

@@ -1,7 +1,6 @@
 package com.a402.fairydeco.domain.book.dto;
 
 
-import com.a402.fairydeco.domain.book.service.BookService;
 import com.a402.fairydeco.domain.page.dto.PageStory;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +20,5 @@ public class BookStory {
         this.bookName = bookName;
         this.pageStory = pageStory;
     }
-
-
 
 }

@@ -1,5 +1,6 @@
 import './globals.css'
 import Header from './components/header'
+import { SseProvider } from './components/sseProvider'
 
 export const metadata = {
     title: '동화꾸미기',
@@ -13,8 +14,10 @@ export default function RootLayout({ children }) {
     return (
         <html lang="ko">
             <body className="font-ourFont">
-                <Header />
-                {children}
+                <SseProvider>
+                    <Header />
+                    {children}
+                </SseProvider>
             </body>
         </html>
     )

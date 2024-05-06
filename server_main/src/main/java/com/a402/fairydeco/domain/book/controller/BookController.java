@@ -1,7 +1,5 @@
 package com.a402.fairydeco.domain.book.controller;
 
-import static com.a402.fairydeco.global.common.exception.ErrorCode.PAGE_NOT_FOUND_ERROR;
-
 import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
 import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
 import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
@@ -14,13 +12,17 @@ import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
 import com.a402.fairydeco.domain.book.service.BookService;
 import com.a402.fairydeco.domain.book.service.OpenAiService;
-import com.a402.fairydeco.global.common.dto.FailResponse;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
-import com.a402.fairydeco.global.util.FileUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,20 +30,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
-
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/book")
-@RestController
+@Tag(name = "Book", description = "동화 API")
 public class BookController {
 
     private final BookService bookService;
     private final OpenAiService openAiService;
+    private final Map<Integer, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
+    @Operation(summary = "동화 만들기", description = "메인페이지에서 스크립트 혹은 아이 그림을 입력 후 동화 스크립트를 생성한다.")
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
         public SuccessResponse<BookStory> register(BookRegister bookRegister) throws IOException {
+
         return new SuccessResponse<>(openAiService.register(bookRegister));
     }
 
@@ -90,6 +94,42 @@ public class BookController {
     @Operation(summary = "동화 이미지 생성", description = "완성된 동화 정보를 반환한다.")
     @PostMapping("/image")
     public SuccessResponse<?> createBookImage(@RequestBody BookCreateRequestDto request){
+
         return new SuccessResponse<>(bookService.createBookImage(request));
+    }
+
+    @Operation(summary = "동화 생성 완료 알림", description = "생성 완료된 동화 알림 수신")
+    @GetMapping("/end/{bookId}")
+    public SuccessResponse<?> bookComplete(@PathVariable Integer bookId) {
+        //테스트 완료 되면 서비스 코드 분리 진행하겠습니다.
+        System.out.println("동화 생성 완료: "+bookId);
+        SseEmitter sseEmitter = sseEmitters.get(bookId);
+        if (sseEmitter != null) {
+            try {
+                sseEmitter.send(SseEmitter.event()
+                    .name("book-complete")
+                    .data("동화책 " + bookId + "의 제작이 완료되었습니다."));
+                sseEmitter.complete();
+        //동화 제작이 실패 했습니다.
+            } catch (IOException e) {
+                sseEmitters.remove(bookId);
+            }
+        }
+        return new SuccessResponse<>(null);
+    }
+
+    @Operation(summary = "SSE 구독", description = "SSE로 동화 생성 완료 알림 구독")
+    @GetMapping("/sse/{bookId}")
+    public ResponseEntity<SseEmitter> subscribeToBookCreation(@PathVariable Integer bookId) {
+        //테스트 완료 되면 서비스 코드 분리 진행하겠습니다.
+        SseEmitter sseEmitter = new SseEmitter(0L); // 0L로 설정하여 연결 무기한 유지
+        sseEmitters.put(bookId, sseEmitter);
+        sseEmitter.onCompletion(() -> sseEmitters.remove(bookId));
+        sseEmitter.onTimeout(() -> sseEmitters.remove(bookId));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "text/event-stream; charset=UTF-8");
+
+        return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(sseEmitter);
     }
 }

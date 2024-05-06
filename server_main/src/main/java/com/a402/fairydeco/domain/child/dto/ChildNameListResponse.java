@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ChildNameListResponse {
+
     private Integer childId;
     private String childName;
+
 }

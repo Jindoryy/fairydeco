@@ -16,4 +16,5 @@ public class MyPageUserDTO {
     private String userName;
     private LocalDate userBirth;
     private GenderStatus userGender;
+
 }

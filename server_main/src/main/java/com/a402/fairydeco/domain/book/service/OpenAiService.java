@@ -1,5 +1,4 @@
 package com.a402.fairydeco.domain.book.service;
-
 import com.a402.fairydeco.domain.book.dto.BookRegister;
 import com.a402.fairydeco.domain.book.dto.BookStory;
 import com.a402.fairydeco.domain.book.dto.GenreStatus;
@@ -16,46 +15,45 @@ import com.a402.fairydeco.global.common.dto.StoryResponse;
 import com.a402.fairydeco.global.common.exception.CustomException;
 import com.a402.fairydeco.global.common.exception.ErrorCode;
 import com.a402.fairydeco.global.util.FileUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.http.HttpClient;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.time.Duration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.time.LocalDate;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class OpenAiService {
-
     private final BookRepository bookRepository;
     private final PageRepository pageRepository;
     private final ChildRepository childRepository;
-
     @Value("${openai.model}")
     private String model;
     @Value("${openai.api.url}")
     private String apiURL;
     @Value("${openai.api.image}")
     private String openAiImageApiKey;
-
     private final RestTemplate restTemplate;
     private final FileUtil fileUtil;
-
+    private final HttpClient httpClient = HttpClient.newHttpClient();
     @Transactional
     public BookStory register(BookRegister bookRegister) throws IOException {
         // 1. 들어온 내용을 바탕으로 동화 등록
         // 2. 프롬프트로 동화 스토리 생성
         // 3. 동화 스토리 save 후 return
-
         // 이미지가 만약 있을 경우 건희형이 만든 image to text 서비스 메서드 사용해서 한줄 스토리 받음
-
         String pictureName = "";
         String pictureUrl = "";
         Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
@@ -65,24 +63,25 @@ public class OpenAiService {
         // 이미지 있으면 이미지 따로저장 + 이미지분석으로 prompt 가져옴
         if (bookRegister.getBookPicture() != null) {
             // image to text 메서드
-             ImgPromptDto imgPromptDto = createPromptKidImg(bookRegister.getBookPicture());
+            ImgPromptDto imgPromptDto = createPromptKidImg(bookRegister.getBookPicture());
             Book book = Book.builder()
-                .child(childRepository.findById(bookRegister.getChildId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
-                .maker(bookRegister.getBookMaker())
-                .genre(GenreStatus.valueOf(bookRegister.getBookGenre()))
-                .prompt(imgPromptDto.getPrompt())
+                    .child(childRepository.findById(bookRegister.getChildId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
+                    .name(bookRegister.getBookMaker()+"의 이야기")
+                    .maker(bookRegister.getBookMaker())
+                    .genre(GenreStatus.valueOf(bookRegister.getBookGenre()))
+                    .prompt(imgPromptDto.getPrompt())
                     .pictureUrl(imgPromptDto.getImageUrl())
                     .pictureName(imgPromptDto.getImageName())
-                .build();
+                    .build();
             savedBook = bookRepository.save(book);
         } else {
             Book book = Book.builder()
-                .child(childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR)))
-                .name(bookRegister.getBookMaker()+"의 이야기")
-                .maker(bookRegister.getBookMaker().replaceAll(" ",""))
-                .genre(GenreStatus.valueOf(bookRegister.getBookGenre()))
-                .prompt(bookRegister.getBookPrompt())
-                .build();
+                    .child(childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR)))
+                    .name(bookRegister.getBookMaker()+"의 이야기")
+                    .maker(bookRegister.getBookMaker().replaceAll(" ",""))
+                    .genre(GenreStatus.valueOf(bookRegister.getBookGenre()))
+                    .prompt(bookRegister.getBookPrompt())
+                    .build();
             savedBook = bookRepository.save(book);
         }
         // 동화 ai로 제작
@@ -115,11 +114,19 @@ public class OpenAiService {
         System.out.println(genre);
         prompt += "장르는 " + genre + ", 주인공은 "+hero+", "+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+child.getGender()+" 아이가 보기 좋은 동화를 8컷으로 만들어줘  "+ ", 줄거리는 " + savedBook.getPrompt();
         // 스토리 생성
-        StoryRequest request = new StoryRequest(model, prompt);
-        StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
-        String story = storyResponse.getChoices().get(0).getMessage().getContent();
+        // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
+        String[] bookStories;
+        while (true) {
+            StoryRequest request = new StoryRequest(model, prompt);
+            StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
+            String story = storyResponse.getChoices().get(0).getMessage().getContent();
 
-        String[] bookStories = story.split("끝!"); // 8개로 나눔
+            bookStories = story.split("끝!"); // 8개로 나눔
+            if (bookStories.length == 8) {
+                break;
+                // 8개가 아니라면 루프를 다시 시작
+            }
+        }
         Page[] pages = new Page[8];
         PageStory[] pageStories = new PageStory[8];
         for(int i = 0;i<bookStories.length;i++){
@@ -128,57 +135,92 @@ public class OpenAiService {
         // 먼저 만들어진 story를 8개로 나눈후에
         for (int i = 0; i < bookStories.length; i++) {
             Page page = Page.builder()
-                .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
-                .story(bookStories[i].trim().substring(3,bookStories[i].trim().length())) //공백제거
-                .build();
+                    .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
+                    .story(bookStories[i].trim().substring(3,bookStories[i].trim().length())) //공백제거
+                    .build();
             pages[i] = pageRepository.save(page);
             // pages를 save하면서 동시에 pageStory형태로 builder
             pageStories[i] = PageStory.builder()
-                .pageId(pages[i].getId())
-                .pageStory(pages[i].getStory())
-                .build();
+                    .pageId(pages[i].getId())
+                    .pageStory(pages[i].getStory())
+                    .build();
         }
         // 이제 return 데이터 builder 진행
         BookStory bookStory = BookStory.builder()
-            .bookId(savedBook.getId())
-            .bookName(savedBook.getName())
-            .pageStory(pageStories)
-            .build();
+                .bookId(savedBook.getId())
+                .bookName(savedBook.getName())
+                .pageStory(pageStories)
+                .build();
         return bookStory;
     }
-
     public ImgPromptDto createPromptKidImg(MultipartFile image) throws IOException {
         // 이미지를 S3에 업로드하고 URL을 얻음
         String imageUrl = fileUtil.uploadFile(image);
         String imageName = image.getOriginalFilename();
         // 동화 스토리 생성
         String prompt = generateStory(imageUrl);
-
         ImgPromptDto response = new ImgPromptDto(prompt, imageUrl, imageName);
         return response;
     }
-
     public String generateStory(String imageUrl) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(openAiImageApiKey);  // API 키를 헤더에 추가
-
         String requestBody = buildRequestBody(imageUrl);
-        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
-
-        StoryResponse response = restTemplate.postForObject(
-            "https://api.openai.com/v1/chat/completions",
-            entity,
-            StoryResponse.class);
-        return response.getChoices().get(0).getMessage().getContent();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.openai.com/v1/chat/completions"))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + openAiImageApiKey)
+                .timeout(Duration.ofMinutes(2))
+                .POST(BodyPublishers.ofString(requestBody))
+                .build();
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body();
+            // Parse the response JSON and extract the content field
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(responseBody);
+            String content = rootNode
+                    .path("choices")
+                    .get(0)
+                    .path("message")
+                    .path("content")
+                    .asText()
+                    .replace("\n", " ")
+                    .replace("#", "");
+            System.out.println("LOG : IMG TO TEXT: "+content);
+            return content;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-
     private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-            "이 이미지를 분석하여 어린이들이 좋아할 동화에 어울리는 배경과 상황을 설명해주세요. 그리고 이 배경에서 일어날 수 있는 교훈적이고 모험적인 이야기의 초안을 만들어주세요. 이미지를 통해 보여지는 요소들을 활용하여, 주인공이 겪게 될 모험과 그 모험에서 얻을 수 있는 교훈에 대해서도 포함시켜주세요. 이미지 설명으로 시작합니다: %s");
-        return String.format(
-            "{\"model\": \"gpt-4-turbo\", \"messages\": [{\"role\": \"user\", \"content\": [{\"type\": \"text\", \"text\": \"%s\"}, {\"type\": \"image_url\", \"image_url\": {\"url\": \"%s\"}}]}], \"max_tokens\": 300}",
-            detailedPrompt, imageUrl);
+                "이 이미지를 보고 어린이들이 즐길 수 있는 간단한 동화 스토리를 만들어주세요. "
+                        + "이미지를 통해 보여지는 요소들을 활용하여, 모험이나 교훈적인 요소를 포함시켜주세요."
+                        + "주인공의 이름은 필요 없어요, 이 스토리를 기반으로 동화를 새로 만들거에요. 그래서 주인공 이름은 필요 없어요."
+                        + "다른 설명은 필요 없어요. 동화 내용만 알려주면 되요.");
+        String requestBody = String.format("""
+            {
+                "model": "gpt-4-turbo",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "%s"
+                            },
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": "%s"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "max_tokens": 1000
+            }""", detailedPrompt, imageUrl);
+        return requestBody;
     }
 }

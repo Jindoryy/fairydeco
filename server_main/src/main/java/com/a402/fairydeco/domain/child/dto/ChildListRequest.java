@@ -18,4 +18,5 @@ public class ChildListRequest {
         UserRegistRequestValidator.validateName(childName);
         this.childName = childName;
     }
+
 }
