@@ -23,11 +23,21 @@ async function generateImage(pageStory, pageId, bookId) {
 
     console.log(`PHASE-CREATION 1 : PAGE ${pageId} IMAGE CREATE START`);
     const imageResponse = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: `Please generate a purely graphic fairy tale image with no text at all, reflecting the given theme: "${pageStory}." The image should stimulate children's imagination and sense of adventure. Ensure the image contains no text, no English words, and no speech bubbles.`,
-        n: 1,
-        size: "1024x1024"
-    });
+      model: "dall-e-3",
+      prompt: `Requirements: 
+  - Generate a single image 
+  - Pure fairy tale scene 
+  - No text whatsoever
+  
+  Constraints: 
+  - Do not split the scene into multiple parts 
+  - No speech bubbles, no English words 
+  
+  Scene description: ${pageStory}`,
+      n: 1,
+      size: "1024x1024"
+  });
+  
 
     console.log(`PHASE-CREATION 2 : PAGE ${pageId} OPEN API RESPONSE SUCCESS`);
     const imageUrl = imageResponse.data[0].url;
@@ -68,11 +78,21 @@ async function generateTitleImage(pageStories, bookId) {
 
     console.log(`PHASE-CREATION 1 : TITLE IMAGE CREATE START`);
     const imageResponse = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: prompt,
-        n: 1,
-        size: "1024x1024"
-    });
+      model: "dall-e-3",
+      prompt: `Requirements: 
+  - Generate a single image 
+  - Pure fairy tale scene 
+  - No text whatsoever
+  
+  Constraints: 
+  - Do not split the scene into multiple parts 
+  - No speech bubbles, no English words 
+  
+  Scene description: ${pageStories}`,
+      n: 1,
+      size: "1024x1024"
+  });
+  
 
     console.log(`PHASE-CREATION 2 : TITLE IMAGE OPEN API RESPONSE SUCCESS`);
     const imageUrl = imageResponse.data[0].url;
