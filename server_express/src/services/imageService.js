@@ -48,7 +48,7 @@ async function generateImage(pageStory, pageId, bookId) {
     console.log(`PHASE-CREATION 1 : PAGE ${pageId} IMAGE CREATE START`);
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
-      prompt: `이 내용에 맞는 이야기의 한 장면을 그려줘, 아이들이 좋아하는 귀여운 그림체로 만들어줘 Pixar 스타일의 애니메이션 그림체도 좋아. 내용: ${pageStory}`,
+      prompt: prompt,
       n: 1,
       size: "1024x1024"
   });
@@ -96,7 +96,7 @@ async function generateTitleImage(pageStories, bookId) {
     console.log(`PHASE-CREATION 1 : TITLE IMAGE CREATE START`);
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
-      prompt: `이 내용에 맞는 이야기의 한 장면을 그려줘, 아이들이 좋아하는 귀여운 그림체로 만들어줘 Pixar 스타일의 애니메이션 그림체도 좋아. 내용: ${pageStory}`,
+      prompt: prompt,
       n: 1,
       size: "1024x1024"
   });
