@@ -5,7 +5,6 @@ const swaggerUi = require('swagger-ui-express');
 const port = process.env.EXPRESS_PORT || 3000;
 const serverUrl = `process.env.EXPRESS_ACCESS_SERVER_URL:${port}` || `http://localhost:${port}`;
 
-
 const swaggerDefinition = {
     openapi: '3.0.0',
     info: {
