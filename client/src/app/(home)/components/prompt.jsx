@@ -26,10 +26,18 @@ export default function Prompt() {
     const [kidImageView, setKidImageView] = useState('')
     const [bookId, setBookId] = useState()
 
-    const getKids = async () => {
-        //유저 아이디 변경 필요
+    const [userId, setUserId] = useState("")
+    useEffect(() => {
+        let value = localStorage.getItem("userId") || ""
+        setUserId(value)
+        if (value) {
+            getKids(value)
+        }
+      }, [])
+
+    const getKids = async (id) => {
         try {
-            const response = await axios.get(`${apiUrl}/child/name-list/2`)
+            const response = await axios.get(`${apiUrl}/child/name-list/${id}`)
             setKids(response.data.data)
             setWriter(response.data.data[0].childName)
         } catch (error) {
@@ -37,12 +45,13 @@ export default function Prompt() {
         }
     }
 
-    useEffect(() => {
-       getKids()
-    }, [])
+
+
+    const goLogin = () => {
+        router.push("/login")
+    }
 
     const handleSelectWriter = (writerName) => {
-        console.log(kids)
         let selectedWriter = writerName.target.value
         setWriter(selectedWriter)
     }
@@ -88,10 +97,8 @@ export default function Prompt() {
         bookFormData.append('bookMaker', writer)
         bookFormData.append('bookGenre', category)
         if (story == '') {
-            console.log(kidImage)
             bookFormData.append('bookPicture', kidImage)
         } else {
-            console.log(story)
             bookFormData.append('bookPrompt', story)
         }
         try {
@@ -100,10 +107,8 @@ export default function Prompt() {
                     'Content-Type': 'multipart/form-data',
                 },
             })
-            console.log(data)
             if (data.status == 'success') {
                 setBookId(data.data.bookId)
-                console.log(data.data.bookId)
                 pageRoute(data.data.bookId)
             } else {
                 alert('이야기 생성에 실패했어요 다시 한 번 해주세요!')
@@ -221,7 +226,8 @@ export default function Prompt() {
                         </div>
                     </div>
                 </div>
-                <div className="mt-3 h-56 w-11/12">
+                {userId ? <>
+                    <div className="mt-3 h-56 w-11/12">
                     {uploadImage ? (
                         <div className="flex items-center justify-between">
                             <div className="w-1/5">
@@ -292,6 +298,25 @@ export default function Prompt() {
                         동화 만들기 <CaretRight size={20} />
                     </button>
                 </div>
+                </> : <>
+                <div className="w-11/12 flex items-center justify-between mb-4">
+                    <div className="flex w-9/12 flex-col items-start">
+                        <div className="mb-1 pl-4 text-2xl font-bold">
+                            이야기
+                        </div>
+                        <div className="bg-white h-full min-h-[190px] w-full resize-none rounded-2xl p-4 flex justify-center items-center text-2xl cursor-pointer" onClick={goLogin}>
+                            로그인이 필요한 서비스입니다.
+                        </div>
+                    </div>
+                    <div className="w-1/5">
+                        <div className="mb-1 pl-4 text-2xl font-bold">
+                            그림
+                        </div>
+                        <div className="flex h-full min-h-[190px] w-full items-center justify-center rounded-2xl bg-white"></div>
+                    </div>
+                </div>
+                </>}
+               
             </div>
         </div>
     )

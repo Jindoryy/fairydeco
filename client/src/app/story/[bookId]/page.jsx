@@ -19,12 +19,18 @@ export default function Story() {
         .split('')
         .reverse()
         .join('')
-    console.log(bookId)
     const [title, setTitle] = useState('')
     const [story, setStory] = useState([])
 
+    const [userId, setUserId] = useState("")
+    useEffect(() => {
+        let value = localStorage.getItem("userId") || ""
+        setUserId(value)
+        getStory(bookId)
+      }, [])
+
     const getStory = async (bookId) => {
-        console.log(bookId)
+        
         try {
             const response = await axios.get(
                 `${apiUrl}/book/story-detail/${bookId}`
@@ -37,9 +43,6 @@ export default function Story() {
         }
     }
 
-    useEffect(() => {
-        getStory(bookId)
-    }, [])
 
     useEffect(() => {}, [title, story])
     return (

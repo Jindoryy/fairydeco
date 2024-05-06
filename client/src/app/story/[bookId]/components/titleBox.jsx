@@ -16,7 +16,6 @@ export default function TitleBox({ title, bookId }) {
 
     const handleTitleButton = (event) => {
         changeTitle()
-        console.log(newTitle)
     }
 
     const changeTitle = async () => {

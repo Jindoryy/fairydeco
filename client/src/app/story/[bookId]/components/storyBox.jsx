@@ -14,7 +14,6 @@ export default function StoryBox({ story }) {
 
     useEffect(() => {
         setNewStory(story)
-        console.log(story)
     }, [story])
 
     const handleText = (event, pageId) => {
@@ -38,8 +37,6 @@ export default function StoryBox({ story }) {
             let pageNumber = newStory.findIndex((el) => el.pageId === pageId)
 
             if (response.data.status === 'success') {
-                console.log(response.data)
-                console.log(pageNumber)
                 alert(`${pageNumber + 1}번 이야기가 수정 되었습니다.`)
             } else {
                 alert('수정이 실패했습니다. 다시 한 번 시도해주세요')

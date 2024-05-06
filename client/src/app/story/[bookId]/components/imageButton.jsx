@@ -5,14 +5,13 @@ export default function ImageButton({ bookId }) {
     const router = useRouter()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const handleMakeStory = () => {
-        console.log(bookId)
         getImage()
     }
     const getImage = async () => {
-        //유저아이디 변경 필요
+        const userId = localStorage.getItem("userId")
         try {
             const response = await axios.post(`${apiUrl}/book/image`, {
-                userId: 1,
+                userId: userId,
                 bookId: bookId,
             })
             if (response.data.status == 'success') {
