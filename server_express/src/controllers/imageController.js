@@ -1,6 +1,7 @@
 //imageController.js
 const connectDB = require('../config/db');
 const imageService = require('../services/imageService');
+const axios = require('axios');
 
 async function createImage(req, res) {
   const { pageId } = req.body;
