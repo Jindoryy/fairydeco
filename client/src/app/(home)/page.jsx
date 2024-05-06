@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import Header from '../components/header'
 import Prompt from './components/prompt'
 import BookList from './components/bookList'
