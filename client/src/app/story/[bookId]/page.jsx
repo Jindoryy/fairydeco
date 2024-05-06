@@ -7,6 +7,7 @@ import GuideText from './components/guideText'
 import TitleBox from './components/titleBox'
 import StoryBox from './components/storyBox'
 import ImageButton from './components/imageButton'
+import Header from '../../components/header'
 
 export default function Story() {
     const pathname = usePathname()
@@ -47,6 +48,7 @@ export default function Story() {
     useEffect(() => {}, [title, story])
     return (
         <div className="flex flex-col items-center justify-center">
+            <Header />
             <GuideText />
             <TitleBox title={title} bookId={bookId} />
             <StoryBox story={story} />

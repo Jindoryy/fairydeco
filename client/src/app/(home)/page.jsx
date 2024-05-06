@@ -6,7 +6,8 @@ import BookList from './components/bookList'
 export default function Home() {
     return (
         <div className="h-dvh w-dvw">
-            <div className="flex h-full flex-col items-center justify-center">
+            <div className="flex h-auto flex-col items-center">
+                <Header />
                 <Prompt />
                 <BookList />
             </div>
