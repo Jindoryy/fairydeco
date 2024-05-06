@@ -12,6 +12,7 @@ import {
     PlusCircle,
     CaretRight,
 } from '@phosphor-icons/react/dist/ssr'
+import { useSse } from '../../components/sseProvider'
 
 export default function Prompt() {
     const router = useRouter()
@@ -25,6 +26,7 @@ export default function Prompt() {
     const [kidImage, setKidImage] = useState('')
     const [kidImageView, setKidImageView] = useState('')
     const [bookId, setBookId] = useState()
+    const { connect, disconnect } = useSse()
 
     const getKids = async () => {
         //유저 아이디 변경 필요
@@ -32,13 +34,14 @@ export default function Prompt() {
             const response = await axios.get(`${apiUrl}/child/name-list/1`)
             setKids(response.data.data)
             setWriter(response.data.data[0].childName)
+            connect(1)
         } catch (error) {
             console.error(error)
         }
     }
 
     useEffect(() => {
-       getKids()
+        getKids()
     }, [])
 
     const handleSelectWriter = (writerName) => {
@@ -251,7 +254,7 @@ export default function Prompt() {
                                             width="0"
                                             height="0"
                                             sizes="100vw"
-                                            className="w-24 h-24"
+                                            className="h-24 w-24"
                                         />
                                     )}
                                 </div>
