@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import KidsPaint from './components/kidspaint'
+import KidsPaint from './components/kidsPaint'
 import axios from 'axios'
 import { PencilSimpleLine } from '@phosphor-icons/react/dist/ssr'
 
