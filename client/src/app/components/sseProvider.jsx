@@ -52,13 +52,13 @@ export function SseProvider({ children }) {
                                 className="h-1 bg-green-500"
                                 initial={{ width: '100%' }}
                                 animate={{ width: 0 }}
-                                transition={{ duration: 20 }}
+                                transition={{ duration: 60 }}
                             />
                         </div>
                     </div>
                 ),
                 {
-                    duration: 20000, // 20초 동안 유지
+                    duration: 60000, // 20초 동안 유지
                     position: 'top-right',
                 }
             )
