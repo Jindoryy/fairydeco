@@ -1,14 +1,26 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Script from 'next/script'
+import Header from '../../components/header'
 
 const TurnPage = () => {
+    const pathname = usePathname()
     const [jQueryLoaded, setJQueryLoaded] = useState(false)
     const [data, setData] = useState(null)
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
-    const bookId = 42
+
+    let bookId = pathname
+        .split('')
+        .reverse()
+        .join('')
+        .split('/')[0]
+        .split('')
+        .reverse()
+        .join('')
+
     const URL = `${apiUrl}/book/book-detail/${bookId}`
 
     useEffect(() => {
@@ -58,7 +70,7 @@ const TurnPage = () => {
                 when: {
                     turning: (e, page) => {
                         const range = book.turn('range', page)
-                        for (let p = range[0]; p <= range[1]; p++) {
+                        for (let p = 2; p <= range[1]; p++) {
                             let content
                             if (p === 18) {
                                 const bookCoverUrl = data.data.bookCoverUrl
@@ -116,9 +128,10 @@ const TurnPage = () => {
 
     return (
         <>
+            <Header />
             <div className="flex min-h-screen flex-col items-center justify-center font-ourFont">
                 <Script
-                    src="http://code.jquery.com/jquery-3.7.1.min.js"
+                    src="https://code.jquery.com/jquery-3.7.1.min.js"
                     onLoad={() => setJQueryLoaded(true)}
                 />
                 <Script src="/turn.min.js" />
