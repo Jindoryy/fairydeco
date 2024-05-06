@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -125,6 +126,10 @@ public class BookController {
         sseEmitters.put(bookId, sseEmitter);
         sseEmitter.onCompletion(() -> sseEmitters.remove(bookId));
         sseEmitter.onTimeout(() -> sseEmitters.remove(bookId));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "text/event-stream; charset=UTF-8");
+
         return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(sseEmitter);
     }
 }

@@ -1,9 +1,11 @@
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import { useSse } from '@/src/app/components/sseProvider'
 
 export default function ImageButton({ bookId }) {
     const router = useRouter()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const { connect, disconnect } = useSse()
     const handleMakeStory = () => {
         getImage()
     }
@@ -18,6 +20,7 @@ export default function ImageButton({ bookId }) {
                 alert(
                     '기다려주시면 재밌는 동화를 만들어드릴게요!~ 동화가 만들어지는 데에 3~5분이 소요됩니다. '
                 )
+                connect(bookId)
                 router.push('/')
             } else {
                 alert('동화를 만드는 데 실패했습니다. 다시 한 번 시도해주세요!')
