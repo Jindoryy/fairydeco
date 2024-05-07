@@ -22,7 +22,7 @@ export default function Header() {
     }
 
     return (
-        <div className="w-100dvw flex h-[100px] items-center justify-between bg-customYellow px-4">
+        <div className="flex h-[100px] w-dvw items-center justify-between overflow-x-hidden bg-customYellow px-4 ">
             <div className="relative flex h-5/6 w-40 items-start justify-center">
                 <Link href="/">
                     <Image

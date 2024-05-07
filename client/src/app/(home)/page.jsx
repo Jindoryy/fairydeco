@@ -9,11 +9,10 @@ import Loading from '../components/loading'
 export default function Home() {
     const [loading, setLoading] = useState(false)
     const handleLoading = (status) => {
-        console.log(status)
         setLoading(status)
     }
     return (
-        <div className="h-dvh w-dvw">
+        <div className="h-dvh w-dvw overflow-x-hidden">
             <div className="flex h-auto flex-col items-center">
                 {loading ? (
                     <>

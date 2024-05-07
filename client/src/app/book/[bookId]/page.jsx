@@ -132,7 +132,7 @@ const TurnPage = () => {
     }, [jQueryLoaded, data])
 
     return (
-        <>
+        <div className="h-dvh overflow-x-hidden">
             <Header />
             <div className="flex min-h-screen flex-col items-center justify-center font-ourFont">
                 <Script
@@ -186,7 +186,7 @@ const TurnPage = () => {
                     <span id="number-pages" className="ml-2"></span>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
