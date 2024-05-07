@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Script from 'next/script'
 import Header from '../../components/header'
+import { redirect } from 'next/dist/server/api-utils'
 
 const TurnPage = () => {
     const pathname = usePathname()
@@ -12,14 +13,7 @@ const TurnPage = () => {
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
-    let bookId = pathname
-        .split('')
-        .reverse()
-        .join('')
-        .split('/')[0]
-        .split('')
-        .reverse()
-        .join('')
+    const bookId = pathname.split('/').pop()
 
     const URL = `${apiUrl}/book/book-detail/${bookId}`
 
@@ -35,94 +29,105 @@ const TurnPage = () => {
         }
 
         fetchData() // 데이터 로드
-    }, [])
+    }, [URL])
 
     useEffect(() => {
         if (jQueryLoaded && data) {
-            const $ = window.jQuery
-            const book = $('#book')
+            try {
+                const $ = window.jQuery
+                const book = $('#book')
 
-            if (!book || typeof book.turn !== 'function') {
-                console.error('Turn.js is not properly initialized.')
-                return
-            }
+                if (!book || typeof book.turn !== 'function') {
+                    throw new Error('Turn.js is not properly initialized.')
+                }
 
-            const numberOfPages = 18
+                const numberOfPages = 18
 
-            const addPage = (page, content) => {
-                const element = $('<div />', {
-                    class: `page flex items-center justify-center ${
-                        page % 2 === 0
-                            ? 'bg-gradient-to-r from-white to-gray-300'
-                            : 'bg-gradient-to-l from-white to-gray-300'
-                    }`,
-                    id: `page-${page}`,
-                }).html(content)
+                const addPage = (page, content) => {
+                    const element = $('<div />', {
+                        class: `page flex items-center justify-center ${
+                            page % 2 === 0
+                                ? 'bg-gradient-to-r from-white to-gray-300'
+                                : 'bg-gradient-to-l from-white to-gray-200'
+                        }`,
+                        id: `page-${page}`,
+                    }).html(content)
 
-                book.turn('addPage', element, page) // 페이지 추가
-            }
+                    book.turn('addPage', element, page) // 페이지 추가
+                }
 
-            book.turn({
-                acceleration: true,
-                pages: numberOfPages,
-                elevation: 50,
-                gradients: !$.isTouch,
-                when: {
-                    turning: (e, page) => {
-                        const range = book.turn('range', page)
-                        for (let p = 2; p <= range[1]; p++) {
-                            let content
-                            if (p === 18) {
-                                const bookCoverUrl = data.data.bookCoverUrl
-                                const bookMaker = data.data.bookMaker
-                                const bookName = data.data.bookName
-                                content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
-                                    <img src="${bookCoverUrl}" alt="Book Cover" class="w-1/3 h-1/3 object-contain" />
-                                    <div class="text-base text-gray-600 mt-2">${bookName}</div>
-                                    <div class="text-sm text-gray-600 mt-2">지은이: ${bookMaker}</div>
-                                </div>`
-                            } else {
-                                const pageIndex = Math.floor((p - 2) / 2)
-                                const pageContent =
-                                    p % 2 === 0
-                                        ? data.data.pageList[pageIndex]
-                                              ?.pageimageUrl
-                                        : data.data.pageList[pageIndex]
-                                              ?.pageStory
+                book.turn({
+                    acceleration: true,
+                    pages: numberOfPages,
+                    elevation: 50,
+                    gradients: !$.isTouch,
+                    when: {
+                        turning: (e, page) => {
+                            const range = book.turn('range', page)
+                            for (let p = range[0]; p <= range[1]; p++) {
+                                let content
+                                if (p === 1) {
+                                    const bookCoverUrl = data.data.bookCoverUrl
+                                    const bookName = data.data.bookName
+                                    content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
+                                        <img src="${bookCoverUrl}" class="w-[100%] h-[85%] object-cover" alt="Book Cover" />
+                                        <div class="h-[15%] w-[100%] flex justify-center items-center text-5xl text-black mt-2">${bookName}</div>
+                                    </div>`
+                                } else if (p === 18) {
+                                    const bookCoverUrl = data.data.bookCoverUrl
+                                    const bookMaker = data.data.bookMaker
+                                    const bookName = data.data.bookName
+                                    content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
+                                        <img src="${bookCoverUrl}" class="w-1/3 h-1/3 object-contain" alt="Book Cover" />
+                                        <div class="text-base text-gray-600 mt-2">${bookName}</div>
+                                        <div class="text-sm text-gray-600 mt-2">지은이: ${bookMaker}</div>
+                                    </div>`
+                                } else {
+                                    const pageIndex = Math.floor((p - 2) / 2)
+                                    const pageContent =
+                                        p % 2 === 0
+                                            ? data.data.pageList[pageIndex]
+                                                  ?.pageimageUrl
+                                            : data.data.pageList[pageIndex]
+                                                  ?.pageStory
 
-                                content = pageContent
-                                    ? p % 2 === 0
-                                        ? `<img src="${pageContent}" alt="Page img" class="object-contain w-full h-full" />`
-                                        : `<div class="flex flex-col items-center justify-center text-center text-3xl text-black break-keep px-4">${pageContent}</div>`
-                                    : '<div class="flex items-center justify-center text-center text-3xl text-red-500">No Content Available</div>'
+                                    content = pageContent
+                                        ? p % 2 === 0
+                                            ? `<img src="${pageContent}" class="object-contain w-full h-full" alt="Page Image" />`
+                                            : `<div class="flex flex-col items-center justify-center text-center text-3xl text-black break-keep px-8">${pageContent}</div>`
+                                        : '<div class="flex items-center justify-center text-center text-3xl text-red-500">No Content Available</div>'
+                                }
+
+                                addPage(p, content)
                             }
-
-                            addPage(p, content)
-                        }
+                        },
+                        turned: (e, page) => {
+                            $('#page-number').val(page)
+                        },
                     },
-                    turned: (e, page) => {
-                        $('#page-number').val(page)
-                    },
-                },
-            })
+                })
 
-            $('#number-pages').html(numberOfPages)
+                $('#number-pages').html(numberOfPages)
 
-            $('#page-number').keydown((e) => {
-                if (e.keyCode === 13) {
-                    book.turn('page', $('#page-number').val())
-                }
-            })
-
-            $(window).bind('keydown', (e) => {
-                if (e.target.tagName.toLowerCase() !== 'input') {
-                    if (e.keyCode === 37) {
-                        book.turn('previous')
-                    } else if (e.keyCode === 39) {
-                        book.turn('next')
+                $('#page-number').keydown((e) => {
+                    if (e.keyCode === 13) {
+                        book.turn('page', $('#page-number').val())
                     }
-                }
-            })
+                })
+
+                $(window).bind('keydown', (e) => {
+                    if (e.target.tagName.toLowerCase() !== 'input') {
+                        if (e.keyCode === 37) {
+                            book.turn('previous')
+                        } else if (e.keyCode === 39) {
+                            book.turn('next')
+                        }
+                    }
+                })
+            } catch (error) {
+                console.error('Error with turn.js or jQuery:', error)
+                window.location.reload() // 새로고침
+            }
         }
     }, [jQueryLoaded, data])
 
@@ -138,10 +143,10 @@ const TurnPage = () => {
 
                 <div
                     id="book"
-                    className="relative flex h-[700px] w-[1400px] items-center justify-center bg-white shadow-lg"
+                    className="relative flex h-[600px] w-[1200px] items-center justify-center bg-white shadow-lg"
                     style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)' }}
                 >
-                    <div className="cover flex h-full flex-col justify-end bg-customBlueBorder">
+                    <div className="cover flex h-full flex-col justify-end bg-white">
                         <img
                             src={data?.data?.bookCoverUrl}
                             alt="Cover"
