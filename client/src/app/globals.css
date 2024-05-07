@@ -5,7 +5,7 @@
 :root {
     background-color: white;
     color: black;
-    scrollbar-width: this;
+    scrollbar-width: thin;
     scrollbar-color: #e9ffe5 #fffdea;
     border-radius: 30;
 }

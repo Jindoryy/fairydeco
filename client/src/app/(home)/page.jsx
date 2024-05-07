@@ -12,7 +12,7 @@ export default function Home() {
         setLoading(status)
     }
     return (
-        <div className="h-dvh w-dvw overflow-x-hidden">
+        <div className="h-dvh w-dvw">
             <div className="flex h-auto flex-col items-center">
                 {loading ? (
                     <>
