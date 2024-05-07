@@ -54,8 +54,6 @@ public class OpenAiService {
         // 2. 프롬프트로 동화 스토리 생성
         // 3. 동화 스토리 save 후 return
         // 이미지가 만약 있을 경우 건희형이 만든 image to text 서비스 메서드 사용해서 한줄 스토리 받음
-        String pictureName = "";
-        String pictureUrl = "";
         Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
         String prompt = "넌 지금부터 스토리텔링 전문가야. 많은 사람이 흥미를 느낄만한 글을 작성해 줘야 해. 장르에 맞는 씬을 최소 8페이지로 나누고 각 대본의 끝에는 끝! 이 단어를 넣어서 각각 최소 250자 이상 작성해줘.";
         Book savedBook;
@@ -111,9 +109,13 @@ public class OpenAiService {
         else{
             genre = "판타지";
         }
-        System.out.println(genre);
-        prompt += "장르는 " + genre + ", 주인공은 "+hero+", "+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+child.getGender()+" 아이가 보기 좋은 동화를 8컷으로 만들어줘  "+ ", 줄거리는 " + savedBook.getPrompt();
+        String gender = "남";
+        if(child.getGender().toString().equals("WOMAN")){
+            gender ="여";
+        }
+        prompt += "장르는 " + genre + ", 주인공은 "+hero+", "+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+ gender+"자 아이가 보기 좋은 동화를 8컷으로 만들어줘  "+ ", 줄거리는 " + savedBook.getPrompt();
         // 스토리 생성
+        System.out.println(prompt);
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
         String[] bookStories;
         while (true) {
