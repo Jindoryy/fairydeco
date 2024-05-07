@@ -113,9 +113,8 @@ public class OpenAiService {
         if(child.getGender().toString().equals("WOMAN")){
             gender ="여";
         }
-        prompt += "장르는 " + genre + ", 주인공은 "+hero+", "+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+ gender+"자 아이가 보기 좋은 동화를 8컷으로 만들어줘  "+ ", 줄거리는 " + savedBook.getPrompt();
+        prompt += "\n 장르는 " + genre + ", 주인공은 "+hero+", "+(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+ gender+"자 아이가 보기 좋은 동화를 8컷으로 만들어줘"+ ", 줄거리는 " + savedBook.getPrompt();
         // 스토리 생성
-        System.out.println(prompt);
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
         String[] bookStories;
         while (true) {
@@ -132,13 +131,18 @@ public class OpenAiService {
         Page[] pages = new Page[8];
         PageStory[] pageStories = new PageStory[8];
         for(int i = 0;i<bookStories.length;i++){
+            bookStories[i] = bookStories[i].trim();
+            int tmp = i+1;
             System.out.println(bookStories[i]);
+            if(bookStories[i].substring(0,1).equals(Integer.toString(tmp))){
+                bookStories[i] = bookStories[i].substring(3,bookStories[i].trim().length());
+            }
         }
         // 먼저 만들어진 story를 8개로 나눈후에
         for (int i = 0; i < bookStories.length; i++) {
             Page page = Page.builder()
                     .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
-                    .story(bookStories[i].trim().substring(3,bookStories[i].trim().length())) //공백제거
+                    .story(bookStories[i]) //공백제거
                     .build();
             pages[i] = pageRepository.save(page);
             // pages를 save하면서 동시에 pageStory형태로 builder
