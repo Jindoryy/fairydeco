@@ -16,17 +16,17 @@ const s3Client = new S3Client({
     }
 });
 
-async function createImagePrompt(pageStory) {
+async function createImagePrompt(pageStory, styleDescriptor = "rounded 3D style, similar to Pixar animation") {
   try {
     const gptResponse = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         { "role": "system", "content": "You are an assistant who helps generate prompts for DALL-E 3." },
-        { "role": "user", "content": `Create a prompt for a DALL-E image based on the following story: "${pageStory}". The prompt should describe a scene suitable for children, preferably in Pixar animation style, and follow these conditions: 
+        { "role": "user", "content": `Create a prompt for a DALL-E image based on the following story: "${pageStory}". The prompt should describe a scene suitable for children, using the following style descriptor: "${styleDescriptor}". The prompt should follow these conditions: 
         - One single image 
         - No speech bubbles
         - No text or letters
-        - Cute and child-friendly. and like Piaxr-style or cartoon style` }
+        - Cute and child-friendly.` }
       ]
     });
     return gptResponse.choices[0].message.content;
