@@ -6,8 +6,8 @@ spring:
     active: db, s3, swagger
 
 openai:
-  model1: ${OPENAI_MODEL1}
-  model2: ${OPENAI_MODEL2}
+  model1: ${OPENAI_MODEL_Y}
+  model2: ${OPENAI_MODEL_O}
   api:
     key: ${OPENAI_API_KEY}
     image: ${OPENAI_API_KEY_IMAGE}
