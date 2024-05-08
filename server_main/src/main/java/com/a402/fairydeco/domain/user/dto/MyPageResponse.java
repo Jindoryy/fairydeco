@@ -1,6 +1,7 @@
 package com.a402.fairydeco.domain.user.dto;
 
-import com.a402.fairydeco.domain.child.dto.MyPageChildListDTO;
+import com.a402.fairydeco.domain.book.dto.MyPageBookDTO;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MyPageResponse {
 
-    private MyPageUserDTO user;
-    private List<MyPageChildListDTO> childList;
+    private String userLoginId;
+    private String userName;
+    private Integer childId;
+    private String childName;
+    private LocalDate childBirth;
+    private GenderStatus childGender;
+    private List<MyPageBookDTO> bookList;
 
 }

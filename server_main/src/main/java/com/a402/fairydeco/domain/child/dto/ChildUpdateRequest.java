@@ -9,5 +9,6 @@ public class ChildUpdateRequest {
 
     private Integer childId;
     private String childName;
+    private String profileName;
 
 }

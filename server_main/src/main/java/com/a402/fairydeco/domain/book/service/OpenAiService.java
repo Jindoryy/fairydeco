@@ -45,8 +45,10 @@ public class OpenAiService {
     private final BookRepository bookRepository;
     private final PageRepository pageRepository;
     private final ChildRepository childRepository;
-    @Value("${openai.model}")
-    private String model;
+    @Value("${openai.model1}")
+    private String model1;
+    @Value("${openai.model2}")
+    private String model2;
     @Value("${openai.api.url}")
     private String apiURL;
     @Value("${openai.api.image}")
@@ -62,10 +64,11 @@ public class OpenAiService {
         // 3. 동화 스토리 save 후 return
         // 이미지가 만약 있을 경우 건희형이 만든 image to text 서비스 메서드 사용해서 한줄 스토리 받음
         Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
-        String prompt = "키워드로 동화를 8장면 이상으로 만들어주고 각 대본의 끝에는 끝! 이 단어를 무조건 넣어줘 그리고 전체적으로 잘 이어져야 하고 5살이 보기에 쉬운 단어로만 구성되어야해";
         String age = "Y";
+        String prompt = "많은 사람이 흥미를 느끼는 내용이 들어가야해. 키워드를 이용하여 씬을 8페이지로 나누고 각 대본의 끝에는 끝! 이 단어를 넣어줘. 마지막으로 4살이 보기에 쉬운 단어로만 구성되어야 하고 이상한 단어가 없어야해. 시작은  옛날 옛적에, 로 시작해줘.";
         if ((LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0, 4))) > 5) {
             age = "O";
+            prompt = "키워드로 동화를 8장면 이상으로 각 대본의 끝에는 끝! 이 단어를 무조건 넣어줘. 그리고 이야기가 흥미로워야 하고 교훈적이고 말이 잘 이어져야해. 마지막으로 6살이 보기에 쉬운 단어로만 구성되어야 하고 이상한 단어가 없어야해. 시작은  옛날 옛적에, 로 시작해줘.";
         }
         // 이미지 null이면 키워드 그냥 더하고
         // 이미지 있으면 이미지 따로저장 + 이미지분석으로 키워드 가져옴
@@ -87,11 +90,17 @@ public class OpenAiService {
             gender = "여";
         }
 //        prompt += "\n(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+ gender+"자 아이가 보기 좋은 동화를 8컷으로 만들어줘"+ ", 줄거리는 " + savedBook.getPrompt();
-        prompt += "키워드는 :" + savedBook.getPrompt();
+        prompt += "\n\n 키워드 :" + savedBook.getPrompt();
         // 스토리 생성
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
         String[] bookStories;
+        String model = model1;
+        if (age.equals("O")) {
+            model = model2;
+        }
         while (true) {
+            // 나이가 어리면 model1으로
+            // 나이 많으면 model2로 실행
             StoryRequest request = new StoryRequest(model, prompt);
             StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
             String story = storyResponse.getChoices().get(0).getMessage().getContent();
@@ -108,7 +117,7 @@ public class OpenAiService {
             System.out.println(bookStories[i]);
                 for(int j=0;j<bookStories[i].length();j++){
                     if(bookStories[i].substring(j,j+1).equals(".")){
-                        bookStories[i] = bookStories[i].substring(j+2,bookStories[i].length());
+                        bookStories[i] = bookStories[i].substring(j+1,bookStories[i].length());
                         break;
                     }
                 }
