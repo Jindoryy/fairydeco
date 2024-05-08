@@ -1,7 +1,6 @@
 package com.a402.fairydeco.domain.user.controller;
 
 import com.a402.fairydeco.domain.user.dto.MyPageResponse;
-import com.a402.fairydeco.domain.user.dto.UserIdRequest;
 import com.a402.fairydeco.domain.user.dto.UserLoginIdRequest;
 import com.a402.fairydeco.domain.user.dto.UserLoginRequest;
 import com.a402.fairydeco.domain.user.dto.UserLoginResponse;

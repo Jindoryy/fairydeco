@@ -11,9 +11,7 @@ import com.a402.fairydeco.domain.user.entity.User;
 import com.a402.fairydeco.domain.user.repository.UserRepository;
 import com.a402.fairydeco.global.common.exception.CustomException;
 import com.a402.fairydeco.global.common.exception.ErrorCode;
-import com.a402.fairydeco.global.util.FileUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,6 @@ public class ChildService {
 
     private final ChildRepository childRepository;
     private final UserRepository userRepository;
-    private final FileUtil fileUtil;
 
     private User getUserById(Integer userId) {
 
