@@ -1,7 +1,7 @@
 package com.a402.fairydeco.domain.book.entity;
 
 import com.a402.fairydeco.domain.book.dto.CompleteStatus;
-import com.a402.fairydeco.domain.book.dto.GenreStatus;
+import com.a402.fairydeco.domain.book.dto.RecommendAge;
 import com.a402.fairydeco.domain.child.entity.Child;
 import com.a402.fairydeco.domain.page.entity.Page;
 import com.a402.fairydeco.global.common.BaseEntity;
@@ -49,10 +49,6 @@ public class Book extends BaseEntity {
     @Column(name = "book_maker", nullable = false)
     private String maker;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "book_genre", nullable = false)
-    private GenreStatus genre;
-
     @Column(name = "book_prompt")
     private String prompt;
 
@@ -71,6 +67,10 @@ public class Book extends BaseEntity {
 
     @Column(name = "book_cover_name")
     private String coverName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "book_recommend_age")
+    private RecommendAge recommendAge;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Page> pageList = new ArrayList<>();
