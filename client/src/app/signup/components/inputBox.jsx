@@ -44,6 +44,7 @@ export default function InputBox() {
                     setIdCheck(true)
                 } else {
                     setIdCheck(false)
+                    alert('중복된 아이디입니다. 다른 아이디를 입력해주세요!')
                 }
             }
         } catch (error) {
@@ -134,17 +135,7 @@ export default function InputBox() {
                             </div>
                         </>
                     ) : (
-                        <>
-                            {userId.length > 0 ? (
-                                <>
-                                    <div className="text-customRed">
-                                        중복된 아이디입니다.
-                                    </div>
-                                </>
-                            ) : (
-                                <></>
-                            )}
-                        </>
+                        <></>
                     )}
                 </div>
                 <div className="mb-1 mt-1 h-auto w-11/12 px-8">
