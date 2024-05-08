@@ -49,10 +49,10 @@ public class Book extends BaseEntity {
     @Column(name = "book_maker", nullable = false)
     private String maker;
 
-    @Column(name = "book_prompt")
+    @Column(name = "book_prompt", length = 1000)
     private String prompt;
 
-    @Column(name = "book_picture_url")
+    @Column(name = "book_picture_url", length = 1000)
     private String pictureUrl;
 
     @Column(name = "book_picture_name")
@@ -62,7 +62,7 @@ public class Book extends BaseEntity {
     @Column(name = "book_complete", nullable = false)
     private final CompleteStatus complete = CompleteStatus.STORY; //default 'STORY'
 
-    @Column(name = "book_cover_url")
+    @Column(name = "book_cover_url", length = 1000)
     private String coverUrl;
 
     @Column(name = "book_cover_name")
