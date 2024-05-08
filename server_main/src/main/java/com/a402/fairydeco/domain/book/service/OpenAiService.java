@@ -178,7 +178,7 @@ public class OpenAiService {
     private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-                "이미지를 분석해서 키워드를 뽑아줘");
+                "이미지를 분석해서 키워드만 5개 뽑아줘");
         String requestBody = String.format("""
                 {
                     "model": "gpt-4-turbo",
