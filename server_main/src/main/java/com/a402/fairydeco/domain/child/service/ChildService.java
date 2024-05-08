@@ -1,5 +1,6 @@
 package com.a402.fairydeco.domain.child.service;
 
+import com.a402.fairydeco.domain.book.dto.ProfileStatus;
 import com.a402.fairydeco.domain.child.dto.ChildAddRequest;
 import com.a402.fairydeco.domain.child.dto.ChildListResponse;
 import com.a402.fairydeco.domain.child.dto.ChildNameListResponse;
@@ -10,8 +11,11 @@ import com.a402.fairydeco.domain.user.entity.User;
 import com.a402.fairydeco.domain.user.repository.UserRepository;
 import com.a402.fairydeco.global.common.exception.CustomException;
 import com.a402.fairydeco.global.common.exception.ErrorCode;
+import com.a402.fairydeco.global.util.FileUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,7 @@ public class ChildService {
 
     private final ChildRepository childRepository;
     private final UserRepository userRepository;
+    private final FileUtil fileUtil;
 
     private User getUserById(Integer userId) {
 
@@ -45,6 +50,7 @@ public class ChildService {
                 .childName(child.getName())
                 .childBirth(child.getBirth())
                 .childGender(child.getGender())
+                .childProfileUrl(child.getProfileUrl())
                 .build());
         }
 
@@ -66,6 +72,7 @@ public class ChildService {
             childNameListResponses.add(ChildNameListResponse.builder()
                 .childId(child.getId())
                 .childName(child.getName())
+                .childProfileUrl(child.getProfileUrl())
                 .build());
         }
 
@@ -76,11 +83,14 @@ public class ChildService {
 
         User user = getUserById(childAddRequest.getUserId());
 
+        String profileUrl = getProfileUrl();
+
         Child child = Child.builder()
             .user(user)
             .name(childAddRequest.getChildName())
             .birth(childAddRequest.getChildBirth())
             .gender(childAddRequest.getChildGender())
+            .profileUrl(profileUrl)
             .build();
 
         childRepository.save(child);
@@ -88,14 +98,40 @@ public class ChildService {
         return findChildList(childAddRequest.getUserId());
     }
 
-    public void modifyChildName(ChildUpdateRequest childUpdateRequest) {
+    private static String getProfileUrl() {
+
+        String[] profileList = {
+            "https://fairydeco.s3.ap-northeast-2.amazonaws.com/shark.jpeg",
+            "https://fairydeco.s3.ap-northeast-2.amazonaws.com/sloth.jpeg",
+            "https://fairydeco.s3.ap-northeast-2.amazonaws.com/chicken.jpeg",
+            "https://fairydeco.s3.ap-northeast-2.amazonaws.com/turtle.jpeg",
+            "https://fairydeco.s3.ap-northeast-2.amazonaws.com/rabbit.jpeg",
+            "https://fairydeco.s3.ap-northeast-2.amazonaws.com/cheetah.jpeg",
+        };
+
+        Random random = new Random();
+        return profileList[random.nextInt(profileList.length)];
+    }
+
+    public List<ChildListResponse> modifyChild(ChildUpdateRequest childUpdateRequest) {
 
         Child child = childRepository.findById(childUpdateRequest.getChildId())
             .orElseThrow(() -> new IllegalArgumentException("Child Not Found"));
 
+        try {
+            ProfileStatus.valueOf(childUpdateRequest.getProfileName());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("PROFILE NAME NOT FOUND");
+        }
+
         child.setName(childUpdateRequest.getChildName());
 
+        String profileUrl = "https://fairydeco.s3.ap-northeast-2.amazonaws.com/" +childUpdateRequest.getProfileName() + ".jpeg";
+        child.setProfileUrl(profileUrl);
+
         childRepository.save(child);
+
+        return findChildList(child.getUser().getId());
     }
 
 }

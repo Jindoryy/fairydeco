@@ -55,9 +55,17 @@ public class Child extends BaseEntity {
     @Column(name = "child_gender")
     private GenderStatus gender;
 
+    @Column(name = "child_profile_url", nullable = false)
+    private String profileUrl;
+
+    @Column(name = "child_profile_name")
+    private String profileName;
+
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> bookList = new ArrayList<>();
 
     public void setName(String name) { this.name = name; }
+
+    public void setProfileUrl(String profileUrl) { this.profileUrl = profileUrl; }
 
 }
