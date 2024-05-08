@@ -45,8 +45,10 @@ public class OpenAiService {
     private final BookRepository bookRepository;
     private final PageRepository pageRepository;
     private final ChildRepository childRepository;
-    @Value("${openai.model}")
-    private String model;
+    @Value("${openai.model1}")
+    private String model1;
+    @Value("${openai.model2}")
+    private String model2;
     @Value("${openai.api.url}")
     private String apiURL;
     @Value("${openai.api.image}")
@@ -92,6 +94,12 @@ public class OpenAiService {
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
         String[] bookStories;
         while (true) {
+            // 나이가 어리면 model1으로 
+            // 나이 많으면 model2로 실행
+            String model = model1;
+            if(age.equals("O")){
+                model = model2;
+            }
             StoryRequest request = new StoryRequest(model, prompt);
             StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
             String story = storyResponse.getChoices().get(0).getMessage().getContent();
