@@ -158,13 +158,16 @@ const TurnPage = () => {
                     className="flex w-full items-center justify-between px-4 py-2"
                 >
                     {/* Left Section */}
-                    <div className="ml-8 flex flex-grow justify-start">
+                    <Link
+                        href="/"
+                        className="ml-8 flex flex-grow justify-start"
+                    >
                         <HouseLine
                             size={45}
                             weight="fill"
                             style={{ color: '#A0D468' }}
                         />
-                    </div>
+                    </Link>
 
                     {/* Central Section */}
                     <div className="ml-32 flex flex-grow items-center justify-center text-center">
