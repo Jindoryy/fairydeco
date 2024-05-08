@@ -17,5 +17,6 @@ public class ChildListResponse {
     private String childName;
     private LocalDate childBirth;
     private GenderStatus childGender;
+    private String childProfileUrl;
 
 }

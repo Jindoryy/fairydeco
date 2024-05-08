@@ -47,11 +47,9 @@ public class ChildController {
         return new SuccessResponse<>(childService.saveChild(childAddRequest));
     }
 
-    @Operation(summary = "아이 이름 수정", description = "마이페이지에서 아이의 이름을 수정한다.")
+    @Operation(summary = "아이 정보 수정", description = "프로필페이지에서 아이의 이름과 프로필 사진을 수정한다.")
     @PutMapping("")
-    public SuccessResponse<String> updateChildName(@RequestBody ChildUpdateRequest childUpdateRequest) {
-        childService.modifyChildName(childUpdateRequest);
-
-        return new SuccessResponse<>("success");
+    public SuccessResponse<List<ChildListResponse>> updateChildName(@RequestBody ChildUpdateRequest childUpdateRequest) {
+        return new SuccessResponse<>(childService.modifyChild(childUpdateRequest));
     }
 }
