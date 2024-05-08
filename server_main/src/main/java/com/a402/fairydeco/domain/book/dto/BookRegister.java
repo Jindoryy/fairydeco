@@ -13,16 +13,12 @@ public class BookRegister {
 
     private int childId;
     private String bookMaker;
-    private String bookGenre;
-    private String bookPrompt;
     private MultipartFile bookPicture;
 
     @Builder
-    public BookRegister(int childId, String bookMaker, String bookGenre, String bookPrompt, MultipartFile bookPicture) {
+    public BookRegister(int childId, String bookMaker, MultipartFile bookPicture) {
         this.childId = childId;
         this.bookMaker = bookMaker;
-        this.bookGenre = bookGenre;
-        this.bookPrompt = bookPrompt;
         this.bookPicture = bookPicture;
     }
 
