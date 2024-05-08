@@ -34,10 +34,12 @@ export default function TitleBox({ title, bookId }) {
         }
     }
     return (
-        <div className=" m-4 flex h-14 w-2/5 items-center rounded-lg border-2 border-customOrange bg-[#FFE7A8] p-4 pl-8">
-            <div className="text-2xl">제목 : </div>
+        <div className=" m-4 flex h-14 w-2/5 items-center rounded-lg border-2 border-customOrange bg-[#FFE7A8] p-4 pl-4">
+            <div className="w-1/6 overflow-hidden md:text-sm lg:text-2xl">
+                제목 :
+            </div>
             <input
-                className="ml-2 w-2/3 border-black bg-[#FFE7A8] text-2xl focus:border-b focus:outline-none"
+                className="ml-2 w-5/6 border-black bg-[#FFE7A8] text-2xl focus:border-b focus:outline-none"
                 value={newTitle}
                 onChange={handleTitleChange}
             ></input>

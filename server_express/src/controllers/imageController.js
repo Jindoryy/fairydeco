@@ -51,7 +51,7 @@ async function bookCreation(req, res) {
 
         const imageUrls = [];
 
-        const batchSize = 4;
+        const batchSize = 2;
         for (let i = 0; i < results.length; i += batchSize) {
             // 현재 배치의 페이지를 추출
             const currentPageBatch = results.slice(i, i + batchSize);

@@ -16,24 +16,39 @@ const s3Client = new S3Client({
     }
 });
 
+async function createImagePrompt(pageStory, styleDescriptor = "rounded 3D style, similar to Pixar animation") {
+  try {
+    const gptResponse = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { "role": "system", "content": "You are an assistant who helps generate prompts for DALL-E 3." },
+        { "role": "user", "content": `Create a prompt for a DALL-E image based on the following story: "${pageStory}". The prompt should describe a scene suitable for children, using the following style descriptor: "${styleDescriptor}". The prompt should follow these conditions: 
+        - One single image 
+        - No speech bubbles
+        - No text or letters
+        - Cute and child-friendly.` }
+      ]
+    });
+    return gptResponse.choices[0].message.content;
+  } catch (error) {
+    console.error('Error in creating image prompt:', error);
+    return null;
+  }
+}
+
 async function generateImage(pageStory, pageId, bookId) {
   try {
+    // 프롬프트 생성
+    const prompt = await createImagePrompt(pageStory);
+    if (!prompt) throw new Error("Failed to create prompt");
+
     // 이미지 생성 요청 전에 3초 기다림
     await new Promise(resolve => setTimeout(resolve, 3000)); // 3초 대기
 
     console.log(`PHASE-CREATION 1 : PAGE ${pageId} IMAGE CREATE START`);
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
-      prompt: `Requirements: 
-  - Generate a single image 
-  - Pure fairy tale scene 
-  - No text whatsoever
-  
-  Constraints: 
-  - Do not split the scene into multiple parts 
-  - No speech bubbles, no English words 
-  
-  Scene description: ${pageStory}`,
+      prompt: prompt,
       n: 1,
       size: "1024x1024"
   });
@@ -71,7 +86,9 @@ async function generateImage(pageStory, pageId, bookId) {
 async function generateTitleImage(pageStories, bookId) {
   try {
     console.log(pageStories)
-    const prompt = `Please generate a purely graphic fairy tale image with no text at all, reflecting the given theme: "${pageStories}." The image should stimulate children's imagination and sense of adventure. Ensure the image contains no text, no English words, and no speech bubbles.`;
+    // 프롬프트 생성
+    const prompt = await createImagePrompt(pageStories);
+    if (!prompt) throw new Error("Failed to create prompt");
 
     // 이미지 생성 요청 전에 3초 기다림
     await new Promise(resolve => setTimeout(resolve, 3000)); // 3초 대기
@@ -79,16 +96,7 @@ async function generateTitleImage(pageStories, bookId) {
     console.log(`PHASE-CREATION 1 : TITLE IMAGE CREATE START`);
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
-      prompt: `Requirements: 
-  - Generate a single image 
-  - Pure fairy tale scene 
-  - No text whatsoever
-  
-  Constraints: 
-  - Do not split the scene into multiple parts 
-  - No speech bubbles, no English words 
-  
-  Scene description: ${pageStories}`,
+      prompt: prompt,
       n: 1,
       size: "1024x1024"
   });

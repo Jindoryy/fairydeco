@@ -13,15 +13,15 @@ import {
     CaretRight,
 } from '@phosphor-icons/react/dist/ssr'
 import { useSse } from '../../components/sseProvider'
+import Loading from '../../components/loading'
 
-export default function Prompt() {
+export default function Prompt({ handleLoading }) {
     const router = useRouter()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [writer, setWriter] = useState('')
     const [kids, setKids] = useState([])
     const [uploadImage, setUploadImage] = useState(false)
     const [category, setCategory] = useState('ADVENTURE')
-    const categories = ['ADVENTURE', 'FANTASY', 'MYSTERY', 'ROMANCE']
     const [story, setStory] = useState('')
     const [kidImage, setKidImage] = useState('')
     const [kidImageView, setKidImageView] = useState('')
@@ -102,7 +102,9 @@ export default function Prompt() {
         } else {
             bookFormData.append('bookPrompt', story)
         }
+
         try {
+            handleLoading(true)
             const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -110,12 +112,14 @@ export default function Prompt() {
             })
             if (data.status == 'success') {
                 setBookId(data.data.bookId)
-                pageRoute(data.data.bookId)
+                router.push(`/story/${data.data.bookId}`)
             } else {
                 alert('이야기 생성에 실패했어요 다시 한 번 해주세요!')
             }
         } catch (error) {
             console.error('Error fetching data:', error)
+        } finally {
+            handleLoading(false)
         }
     }
     const makeStory = () => {
@@ -126,12 +130,9 @@ export default function Prompt() {
         getStory()
     }
 
-    const pageRoute = (storyId) => {
-        router.push(`/story/${storyId}`)
-    }
     return (
-        <div className="h-[600px] w-11/12">
-            <div className="m-1 mt-10 text-3xl font-bold">
+        <div className="h-auto w-11/12">
+            <div className="m-1 mt-4 text-3xl font-bold">
                 AI동화를 꾸며보아요!
             </div>
             <div className="text-xl">
@@ -278,7 +279,7 @@ export default function Prompt() {
                                             value={story}
                                             className="h-full min-h-[190px] w-full resize-none rounded-2xl p-4 text-xl focus:border-none focus:outline-none"
                                             placeholder="만들고 싶은 이야기를 적어주세요.
-                         예시) 6살 여자아이가 숲으로 모험을 떠나는 동화를 만들어주세요! 여자아이는 흑발에 눈이 크답니다!"
+                                            예시) 6살 여자아이가 숲으로 모험을 떠나는 동화를 만들어주세요! 여자아이는 흑발에 눈이 크답니다!"
                                         ></textarea>
                                     </div>
                                     <div className="w-1/5">
