@@ -1,6 +1,6 @@
 'use client'
 
-import { HouseLine } from '@phosphor-icons/react/dist/ssr'
+import { ArrowFatLeft } from '@phosphor-icons/react/dist/ssr'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import axios from 'axios'
@@ -11,7 +11,7 @@ export default function LoginBox() {
     const [userId, setUserId] = useState('')
     const [password, setPassword] = useState('')
 
-    const goHome = () => {
+    const goBack = () => {
         router.push('/')
     }
 
@@ -52,9 +52,13 @@ export default function LoginBox() {
         <>
             <div
                 className="z-100 fixed left-4 top-4 cursor-pointer rounded-2xl border-2 p-2"
-                onClick={goHome}
+                onClick={goBack}
             >
-                <HouseLine size={32} style={{ color: 'white' }} />
+                <ArrowFatLeft
+                    size={32}
+                    weight="fill"
+                    style={{ color: 'white' }}
+                />
             </div>
             <div className="z-100 fixed right-[8%] top-[20%] flex h-4/6 w-2/5 flex-col items-center justify-center rounded-3xl bg-customPink opacity-85">
                 <div className="w-11/12 p-8 pt-4">
