@@ -17,9 +17,6 @@ public class UserRegistRequest {
     private String loginId;
     private String password;
     private String name;
-    private LocalDate birth;
-    private GenderStatus gender;
-    private List<ChildListRequest> childList;
 
     public void setLoginId(String loginId) {
         UserRegistRequestValidator.validateLoginId(loginId);

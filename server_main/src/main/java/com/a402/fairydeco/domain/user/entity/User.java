@@ -45,20 +45,7 @@ public class User extends BaseEntity {
   @Column(name = "user_name", nullable = false)
   private String name;
 
-  @Column(name = "user_birth")
-  private LocalDate birth;
-
-  @Enumerated(EnumType.STRING)
-  @Column(name = "user_gender")
-  private GenderStatus gender;
-
-  @Column(name = "user_voice_time")
-  @ColumnDefault("0")
-  @Builder.Default
-  private Integer voiceTime = 0;
-
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Child> childList = new ArrayList<>();
 
-  public void setVoiceTime(Integer voiceTime) { this.voiceTime = voiceTime; }
 }
