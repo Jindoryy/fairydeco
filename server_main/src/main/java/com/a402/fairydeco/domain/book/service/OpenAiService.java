@@ -106,9 +106,11 @@ public class OpenAiService {
             bookStories[i] = bookStories[i].trim();
             int tmp = i + 1;
             System.out.println(bookStories[i]);
-            if (bookStories[i].substring(0, 1).equals(Integer.toString(tmp))) {
-                bookStories[i] = bookStories[i].substring(3, bookStories[i].trim().length());
-            }
+                for(int j=0;j<bookStories[i].length();j++){
+                    if(bookStories[i].substring(j,j+1).equals(".")){
+                        bookStories[i] = bookStories[i].substring(j+2,bookStories[i].length());
+                    }
+                }
         }
         Page[] pages = new Page[bookStories.length];
         PageStory[] pageStories = new PageStory[bookStories.length];
@@ -178,7 +180,7 @@ public class OpenAiService {
     private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-                "이미지를 분석해서 키워드만 5개 뽑아줘");
+                "이미지를 분석해서 밑에 예시처럼 키워드만 5개 뽑아줘 \n ex) 농부, 부자, 사자, 계란, 친구");
         String requestBody = String.format("""
                 {
                     "model": "gpt-4-turbo",
