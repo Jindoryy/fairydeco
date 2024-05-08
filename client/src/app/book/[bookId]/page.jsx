@@ -53,6 +53,17 @@ const TurnPage = () => {
         setIsAutoPlay((prev) => !prev) // 자동 재생 상태 토글
     }
 
+    // Event handlers to turn the pages
+    const handlePageBackward = () => {
+        const book = window.jQuery('#book')
+        book.turn('previous') // Turn to the previous page
+    }
+
+    const handlePageForward = () => {
+        const book = window.jQuery('#book')
+        book.turn('next') // Turn to the next page
+    }
+
     useEffect(() => {
         if (jQueryLoaded && data) {
             const $ = window.jQuery
@@ -110,7 +121,7 @@ const TurnPage = () => {
                                 content = pageContent
                                     ? p % 2 === 0
                                         ? `<img src="${pageContent}" class="object-contain w-full h-full" alt="Page Image" />`
-                                        : `<div class="flex flex-col items-center justify-center text-center text-3xl text-black break-keep px-8">${pageContent}</div>`
+                                        : `<div class="flex flex-col items-center justify-center text-center text-2xl text-black break-keep px-8 !font-storyFont">${pageContent}</div>`
                                     : '<div class="flex items-center justify-center text-center text-3xl text-red-500">No Content Available</div>'
                             }
 
@@ -284,7 +295,12 @@ const TurnPage = () => {
                     <CaretCircleLeft
                         size={32}
                         weight="fill"
-                        style={{ color: '#A0D468', marginRight: '10px' }}
+                        style={{
+                            color: '#A0D468',
+                            marginRight: '10px',
+                            cursor: 'pointer',
+                        }}
+                        onClick={handlePageBackward} // Event handler for backward navigation
                     />
                     <input
                         type="text"
@@ -297,7 +313,12 @@ const TurnPage = () => {
                     <CaretCircleRight
                         size={32}
                         weight="fill"
-                        style={{ color: '#A0D468', marginLeft: '10px' }}
+                        style={{
+                            color: '#A0D468',
+                            marginLeft: '10px',
+                            cursor: 'pointer',
+                        }}
+                        onClick={handlePageForward} // Event handler for forward navigation
                     />
                 </div>
             </div>
