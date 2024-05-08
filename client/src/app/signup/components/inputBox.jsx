@@ -29,9 +29,11 @@ export default function InputBox() {
 
     const handleId = async () => {
         if (userId.length == 0) {
+            setIdCheck(false)
             alert('아이디를 입력해주세요')
             return
         } else if (!checkId.test(userId)) {
+            setIdCheck(false)
             alert('아이디는 숫자+영어 4~15글자입니다.')
             return
         }
@@ -48,6 +50,7 @@ export default function InputBox() {
                 }
             }
         } catch (error) {
+            setIdCheck(false)
             console.error('Failed to check Id: ', error)
         }
     }
