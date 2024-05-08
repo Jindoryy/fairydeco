@@ -62,7 +62,7 @@ public class OpenAiService {
         // 3. 동화 스토리 save 후 return
         // 이미지가 만약 있을 경우 건희형이 만든 image to text 서비스 메서드 사용해서 한줄 스토리 받음
         Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
-        String prompt = "키워드로 동화를 8장면 이상으로 만들어주고 각 대본의 끝에는 끝! 이 단어를 무조건 넣어줘 그리고 전체적으로 잘 이어져야 하고 5살이 보기에 쉬운 단어로만 구성되어야해";
+        String prompt = "키워드로 동화를 8장면 이상으로 각 대본의 끝에는 끝! 이 단어를 무조건 넣어줘. 그리고 이야기가 흥미로워야 하고 말이 잘 이어져야해. 마지막으로 5살이 보기에 쉬운 단어로만 구성되어야 하고 이상한 단어가 없어야해";
         String age = "Y";
         if ((LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0, 4))) > 5) {
             age = "O";
@@ -108,7 +108,7 @@ public class OpenAiService {
             System.out.println(bookStories[i]);
                 for(int j=0;j<bookStories[i].length();j++){
                     if(bookStories[i].substring(j,j+1).equals(".")){
-                        bookStories[i] = bookStories[i].substring(j+2,bookStories[i].length());
+                        bookStories[i] = bookStories[i].substring(j+1,bookStories[i].length());
                         break;
                     }
                 }
