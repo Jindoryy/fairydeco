@@ -10,9 +10,10 @@ module.exports = {
         extend: {
             colors: {
                 customYellow: '#FCF4DB',
+                customDarkYellow: '#FFD66B',
                 customPink: '#FCEAE9',
                 customPurple: '#CA54C9',
-                customGreen: '#A1C09F',
+                customGreen: '#A0D468',
                 customLigntGreen: '#E9FFE5',
                 customRed: '#DC2823',
                 customGray: '#807A7A',

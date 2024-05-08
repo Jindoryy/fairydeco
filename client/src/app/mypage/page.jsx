@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Header from '../components/header'
 import KidsPaint from './components/kidsPaint'
 import axios from 'axios'
 import { PencilSimpleLine } from '@phosphor-icons/react/dist/ssr'
@@ -46,7 +45,6 @@ export default function Mypage() {
 
     return (
         <div className="font-ourFont tracking-wider">
-            <Header />
             <div className="mx-5 py-10 text-6xl">우리 가족</div>
             <div className="mx-7 flex h-[550px] justify-around rounded-lg bg-customLigntGreen p-10 text-3xl">
                 <div className="mx-5 flex-grow pr-5">
@@ -99,7 +97,7 @@ export default function Mypage() {
                         {/* 기타 탭 */}
                         <input
                             type="radio"
-                            className={`tab h-[50px] !w-[100px] !border-customBlueBorder text-[25px] ${
+                            className={`tab h-[50px] !w-[100px] !border-customBlueBorder ${
                                 selectedTab === userInfo?.childList?.length
                                     ? 'tab-active !bg-customBlue'
                                     : 'bg-white'
@@ -107,7 +105,6 @@ export default function Mypage() {
                             checked={
                                 selectedTab === userInfo?.childList?.length
                             }
-                            aria-label="+"
                             onClick={() =>
                                 handleTabClick(userInfo?.childList?.length)
                             }
