@@ -10,20 +10,16 @@ module.exports = {
         extend: {
             colors: {
                 customYellow: '#FCF4DB',
+                customDarkYellow: '#FFD66B',
                 customPink: '#FCEAE9',
                 customPurple: '#CA54C9',
-                customGreen: '#A1C09F',
+                customGreen: '#A0D468',
                 customLigntGreen: '#E9FFE5',
                 customRed: '#DC2823',
                 customGray: '#807A7A',
                 customBlue: '#F3F4FF',
                 customOrange: '#F5AD35',
                 customBlueBorder: '#B5B8FF',
-            },
-            backgroundImage: {
-                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                'gradient-conic':
-                    'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
             },
             fontFamily: {
                 ourFont: ['TTHakgyoansimMonggeulmonggeulR'],

@@ -1,6 +1,7 @@
 //imageController.js
 const connectDB = require('../config/db');
 const imageService = require('../services/imageService');
+const axios = require('axios');
 
 async function createImage(req, res) {
   const { pageId } = req.body;
@@ -50,7 +51,7 @@ async function bookCreation(req, res) {
 
         const imageUrls = [];
 
-        const batchSize = 4;
+        const batchSize = 2;
         for (let i = 0; i < results.length; i += batchSize) {
             // 현재 배치의 페이지를 추출
             const currentPageBatch = results.slice(i, i + batchSize);

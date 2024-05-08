@@ -1,5 +1,4 @@
 import './globals.css'
-import Header from './components/header'
 import { SseProvider } from './components/sseProvider'
 
 export const metadata = {
@@ -15,7 +14,6 @@ export default function RootLayout({ children }) {
         <html lang="ko">
             <body className="font-ourFont">
                 <SseProvider>
-                    <Header />
                     {children}
                 </SseProvider>
             </body>

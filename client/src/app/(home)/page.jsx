@@ -1,15 +1,19 @@
-import Link from 'next/link'
-import Header from '../components/header'
-import Prompt from './components/prompt'
-import BookList from './components/bookList'
+import Image from 'next/image'
+import MainImage from '../../../public/image/mainpage.jpg'
+import ButtonBox from './components/buttonBox'
 
 export default function Home() {
     return (
         <div className="h-dvh w-dvw">
-            <div className="flex h-full flex-col items-center justify-center">
-                <Prompt />
-                <BookList />
-            </div>
+            <Image
+                src={MainImage}
+                layout="fill"
+                objectFit="cover"
+                quality={100}
+                alt={'메인 페이지 사진'}
+                className="brightness-[60%]"
+            />
+            <ButtonBox />
         </div>
     )
 }

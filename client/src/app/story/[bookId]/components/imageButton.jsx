@@ -7,19 +7,18 @@ export default function ImageButton({ bookId }) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const { connect, disconnect } = useSse()
     const handleMakeStory = () => {
-        console.log(bookId)
         getImage()
     }
     const getImage = async () => {
-        //유저아이디 변경 필요
+        const userId = localStorage.getItem("userId")
         try {
             const response = await axios.post(`${apiUrl}/book/image`, {
-                userId: 1,
+                userId: userId,
                 bookId: bookId,
             })
             if (response.data.status == 'success') {
                 alert(
-                    '기다려주시면 재밌는 동화를 만들어드릴게요!~ 동화가 만들어지는 데에 10~15분이 소요됩니다. '
+                    '기다려주시면 재밌는 동화를 만들어드릴게요!~ 동화가 만들어지는 데에 3~5분이 소요됩니다. '
                 )
                 connect(bookId)
                 router.push('/')

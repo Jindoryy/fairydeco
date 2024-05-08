@@ -13,5 +13,6 @@ public class ChildNameListResponse {
 
     private Integer childId;
     private String childName;
+    private String childProfileUrl;
 
 }
