@@ -135,7 +135,7 @@ export default function InputBox() {
                         </>
                     ) : (
                         <>
-                            {userId.length > 0 && idCheck ? (
+                            {userId.length > 0 ? (
                                 <>
                                     <div className="text-customRed">
                                         중복된 아이디입니다.
