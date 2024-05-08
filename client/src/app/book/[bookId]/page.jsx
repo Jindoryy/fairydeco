@@ -57,14 +57,15 @@ const TurnPage = () => {
                         const range = book.turn('range', page)
                         for (let p = range[0]; p <= range[1]; p++) {
                             let content
-                            if (p === 1) {
-                                const bookCoverUrl = data.data.bookCoverUrl
-                                const bookName = data.data.bookName
-                                content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
-                                        <img src="${bookCoverUrl}" class="w-[100%] h-[85%] object-cover" alt="Book Cover" />
-                                        <div class="h-[15%] w-[100%] flex justify-center items-center text-5xl text-black mt-2">${bookName}</div>
-                                    </div>`
-                            } else if (p === 18) {
+                            // if (p === 1) {
+                            //     const bookCoverUrl = data.data.bookCoverUrl
+                            //     const bookName = data.data.bookName
+                            //     content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
+                            //             <img src="${bookCoverUrl}" class="w-[100%] h-[85%] object-cover" alt="Book Cover" />
+                            //             <div class="h-[15%] w-[100%] flex justify-center items-center text-5xl text-black mt-2">${bookName}</div>
+                            //         </div>`
+                            // } else
+                            if (p === 18) {
                                 const bookCoverUrl = data.data.bookCoverUrl
                                 const bookMaker = data.data.bookMaker
                                 const bookName = data.data.bookName
