@@ -44,7 +44,7 @@ export default function ButtonBox() {
         <div>
             <div className="mr-4 flex justify-end">
                 <button
-                    className="btn btn-ghost relative ml-2 mt-2 h-10 w-1/12 pt-2 align-middle text-lg font-thin text-white hover:rotate-12 hover:bg-transparent focus:bg-transparent"
+                    className="btn btn-ghost relative ml-2 mt-2 h-10 w-1/12 pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                     onClick={goProfile}
                 >
                     <Image src={Horse} alt="아이 선택" />
@@ -54,7 +54,7 @@ export default function ButtonBox() {
             <div className="flex h-auto w-full items-center justify-between pl-20 pr-80">
                 <div className="relative flex flex-col items-center justify-center">
                     <button
-                        className="btn btn-ghost flex h-auto w-6/12 -rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white  hover:rotate-0 hover:bg-transparent focus:bg-transparent"
+                        className="btn btn-ghost flex h-auto w-6/12 -rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent focus:bg-transparent"
                         onClick={goMakeBook}
                     >
                         <Image
@@ -71,7 +71,7 @@ export default function ButtonBox() {
                 </div>
                 <div className="relative flex flex-col items-center justify-center">
                     <button
-                        className="btn btn-ghost flex h-auto w-8/12 rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent  focus:bg-transparent"
+                        className="btn  btn-ghost flex h-auto w-8/12 rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent focus:bg-transparent"
                         onClick={goBookList}
                     >
                         <Image
@@ -91,7 +91,7 @@ export default function ButtonBox() {
             <div className="flex h-auto w-full items-center justify-between pl-80 pr-40 pt-4">
                 <div className="relative flex flex-col items-center justify-center">
                     <button
-                        className="btn btn-ghost flex h-auto w-6/12 rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0  hover:bg-transparent focus:bg-transparent"
+                        className="btn  btn-ghost flex h-auto w-6/12 rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0  hover:bg-transparent focus:bg-transparent"
                         onClick={goMypage}
                     >
                         <Image
