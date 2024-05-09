@@ -76,7 +76,7 @@ async function storyToImage(pageStory, bookId, pageId) {
               const timeout = 600000; // 10 minutes in milliseconds
               const retryInterval = 15000; // 15 seconds in milliseconds
               const startTime = Date.now();
-
+              console.log(pageId + response.data.output[0]);
               while (Date.now() - startTime < timeout) {
                   try {
                       await new Promise(resolve => setTimeout(resolve, retryInterval));
@@ -94,7 +94,7 @@ async function storyToImage(pageStory, bookId, pageId) {
               const timeout = 600000; // 10 minutes in milliseconds
               const retryInterval = 15000; // 15 seconds in milliseconds
               const startTime = Date.now();
-
+              console.log(pageId + response.data.future_links[0])
               while (Date.now() - startTime < timeout) {
                   try {
                       await new Promise(resolve => setTimeout(resolve, retryInterval));
