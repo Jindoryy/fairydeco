@@ -1,12 +1,11 @@
 package com.a402.fairydeco.domain.book.controller;
 
+import com.a402.fairydeco.domain.book.dto.*;
 import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
-import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
 import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookLandingListResponse;
 import com.a402.fairydeco.domain.book.dto.BookMainListResponse;
 import com.a402.fairydeco.domain.book.dto.BookRegister;
-import com.a402.fairydeco.domain.book.dto.BookStory;
 import com.a402.fairydeco.domain.book.dto.BookStoryDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
@@ -42,18 +41,19 @@ public class BookController {
     private final OpenAiService openAiService;
     private final Map<Integer, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
-    @Operation(summary = "동화 만들기", description = "메인페이지에서 스크립트 혹은 아이 그림을 입력 후 동화 스크립트를 생성한다.")
+    @Operation(summary = "동화 만들기", description = "들어오는 이미지를 통해 스토리 생성 및 이미지 생성")
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-        public SuccessResponse<BookStory> register(BookRegister bookRegister) throws IOException {
-
-        return new SuccessResponse<>(openAiService.register(bookRegister));
+        public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
+        BookCreateRequestDto bookCreateRequestDto = openAiService.register(bookRegister);
+        return new SuccessResponse<>(bookService.createBookImage(bookCreateRequestDto));
     }
 
-    @Operation(summary = "최신 동화 목록 20개", description = "메인페이지에서 사용할 최신 동화 목록과 그 정보를 20개 반환한다. 최초 로딩 시 bookId는 0으로 요청한다.")
-    @GetMapping("/main-list/{bookId}")
-    public SuccessResponse<List<BookMainListResponse>> getBookMainList(@PathVariable Integer bookId) {
 
-        return new SuccessResponse<>(bookService.findBookMainList(bookId));
+    @Operation(summary = "아이 나이에 맞는 동화 + 샘플 동화", description = "책장에서 보여줄 최신 동화 목록과 샘플 동화 목록을 반환한다.")
+    @GetMapping("/main-list/{childId}")
+    public SuccessResponse<BookMainListResponse> getBookMainList(@PathVariable Integer childId) {
+
+        return new SuccessResponse<>(bookService.findBookMainList(childId));
     }
 
     @Operation(summary = "최신 동화 표지목록 20개", description = "랜딩페이지에서 사용할 최신 동화 표지목록 20개를 반환한다.")
@@ -89,13 +89,6 @@ public class BookController {
     public SuccessResponse<BookDetailResponse> getBookDetail(@PathVariable Integer bookId) {
 
         return new SuccessResponse<>(bookService.findBook(bookId));
-    }
-
-    @Operation(summary = "동화 이미지 생성", description = "완성된 동화 정보를 반환한다.")
-    @PostMapping("/image")
-    public SuccessResponse<?> createBookImage(@RequestBody BookCreateRequestDto request){
-
-        return new SuccessResponse<>(bookService.createBookImage(request));
     }
 
     @Operation(summary = "동화 생성 완료 알림", description = "생성 완료된 동화 알림 수신")

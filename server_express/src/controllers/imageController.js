@@ -31,7 +31,7 @@ async function createImage(req, res) {
 async function bookCreation(req, res) {
     const startTime = new Date();
     console.log(`CHECK : BOOK CREATION STARTED AT ${startTime.toISOString()}`);
-    const { userId, bookId } = req.body;
+    const { bookId } = req.body;
     console.log("PHASE 1 : IMAGE CREATE START");
     console.log("Input BookId :" + `${bookId}`);
     const connection = await connectDB();
