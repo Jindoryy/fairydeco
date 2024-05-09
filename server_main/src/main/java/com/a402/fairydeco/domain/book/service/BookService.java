@@ -1,15 +1,7 @@
 package com.a402.fairydeco.domain.book.service;
 
 
-import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
-import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
-import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
-import com.a402.fairydeco.domain.book.dto.BookLandingListResponse;
-import com.a402.fairydeco.domain.book.dto.BookMainListResponse;
-import com.a402.fairydeco.domain.book.dto.BookStoryDetailResponse;
-import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
-import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
-import com.a402.fairydeco.domain.book.dto.CompleteStatus;
+import com.a402.fairydeco.domain.book.dto.*;
 import com.a402.fairydeco.domain.book.entity.Book;
 import com.a402.fairydeco.domain.book.repository.BookRepository;
 import com.a402.fairydeco.domain.child.entity.Child;
@@ -174,7 +166,7 @@ public class BookService {
     }
 
     public Boolean createBookImage(BookCreateRequestDto request) {
-        Optional<Book> optionalBook = bookRepository.findByChild_User_IdAndId(request.getUserId(), request.getBookId());
+        Optional<Book> optionalBook = bookRepository.findById(request.getBookId());
         if (!optionalBook.isPresent()) {
             return false;
         } else {

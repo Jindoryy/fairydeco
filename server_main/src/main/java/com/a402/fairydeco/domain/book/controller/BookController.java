@@ -1,7 +1,6 @@
 package com.a402.fairydeco.domain.book.controller;
 
 import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
-import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
 import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookLandingListResponse;
 import com.a402.fairydeco.domain.book.dto.BookMainListResponse;
@@ -42,9 +41,9 @@ public class BookController {
     private final OpenAiService openAiService;
     private final Map<Integer, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
-    @Operation(summary = "동화 만들기", description = "메인페이지에서 스크립트 혹은 아이 그림을 입력 후 동화 스크립트를 생성한다.")
+    @Operation(summary = "동화 만들기", description = "들어오는 이미지를 통해 스토리 생성 및 이미지 생성")
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-        public SuccessResponse<BookStory> register(BookRegister bookRegister) throws IOException {
+        public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
 
         return new SuccessResponse<>(openAiService.register(bookRegister));
     }
@@ -89,13 +88,6 @@ public class BookController {
     public SuccessResponse<BookDetailResponse> getBookDetail(@PathVariable Integer bookId) {
 
         return new SuccessResponse<>(bookService.findBook(bookId));
-    }
-
-    @Operation(summary = "동화 이미지 생성", description = "완성된 동화 정보를 반환한다.")
-    @PostMapping("/image")
-    public SuccessResponse<?> createBookImage(@RequestBody BookCreateRequestDto request){
-
-        return new SuccessResponse<>(bookService.createBookImage(request));
     }
 
     @Operation(summary = "동화 생성 완료 알림", description = "생성 완료된 동화 알림 수신")
