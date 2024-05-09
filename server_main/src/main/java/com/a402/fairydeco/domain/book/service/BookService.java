@@ -1,15 +1,7 @@
 package com.a402.fairydeco.domain.book.service;
 
 
-import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
-import com.a402.fairydeco.domain.book.dto.BookCreateRequestDto;
-import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
-import com.a402.fairydeco.domain.book.dto.BookLandingListResponse;
-import com.a402.fairydeco.domain.book.dto.BookMainListResponse;
-import com.a402.fairydeco.domain.book.dto.BookStoryDetailResponse;
-import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
-import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
-import com.a402.fairydeco.domain.book.dto.CompleteStatus;
+import com.a402.fairydeco.domain.book.dto.*;
 import com.a402.fairydeco.domain.book.entity.Book;
 import com.a402.fairydeco.domain.book.repository.BookRepository;
 import com.a402.fairydeco.domain.child.entity.Child;
@@ -173,8 +165,8 @@ public class BookService {
             .build();
     }
 
-    public Boolean createBookImage(BookCreateRequestDto request) {
-        Optional<Book> optionalBook = bookRepository.findByChild_User_IdAndId(request.getUserId(), request.getBookId());
+    public Boolean createBookImage(BookCreateRequestDto bookCreateRequestDto) {
+        Optional<Book> optionalBook = bookRepository.findById(bookCreateRequestDto.getBookId());
         if (!optionalBook.isPresent()) {
             return false;
         } else {
@@ -182,7 +174,7 @@ public class BookService {
                 // 기능 진행1: stories/book-creation으로 POST 요청 보내기
                 String url = EXPRESS_SERVER_URL;
                 RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+                ResponseEntity<String> response = restTemplate.postForEntity(url, bookCreateRequestDto, String.class);
 
                 // 응답이 정상이면 true 반환
                 if (response.getStatusCode() == HttpStatus.OK) {
