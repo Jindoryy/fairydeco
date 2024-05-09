@@ -20,6 +20,7 @@ const TurnPage = () => {
     const pathname = usePathname()
     const [jQueryLoaded, setJQueryLoaded] = useState(false)
     const [data, setData] = useState(null)
+    const [turnLoaded, setTurnLoaded] = useState(false)
 
     // 버튼 토글 상태 관리
     const [isAudioPlaying, setIsAudioPlaying] = useState(false) // 음성 재생 상태
@@ -28,6 +29,16 @@ const TurnPage = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const bookId = pathname.split('/').pop()
     const URL = `${apiUrl}/book/book-detail/${bookId}`
+
+    useEffect(() => {
+        if (jQueryLoaded) {
+            // Script를 사용하여 turn.js를 불러옵니다.
+            const script = document.createElement('script')
+            script.src = '/turn.min.js'
+            script.onload = () => setTurnLoaded(true) // 로드 완료 후 상태 변경
+            document.body.appendChild(script) // body에 스크립트 추가
+        }
+    }, [jQueryLoaded])
 
     // 데이터를 가져와서 상태에 저장
     useEffect(() => {
@@ -51,6 +62,21 @@ const TurnPage = () => {
 
     const toggleAutoPlay = () => {
         setIsAutoPlay((prev) => !prev) // 자동 재생 상태 토글
+    }
+
+    // Event handlers to turn the pages
+    const handlePageBackward = () => {
+        if (turnLoaded) {
+            const book = window.jQuery('#book')
+            book.turn('previous') // Turn to the previous page
+        }
+    }
+
+    const handlePageForward = () => {
+        if (turnLoaded) {
+            const book = window.jQuery('#book')
+            book.turn('next') // Turn to the next page
+        }
     }
 
     useEffect(() => {
@@ -110,7 +136,7 @@ const TurnPage = () => {
                                 content = pageContent
                                     ? p % 2 === 0
                                         ? `<img src="${pageContent}" class="object-contain w-full h-full" alt="Page Image" />`
-                                        : `<div class="flex flex-col items-center justify-center text-center text-3xl text-black break-keep px-8">${pageContent}</div>`
+                                        : `<div class="flex flex-col items-center justify-center text-center text-2xl text-black break-keep px-8 !font-storyFont">${pageContent}</div>`
                                     : '<div class="flex items-center justify-center text-center text-3xl text-red-500">No Content Available</div>'
                             }
 
@@ -141,7 +167,7 @@ const TurnPage = () => {
                 }
             })
         }
-    }, [jQueryLoaded, data]) // data도 의존성에 추가
+    }, [jQueryLoaded, turnLoaded, data]) // data도 의존성에 추가
 
     return (
         <>
@@ -150,7 +176,6 @@ const TurnPage = () => {
                     src="https://code.jquery.com/jquery-3.7.1.min.js"
                     onLoad={() => setJQueryLoaded(true)}
                 />
-                <Script src="/turn.min.js" />
 
                 {/* Header Div */}
                 <div
@@ -158,13 +183,16 @@ const TurnPage = () => {
                     className="flex w-full items-center justify-between px-4 py-2"
                 >
                     {/* Left Section */}
-                    <div className="ml-8 flex flex-grow justify-start">
+                    <Link
+                        href="/"
+                        className="ml-8 flex flex-grow justify-start"
+                    >
                         <HouseLine
                             size={45}
                             weight="fill"
                             style={{ color: '#A0D468' }}
                         />
-                    </div>
+                    </Link>
 
                     {/* Central Section */}
                     <div className="ml-32 flex flex-grow items-center justify-center text-center">
@@ -187,7 +215,7 @@ const TurnPage = () => {
                         </Link>
                         {/* 음성 재생 및 멈춤 토글 */}
                         <div
-                            className="flex flex-col items-center"
+                            className="flex w-[55px] flex-col items-center"
                             onClick={toggleAudioPlayback} // 클릭 이벤트로 토글
                         >
                             {isAudioPlaying ? (
@@ -216,7 +244,7 @@ const TurnPage = () => {
                         </div>
                         {/* 자동 재생 및 멈춤 토글 */}
                         <div
-                            className="flex flex-col items-center"
+                            className="flex w-[55px] flex-col items-center"
                             onClick={toggleAutoPlay} // 클릭 이벤트로 토글
                         >
                             {isAutoPlay ? (
@@ -284,7 +312,12 @@ const TurnPage = () => {
                     <CaretCircleLeft
                         size={32}
                         weight="fill"
-                        style={{ color: '#A0D468', marginRight: '10px' }}
+                        style={{
+                            color: '#A0D468',
+                            marginRight: '10px',
+                            cursor: 'pointer',
+                        }}
+                        onClick={handlePageBackward} // Event handler for backward navigation
                     />
                     <input
                         type="text"
@@ -297,7 +330,12 @@ const TurnPage = () => {
                     <CaretCircleRight
                         size={32}
                         weight="fill"
-                        style={{ color: '#A0D468', marginLeft: '10px' }}
+                        style={{
+                            color: '#A0D468',
+                            marginLeft: '10px',
+                            cursor: 'pointer',
+                        }}
+                        onClick={handlePageForward} // Event handler for forward navigation
                     />
                 </div>
             </div>

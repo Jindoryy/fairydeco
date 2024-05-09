@@ -23,9 +23,31 @@ module.exports = {
             },
             fontFamily: {
                 ourFont: ['TTHakgyoansimMonggeulmonggeulR'],
+                storyFont: ['GowunDodumRegular'],
             },
             boxShadow: {
                 customShadow: '0 2px 2px 0 #C4B6B5',
+                innerShadow: 'inset -8px -8px 8px rgba(0, 0, 0, 0.3)',
+            },
+            animation: {
+                wiggle: 'wiggle 1s ease-in-out infinite',
+                bounce: 'bounce 1s infinite',
+            },
+        },
+        keyframes: {
+            wiggle: {
+                '0%, 100%': { transform: 'rotate(-6deg)' },
+                '50%': { transform: 'rotate(6deg)' },
+            },
+            bounce: {
+                '0%, 100%': {
+                    transform: 'translateY(-5%)',
+                    'animation-timing-function': 'cubic-bezier(0.8,0,1,1)',
+                },
+                '50%': {
+                    transform: 'none',
+                    'animation-timing-function': 'cubic-bezier(0,0,0.2,1)',
+                },
             },
         },
     },
