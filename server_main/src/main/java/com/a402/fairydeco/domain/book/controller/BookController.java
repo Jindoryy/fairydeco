@@ -1,5 +1,6 @@
 package com.a402.fairydeco.domain.book.controller;
 
+import com.a402.fairydeco.domain.book.dto.*;
 import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
 import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookLandingListResponse;
@@ -43,8 +44,8 @@ public class BookController {
     @Operation(summary = "동화 만들기", description = "들어오는 이미지를 통해 스토리 생성 및 이미지 생성")
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
         public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
-
-        return new SuccessResponse<>(openAiService.register(bookRegister));
+        BookCreateRequestDto bookCreateRequestDto = openAiService.register(bookRegister);
+        return new SuccessResponse<>(bookService.createBookImage(bookCreateRequestDto));
     }
 
     @Operation(summary = "아이 나이에 맞는 동화 + 샘플 동화", description = "책장에서 보여줄 최신 동화 목록과 샘플 동화 목록을 반환한다.")
