@@ -23,11 +23,12 @@ async function createImagePrompt(pageStory) {
         messages: [
           { "role": "system", "content": "You are an assistant who helps generate prompts for StableDiffusion." },
           { "role": "user", "content": `Create a english prompt for a StableDiffusion based on the following story: "${pageStory}". The prompt should describe a scene suitable for children. The prompt should follow these conditions:
-            - One single image
-            - No speech bubbles
-            - No text or letters
-            - Cute and child-friendly. Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.` }
-        ],
+          - One single image
+          - No speech bubbles
+          - No text or letters
+          - Cute and child-friendly
+          - The main characters are human. Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.`
+        }],
         max_tokens: 500
       });
       return gptResponse.choices[0].message.content;
@@ -54,7 +55,7 @@ async function storyToImage(pageStory, bookId, pageId, attempt = 2) {
       width: "1024",
       height: "1024",
       samples: "1",
-      num_inference_steps: "21",
+      num_inference_steps: "31",
       safety_checker: "no",
       enhance_prompt: "yes",
       seed: 2098127623,

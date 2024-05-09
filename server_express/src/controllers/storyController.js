@@ -16,7 +16,7 @@ async function processQueue() {
         await task();  // 작업 실행
     } finally {
         isProcessing = false;  // 작업 완료 후 처리 상태를 false로 변경
-        processQueue();  // 다음 작업을 위해 큐 처리 함수 재호출
+        setImmediate(processQueue);  // 다음 작업을 위해 큐 처리 함수 재호출
     }
 }
 
@@ -24,7 +24,7 @@ async function processQueue() {
 async function bookStableCreation(req, res) {
     const startTime = new Date();  // 시작 시간 기록
     console.log(`CHECK : BOOK CREATION STARTED AT ${startTime.toISOString()}`);
-    const { bookId, pageId } = req.body;
+    const { bookId } = req.body;
 
     // 데이터베이스 연결 시도
     const connection = await connectDB();
