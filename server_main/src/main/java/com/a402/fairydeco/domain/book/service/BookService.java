@@ -165,8 +165,8 @@ public class BookService {
             .build();
     }
 
-    public Boolean createBookImage(BookCreateRequestDto bookCreateRequestDto) {
-        Optional<Book> optionalBook = bookRepository.findById(bookCreateRequestDto.getBookId());
+    public Boolean createBookImage(BookCreateRequestDto request) {
+        Optional<Book> optionalBook = bookRepository.findById(request.getBookId());
         if (!optionalBook.isPresent()) {
             return false;
         } else {
@@ -174,7 +174,7 @@ public class BookService {
                 // 기능 진행1: stories/book-creation으로 POST 요청 보내기
                 String url = EXPRESS_SERVER_URL;
                 RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<String> response = restTemplate.postForEntity(url, bookCreateRequestDto, String.class);
+                ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
                 // 응답이 정상이면 true 반환
                 if (response.getStatusCode() == HttpStatus.OK) {
