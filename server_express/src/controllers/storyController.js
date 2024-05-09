@@ -23,7 +23,7 @@ async function processQueue() {
 async function bookStableCreation(req, res) {
     const startTime = new Date();  // 시작 시간 기록
     console.log(`CHECK : BOOK CREATION STARTED AT ${startTime.toISOString()}`);
-    const { bookId } = req.body;
+    const { bookId, pageId } = req.body;
 
     // 데이터베이스 연결 시도
     const connection = await connectDB();
@@ -37,7 +37,7 @@ async function bookStableCreation(req, res) {
     const [results] = await connection.query('SELECT page_id, page_story FROM page WHERE book_id = ?', [bookId]);
     if (results.length === 0) {
         await connection.end();  // 결과가 없으면 연결 종료
-        res.status(404).send('No pages found for the given BOOK ID');
+        res.status(404).send(`No pages found for the given BOOK ID : ${bookId}, PAGE ID : ${pageId}`);
         return;
     }
     res.status(200).send({ success: true, message: "동화 제작 중..." });
@@ -48,7 +48,7 @@ async function bookStableCreation(req, res) {
         try {
             // 이미지 생성 및 URL 저장
             const imageUrls = await Promise.all(results.map(page =>
-                stableService.storyToImage(page.page_story, page.page_id, bookId)
+                stableService.storyToImage(page.page_story, bookId, page.page_id)
             ));
             console.log("PHASE 4 : IMAGE URLs RETRIEVED");
 

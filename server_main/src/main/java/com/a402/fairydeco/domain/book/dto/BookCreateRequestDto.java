@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookCreateRequestDto {
 
-    private Integer userId;
     private Integer bookId;
+    private Integer pageId;
 
     @Builder
-    public BookCreateRequestDto(Integer userId, Integer bookId){
-        this.userId = userId;
+    public BookCreateRequestDto(Integer bookId, Integer pageId){
         this.bookId = bookId;
+        this.pageId = pageId;
     }
 
 }
