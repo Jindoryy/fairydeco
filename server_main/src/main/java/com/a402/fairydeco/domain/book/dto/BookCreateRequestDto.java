@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 public class BookCreateRequestDto {
 
     private Integer bookId;
+    private Integer pageId;
 
     @Builder
-    public BookCreateRequestDto(Integer bookId){
+    public BookCreateRequestDto(Integer bookId, Integer pageId){
         this.bookId = bookId;
+        this.pageId = pageId;
     }
 
 }

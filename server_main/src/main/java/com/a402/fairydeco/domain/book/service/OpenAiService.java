@@ -164,15 +164,17 @@ public class OpenAiService {
                 }
         }
         // 각 page 8개 db에 저장하는 작업
+        Page[] tmpPage = new Page[bookStories.length];
         for (int i = 0; i < bookStories.length; i++) {
             Page page = Page.builder()
                     .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
                     .story(bookStories[i]) //공백제거
                     .build();
-            pageRepository.save(page);
+            tmpPage[i] = pageRepository.save(page);
         }
         BookCreateRequestDto bookCreateRequestDto = BookCreateRequestDto.builder()
                 .bookId(savedBook.getId())
+                .pageId(tmpPage[0].getId())
                 .build();
 
         if(bookService.createBookImage(bookCreateRequestDto)){
