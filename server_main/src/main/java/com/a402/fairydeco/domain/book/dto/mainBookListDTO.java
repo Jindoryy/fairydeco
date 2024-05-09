@@ -1,6 +1,5 @@
 package com.a402.fairydeco.domain.book.dto;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookMainListResponse {
+public class mainBookListDTO {
 
-    private List<mainBookListDTO> sampleBookList;
-    private List<mainBookListDTO> recentBookList;
+    private Integer bookId;
+    private String bookName;
+    private String bookMaker;
+    private String bookCoverUrl;
 
 }
