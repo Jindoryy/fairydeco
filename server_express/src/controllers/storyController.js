@@ -1,3 +1,4 @@
+// storyController.js
 const connectDB = require('../config/db');
 const stableService = require('../services/stableService');
 const axios = require('axios');
