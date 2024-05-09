@@ -67,7 +67,6 @@ async function bookStableCreation(req, res) {
             console.log("PHASE 6 : COVER IMAGE CREATED AND DB UPDATED");
         } catch (error) {
             console.error('Failed during book creation process:', error);
-            res.status(500).send('Error during book creation process');
         } finally {
             await connection.end();  // 작업 완료 후 DB 연결 종료
             console.log("PHASE 7 : DB CONNECTION CLOSED");
