@@ -37,10 +37,10 @@ public class Page extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Column(name = "page_story")
+    @Column(name = "page_story", length = 1000)
     private String story;
 
-    @Column(name = "page_image_url")
+    @Column(name = "page_image_url", length = 1000)
     private String imageUrl;
 
     @Column(name = "page_image_name")
