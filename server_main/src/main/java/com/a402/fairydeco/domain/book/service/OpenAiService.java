@@ -63,14 +63,13 @@ public class OpenAiService {
         // 이미지가 만약 있을 경우 건희형이 만든 image to text 서비스 메서드 사용해서 한줄 스토리 받음
         Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
         String age = "Y";
-//        String prompt = "넌 지금부터 동화 스토리텔링 전문가야. 많은 아이들이 흥미를 느낄만한 글을 작성해 줘야 해. 키워드를 이용하여 장면을 8페이지 이상으로 나누고 각 대본의 끝에는 끝! 이 단어를 넣어서 각각 150자 이상 작성해줘. 쉬운 단어로만 구성되어야 하고 시작은  옛날 옛적에, 로 시작해줘.";
         String prompt = "<동화 스토리 작성 프롬프트>\n" +
                 "\n" +
                 "넌 지금부터 동화 스토리텔링 전문가야. 아래 키워드를 활용하여 많은 사람이 흥미를 느낄만한 글을 작성해 줘야 해. 이 프롬프트를 전송하면 아래의 단계를 진행해 줘.\n" +
                 "\n" +
                 "1. 씬을 8장 이상으로 나누고 각 씬별 대본을 작성해 줘. 대본은 아래의 구조로 작성해 줘.\n" +
                 "\n" +
-                "    **구조:**\n" +
+                "    구조:\n" +
                 "    1. 소년이 크리스마스에 석탄을 받습니다. 그는 화를 냅니다! 그는 산타에게 화를 냅니다! 끝!\n" +
                 "    2. 소년이 크리스마스에 석탄을 받습니다. 그는 화를 냅니다! 그는 산타에게 화를 냅니다! 끝!\n" +
                 "    3. 소년이 크리스마스에 석탄을 받습니다. 그는 화를 냅니다! 그는 산타에게 화를 냅니다! 끝!\n" +
@@ -118,7 +117,6 @@ public class OpenAiService {
         if (child.getGender().toString().equals("WOMAN")) {
             gender = "여";
         }
-//        prompt += "\n(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+ gender+"자 아이가 보기 좋은 동화를 8컷으로 만들어줘"+ ", 줄거리는 " + savedBook.getPrompt();
        if(age.equals("Y")){
            prompt += "\n\n 쉬운단어로 각 대본은 50자 정도로 무조건 8컷 이상 만들어줘. 키워드 :" + savedBook.getPrompt();
        }
@@ -129,9 +127,9 @@ public class OpenAiService {
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
         String[] bookStories;
         String model = model1;
-//        if (age.equals("O")) {
-//            model = model2;
-//        }
+        if (age.equals("O")) {
+            model = model2;
+        }
         while (true) {
             // 나이가 어리면 model1으로
             // 나이 많으면 model2로 실행
@@ -166,16 +164,17 @@ public class OpenAiService {
                 }
         }
         // 각 page 8개 db에 저장하는 작업
+        Page[] tmpPage = new Page[bookStories.length];
         for (int i = 0; i < bookStories.length; i++) {
             Page page = Page.builder()
                     .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
                     .story(bookStories[i]) //공백제거
                     .build();
-            pageRepository.save(page);
+            tmpPage[i] = pageRepository.save(page);
         }
         BookCreateRequestDto bookCreateRequestDto = BookCreateRequestDto.builder()
-                .userId(child.getUser().getId())
                 .bookId(savedBook.getId())
+                .pageId(tmpPage[0].getId())
                 .build();
 
         if(bookService.createBookImage(bookCreateRequestDto)){
