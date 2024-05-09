@@ -44,9 +44,11 @@ public class OpenAiService {
     private final ChildRepository childRepository;
     private final BookService bookService;
     @Value("${openai.model1}")
-    private String model1;
+    private String model1; // 4~5세
     @Value("${openai.model2}")
-    private String model2;
+    private String model2; // 6~7세
+    @Value("${openai.model3}")
+    private String fineModel; // 스토리 파인튜닝 모델
     @Value("${openai.api.url}")
     private String apiURL;
     @Value("${openai.api.image}")
@@ -141,12 +143,13 @@ public class OpenAiService {
             if(tmp.length<7){
                 continue;
             }
-            story += "\n\n 동화체로 바꿔주고 구조는 유지하되 존댓말로 어린 아이가 보기에 자연스럽게 바꿔줘";
-             request = new StoryRequest(model, story);
+            String finePrompt = "넌 지금부터 스토리텔링 전문가야. 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 전체적으로 자연스럽지 않은 문장은 어린 아이가 이해할 수 있도록 쉬운 단어로 구성해서 자연스럽게 바꿔줘"
+            finePrompt += "\n\n " + story;
+             request = new StoryRequest(fineModel, finePrompt);
              storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
-            story = storyResponse.getChoices().get(0).getMessage().getContent();
-            bookStories = story.split("끝!"); // 8개로 나눔
-            System.out.println(story);
+            String fineStory = storyResponse.getChoices().get(0).getMessage().getContent();
+            bookStories = fineStory.split("끝!"); // 8개로 나눔
+            System.out.println(fineStory);
             if (bookStories.length >= 7) {
                 break;
                 // 8개가 아니라면 루프를 다시 시작
