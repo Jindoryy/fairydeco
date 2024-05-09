@@ -143,7 +143,7 @@ public class OpenAiService {
             if(tmp.length<7){
                 continue;
             }
-            String finePrompt = "넌 지금부터 스토리텔링 전문가야. 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 전체적으로 자연스럽지 않은 문장은 어린 아이가 이해할 수 있도록 쉬운 단어로 구성해서 자연스럽게 바꿔줘"
+            String finePrompt = "넌 지금부터 스토리텔링 전문가야. 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 전체적으로 자연스럽지 않은 문장은 어린 아이가 이해할 수 있도록 쉬운 단어로 구성해서 자연스럽게 바꿔줘";
             finePrompt += "\n\n " + story;
              request = new StoryRequest(fineModel, finePrompt);
              storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
