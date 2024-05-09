@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import PencilImage from '../../../../public/image/pencil.png'
 import FileImage from '../../../../public/image/file.png'
+import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
 
 export default function ChooseButton() {
     const router = useRouter()
@@ -13,8 +14,22 @@ export default function ChooseButton() {
     const goUpload = () => {
         router.push('/makebook/uploadfile')
     }
+    const goBack = () => {
+        router.push('/')
+    }
+
     return (
         <div>
+            <button
+                className="btn btn-ghost relative ml-2 h-10 w-1/12 pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
+                onClick={goBack}
+            >
+                <ArrowCircleLeft
+                    size={80}
+                    weight="fill"
+                    className="text-white"
+                />
+            </button>
             <div className="relative flex h-auto w-full items-center justify-center pt-12">
                 <button
                     className="shadow-innerShadow btn relative m-4 mr-8 h-[500px] w-1/3 rounded-3xl border-none bg-customBlueBorder p-4 text-5xl font-thin hover:bg-customBlueBorder "

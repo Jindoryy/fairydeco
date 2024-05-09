@@ -36,7 +36,7 @@ export default function LoginBox() {
             if (response.data.status == 'success') {
                 localStorage.setItem('userId', response.data.data.userId)
                 alert('로그인 성공!')
-                router.push('/')
+                router.push('/profile')
             } else {
                 alert(
                     '아이디가 없거나, 비밀번호가 틀렸습니다! 다시 입력해주세요!'
