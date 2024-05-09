@@ -26,7 +26,6 @@ async function createImagePrompt(pageStory) {
             - One single image
             - No speech bubbles
             - No text or letters
-            - Emphasize keywords
             - Cute and child-friendly. Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.` }
         ],
         max_tokens: 500
