@@ -106,7 +106,7 @@ async function storyToImage(pageStory, bookId, pageId, attempt = 2) {
               while (Date.now() - startTime < timeout) {
                   try {
                       await new Promise(resolve => setTimeout(resolve, retryInterval));
-                      const imageData = await downloadAndUploadImage(response.data.future_links[0], pageId, bookId);
+                      const imageData = await downloadAndUploadImage(response.data.future_links[0], bookId, pageId);
                       if (imageData) {
                         console.log(pageId + " "+response.meta.seed);
                           return imageData;
