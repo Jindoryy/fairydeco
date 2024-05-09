@@ -1,3 +1,19 @@
+import Image from 'next/image'
+import MainImage from '../../../public/image/mainpage.jpg'
+import ChooseButton from './components/chooseButton'
+
 export default function MakeBook() {
-    return <div>책만들기 페이지</div>
+    return (
+        <div className="h-dvh w-dvw">
+            <Image
+                src={MainImage}
+                layout="fill"
+                objectFit="cover"
+                quality={100}
+                alt={'메인 페이지 사진'}
+                className="brightness-[60%]"
+            />
+            <ChooseButton />
+        </div>
+    )
 }
