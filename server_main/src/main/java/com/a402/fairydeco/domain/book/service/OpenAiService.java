@@ -56,7 +56,7 @@ public class OpenAiService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     @Transactional
-    public Boolean register(BookRegister bookRegister) throws IOException {
+    public BookCreateRequestDto register(BookRegister bookRegister) throws IOException {
         // 1. 들어온 내용을 바탕으로 동화 등록
         // 2. 프롬프트로 동화 스토리 생성
         // 3. 동화 스토리 save 후 return
@@ -177,10 +177,7 @@ public class OpenAiService {
                 .pageId(tmpPage[0].getId())
                 .build();
 
-        if(bookService.createBookImage(bookCreateRequestDto)){
-            return true;
-        }
-        return false;
+        return bookCreateRequestDto;
     }
 
     public ImgPromptDto createPromptKidImg(MultipartFile image) throws IOException {

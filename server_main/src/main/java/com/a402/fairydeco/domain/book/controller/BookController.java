@@ -1,14 +1,6 @@
 package com.a402.fairydeco.domain.book.controller;
 
-import com.a402.fairydeco.domain.book.dto.BookChildPictureListResponse;
-import com.a402.fairydeco.domain.book.dto.BookDetailResponse;
-import com.a402.fairydeco.domain.book.dto.BookLandingListResponse;
-import com.a402.fairydeco.domain.book.dto.BookMainListResponse;
-import com.a402.fairydeco.domain.book.dto.BookRegister;
-import com.a402.fairydeco.domain.book.dto.BookStory;
-import com.a402.fairydeco.domain.book.dto.BookStoryDetailResponse;
-import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
-import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
+import com.a402.fairydeco.domain.book.dto.*;
 import com.a402.fairydeco.domain.book.service.BookService;
 import com.a402.fairydeco.domain.book.service.OpenAiService;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
@@ -44,8 +36,8 @@ public class BookController {
     @Operation(summary = "동화 만들기", description = "들어오는 이미지를 통해 스토리 생성 및 이미지 생성")
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
         public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
-
-        return new SuccessResponse<>(openAiService.register(bookRegister));
+        BookCreateRequestDto bookCreateRequestDto = openAiService.register(bookRegister);
+        return new SuccessResponse<>(bookService.createBookImage(bookCreateRequestDto));
     }
 
     @Operation(summary = "최신 동화 목록 20개", description = "메인페이지에서 사용할 최신 동화 목록과 그 정보를 20개 반환한다. 최초 로딩 시 bookId는 0으로 요청한다.")
