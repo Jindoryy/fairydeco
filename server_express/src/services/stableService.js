@@ -21,13 +21,14 @@ async function createImagePrompt(pageStory) {
       const gptResponse = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
-          { "role": "system", "content": "You are an assistant who helps generate prompts for DALL-E 3." },
-          { "role": "user", "content": `Create a prompt for a StableDiffusionImage based on the following story: "${pageStory}". The prompt should describe a scene suitable for children. The prompt should follow these conditions:
+          { "role": "system", "content": "You are an assistant who helps generate prompts for StableDiffusion." },
+          { "role": "user", "content": `Create a english prompt for a StableDiffusion based on the following story: "${pageStory}". The prompt should describe a scene suitable for children. The prompt should follow these conditions:
             - One single image
             - No speech bubbles
             - No text or letters
             - Cute and child-friendly. Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.` }
-        ]
+        ],
+        max_tokens: 500
       });
       return gptResponse.choices[0].message.content;
     } catch (error) {
@@ -38,6 +39,7 @@ async function createImagePrompt(pageStory) {
 
 async function storyToImage(pageStory, bookId, pageId) {
   const convertprompt = await createImagePrompt(pageStory);
+  console.log(pageId+" "+convertprompt)
   const url = "https://stablediffusionapi.com/api/v4/dreambooth";
 
   const headers = {
@@ -76,7 +78,7 @@ async function storyToImage(pageStory, bookId, pageId) {
               const timeout = 600000; // 10 minutes in milliseconds
               const retryInterval = 15000; // 15 seconds in milliseconds
               const startTime = Date.now();
-
+              console.log(pageId + response.data.output[0]);
               while (Date.now() - startTime < timeout) {
                   try {
                       await new Promise(resolve => setTimeout(resolve, retryInterval));
@@ -94,7 +96,7 @@ async function storyToImage(pageStory, bookId, pageId) {
               const timeout = 600000; // 10 minutes in milliseconds
               const retryInterval = 15000; // 15 seconds in milliseconds
               const startTime = Date.now();
-
+              console.log(pageId + response.data.future_links[0])
               while (Date.now() - startTime < timeout) {
                   try {
                       await new Promise(resolve => setTimeout(resolve, retryInterval));
@@ -109,6 +111,7 @@ async function storyToImage(pageStory, bookId, pageId) {
               console.log("Final attempt using future link");
               return await downloadAndUploadImage(response.data.future_links[0], pageId, bookId);
           } else if (response.data.status === 'error') {
+              console.log(response.data);
               console.log(`Error on try ${retryCount + 1}, retrying...`);
               retryCount++;
               continue;

@@ -1,8 +1,8 @@
 import Image from 'next/image'
-import MainImage from '../../../public/image/mainpage.jpg'
-import ChooseButton from './components/chooseButton'
+import MainImage from '../../../../public/image/mainpage.jpg'
+import UploadBox from './components/uploadBox'
 
-export default function MakeBook() {
+export default function UploadFile() {
     return (
         <div className="h-dvh w-dvw">
             <Image
@@ -13,7 +13,7 @@ export default function MakeBook() {
                 alt={'메인 페이지 사진'}
                 className="brightness-[60%]"
             />
-            <ChooseButton />
+            <UploadBox />
         </div>
     )
 }
