@@ -92,7 +92,7 @@ public class OpenAiService {
                 "3. 주의사항:\n" +
                 "    *도입부: 2초 내로 사람들의 흥미를 유발할 수 있는 문구나 주제를 넣어줘.\n" +
                 "    *결말: 유머나 반전나 교훈을 주는 식으로 마무리 해줘.\n" +
-                "    *각 씬의 대본은 끝에는 끝! 이 단어를 넣어서 8장 이상으로 무조건 나누고 구체적으로 작성해야해. 그리고 한글로 작성해야해.\n" +
+                "    *각 씬의 대본은 끝에는 끝! 이 단어를 넣어서 8장 이상으로 무조건 나누고 구체적으로 작성해야해. 그리고 전부 한글로 작성해야해.\n" +
                 "    *많은 사람들이 좋아하고 관심있어 하는 대중적이고 유명한 키워드를 중간 중간 넣어줘.\n" +
                 "    *대본은 디테일이 중요해. 필요한 단어나 배경지식이 있다면 외부에서 검색해서 스토리의 완성도를 더 깊이있게 만들어줘";
         if ((LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0, 4))) > 5) {
@@ -103,9 +103,9 @@ public class OpenAiService {
         // image to text 메서드
         ImgPromptDto imgPromptDto = createPromptKidImg(bookRegister.getBookPicture());
         Book book = Book.builder()
-                .child(childRepository.findById(bookRegister.getChildId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
-                .name(bookRegister.getBookMaker() + "의 이야기")
-                .maker(bookRegister.getBookMaker())
+                .child(childRepository.findById(child.getId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
+                .name(child.getName() + "의 이야기")
+                .maker(child.getName())
                 .prompt(imgPromptDto.getPrompt())
                 .pictureUrl(imgPromptDto.getImageUrl())
                 .pictureName(imgPromptDto.getImageName())
