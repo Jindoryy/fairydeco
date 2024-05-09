@@ -1,14 +1,17 @@
 'use client'
 
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PlusCircle, PencilSimpleLine } from '@phosphor-icons/react'
-import Modal from './components/Modal' // Import the modal component
+import ChangeInfoModal from './components/changeInfoModal'
+import AddChildModal from './components/addChildModal'
 
 export default function Profile() {
     const [kidsData, setKidsData] = useState(null)
-    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isChangeInfoModalOpen, setIsChangeInfoModalOpen] = useState(false)
+    const [isAddChildModalOpen, setIsAddChildModalOpen] = useState(false)
+    const [selectedChild, setSelectedChild] = useState(null) // Track the selected child
+
     const router = useRouter()
 
     const userId = 2
@@ -27,16 +30,21 @@ export default function Profile() {
             }
         }
 
-        fetchData()
+        fetchData() // Fetch data when the component is mounted
     }, [])
 
-    const handleChildClick = (childId) => {
-        localStorage.setItem('childId', childId)
-        router.push('/')
+    const openChangeInfoModal = (child) => {
+        setSelectedChild(child) // Store the selected child
+        setIsChangeInfoModalOpen(true) // Open ChangeInfoModal
     }
 
-    const openModal = () => setIsModalOpen(true) // Open the modal
-    const closeModal = () => setIsModalOpen(false)
+    const closeChangeInfoModal = () => {
+        setSelectedChild(null) // Reset the selected child
+        setIsChangeInfoModalOpen(false) // Close ChangeInfoModal
+    }
+
+    const openAddChildModal = () => setIsAddChildModalOpen(true) // Open AddChildModal
+    const closeAddChildModal = () => setIsAddChildModalOpen(false) // Close AddChildModal
 
     return (
         <div className="flex h-dvh w-dvw flex-col items-center justify-center bg-customDarkYellow p-4">
@@ -51,36 +59,47 @@ export default function Profile() {
                             key={child.childId}
                             className="flex flex-col items-center justify-center p-2"
                         >
-                            {' '}
                             <img
                                 src={child.childProfileUrl}
                                 alt={`${child.childName} profile`}
-                                className={`h-[200px] w-[200px] transform cursor-pointer rounded-full object-cover transition-transform hover:scale-110 hover:border-4 hover:border-customOrange`}
-                                onClick={() => handleChildClick(child.childId)} // Handle click
+                                className="h-[200px] w-[200px] transform cursor-pointer rounded-full object-cover transition-transform hover:scale-110 hover:border-4 hover:border-customOrange"
+                                onClick={() => openChangeInfoModal(child)} // Open modal
                             />
                             <div className="mt-4 flex items-center justify-center gap-2 text-center">
-                                {' '}
                                 <span className="text-3xl font-semibold">
                                     {child.childName}
-                                </span>{' '}
-                                <PencilSimpleLine size={32} />{' '}
+                                </span>
+                                <PencilSimpleLine
+                                    size={32}
+                                    className="cursor-pointer"
+                                    onClick={() => openChangeInfoModal(child)} // Open modal
+                                />
                             </div>
                         </div>
                     ))}
-                    <div className="flex h-[200px] flex-col items-center justify-center">
+                    <div
+                        className="flex h-[200px] cursor-pointer flex-col items-center justify-center"
+                        onClick={openAddChildModal} // Open AddChildModal on click
+                    >
                         <PlusCircle size={150} />
                     </div>
                 </div>
             ) : (
                 <div>Loading...</div>
             )}
-            <div>
-                <Link href="#" onClick={openModal}>
-                    모달모달
-                </Link>{' '}
-                {/* Open modal on click */}
-            </div>
-            {isModalOpen && <Modal onClose={closeModal} />}
+
+            {isChangeInfoModalOpen && selectedChild && (
+                <ChangeInfoModal
+                    onClose={closeChangeInfoModal}
+                    childId={selectedChild.childId}
+                    childName={selectedChild.childName}
+                    childProfileUrl={selectedChild.childProfileUrl} // Send the profile URL
+                />
+            )}
+
+            {isAddChildModalOpen && (
+                <AddChildModal onClose={closeAddChildModal} />
+            )}
         </div>
     )
 }
