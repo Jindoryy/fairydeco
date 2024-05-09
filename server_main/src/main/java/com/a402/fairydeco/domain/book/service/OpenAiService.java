@@ -44,9 +44,11 @@ public class OpenAiService {
     private final ChildRepository childRepository;
     private final BookService bookService;
     @Value("${openai.model1}")
-    private String model1;
+    private String model1; // 4~5세
     @Value("${openai.model2}")
-    private String model2;
+    private String model2; // 6~7세
+    @Value("${openai.model3}")
+    private String fineModel; // 스토리 파인튜닝 모델
     @Value("${openai.api.url}")
     private String apiURL;
     @Value("${openai.api.image}")
@@ -56,7 +58,7 @@ public class OpenAiService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     @Transactional
-    public Boolean register(BookRegister bookRegister) throws IOException {
+    public BookCreateRequestDto register(BookRegister bookRegister) throws IOException {
         // 1. 들어온 내용을 바탕으로 동화 등록
         // 2. 프롬프트로 동화 스토리 생성
         // 3. 동화 스토리 save 후 return
@@ -92,7 +94,7 @@ public class OpenAiService {
                 "3. 주의사항:\n" +
                 "    *도입부: 2초 내로 사람들의 흥미를 유발할 수 있는 문구나 주제를 넣어줘.\n" +
                 "    *결말: 유머나 반전나 교훈을 주는 식으로 마무리 해줘.\n" +
-                "    *각 씬의 대본은 끝에는 끝! 이 단어를 넣어서 8장 이상으로 무조건 나누고 구체적으로 작성해야해. 그리고 한글로 작성해야해.\n" +
+                "    *각 씬의 대본은 끝에는 끝! 이 단어를 넣어서 8장 이상으로 무조건 나누고 구체적으로 작성해야해. 그리고 전부 한글로 작성해야해.\n" +
                 "    *많은 사람들이 좋아하고 관심있어 하는 대중적이고 유명한 키워드를 중간 중간 넣어줘.\n" +
                 "    *대본은 디테일이 중요해. 필요한 단어나 배경지식이 있다면 외부에서 검색해서 스토리의 완성도를 더 깊이있게 만들어줘";
         if ((LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0, 4))) > 5) {
@@ -103,9 +105,9 @@ public class OpenAiService {
         // image to text 메서드
         ImgPromptDto imgPromptDto = createPromptKidImg(bookRegister.getBookPicture());
         Book book = Book.builder()
-                .child(childRepository.findById(bookRegister.getChildId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
-                .name(bookRegister.getBookMaker() + "의 이야기")
-                .maker(bookRegister.getBookMaker())
+                .child(childRepository.findById(child.getId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
+                .name(child.getName() + "의 이야기")
+                .maker(child.getName())
                 .prompt(imgPromptDto.getPrompt())
                 .pictureUrl(imgPromptDto.getImageUrl())
                 .pictureName(imgPromptDto.getImageName())
@@ -141,12 +143,13 @@ public class OpenAiService {
             if(tmp.length<7){
                 continue;
             }
-            story += "\n\n 동화체로 바꿔주고 구조는 유지하되 존댓말로 4살 아이가 보기에 자연스럽게 바꿔줘";
-             request = new StoryRequest(model, story);
+            String finePrompt = "넌 지금부터 스토리텔링 전문가야. 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 전체적으로 자연스럽지 않은 문장은 어린 아이가 이해할 수 있도록 쉬운 단어로 구성해서 자연스럽게 바꿔줘";
+            finePrompt += "\n\n " + story;
+             request = new StoryRequest(fineModel, finePrompt);
              storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
-            story = storyResponse.getChoices().get(0).getMessage().getContent();
-            bookStories = story.split("끝!"); // 8개로 나눔
-            System.out.println(story);
+            String fineStory = storyResponse.getChoices().get(0).getMessage().getContent();
+            bookStories = fineStory.split("끝!"); // 8개로 나눔
+            System.out.println(fineStory);
             if (bookStories.length >= 7) {
                 break;
                 // 8개가 아니라면 루프를 다시 시작
@@ -177,10 +180,7 @@ public class OpenAiService {
                 .pageId(tmpPage[0].getId())
                 .build();
 
-        if(bookService.createBookImage(bookCreateRequestDto)){
-            return true;
-        }
-        return false;
+        return bookCreateRequestDto;
     }
 
     public ImgPromptDto createPromptKidImg(MultipartFile image) throws IOException {

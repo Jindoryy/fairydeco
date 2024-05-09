@@ -8,6 +8,7 @@ import com.a402.fairydeco.domain.child.entity.Child;
 import com.a402.fairydeco.domain.child.repository.ChildRepository;
 import com.a402.fairydeco.domain.page.dto.PageAllListResponse;
 import com.a402.fairydeco.domain.page.dto.PageListResponse;
+import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,38 +34,50 @@ public class BookService {
     @Value("${EXPRESS_SERVER_URL}")
     private String EXPRESS_SERVER_URL;
 
-    public List<BookMainListResponse> findBookMainList(Integer bookId) {
+    public BookMainListResponse findBookMainList(Integer childId) {
 
-        List<BookMainListResponse> bookMainListResponses = new ArrayList<>();
+        Child child = childRepository.findById(childId)
+            .orElseThrow(() -> new IllegalArgumentException("Child Not Found"));
 
-        if (bookId == 0) {
-            List<Book> bookList = bookRepository.findTop20ByCompleteOrderByIdDesc(CompleteStatus.COMPLETE);
+        Child adminChild = childRepository.findById(0)
+            .orElseThrow(() -> new IllegalArgumentException("Admin Child Not Found"));
 
-            for (Book book : bookList) {
-                bookMainListResponses.add(buildBookMainListResponse(book));
-            }
-        } else {
-            Book bookExist = bookRepository.findById(bookId)
-                    .orElseThrow(() -> new IllegalArgumentException("Book Not Found"));
+        int age = LocalDate.now().getYear() - child.getBirth().getYear() + 1;
+        RecommendAge recommendAge = (age <= 5) ? RecommendAge.Y : RecommendAge.O;
 
-            List<Book> bookList = bookRepository.findTop20ByCompleteAndIdLessThanOrderByIdDesc(CompleteStatus.COMPLETE, bookId);
-
-            for (Book book : bookList) {
-                bookMainListResponses.add(buildBookMainListResponse(book));
-            }
-        }
-
-        return bookMainListResponses;
-    }
-
-    private BookMainListResponse buildBookMainListResponse(Book book) {
+        List<mainBookListDTO> sampleBookList = getMainBookList(recommendAge, adminChild);
+        List<mainBookListDTO> recentBookList = getRecentBookList(recommendAge, adminChild);
 
         return BookMainListResponse.builder()
+            .sampleBookList(sampleBookList)
+            .recentBookList(recentBookList)
+            .build();
+    }
+
+    private List<mainBookListDTO> getMainBookList(RecommendAge recommendAge, Child adminChild) {
+        return bookRepository.findByCompleteAndRecommendAgeAndChildOrderByIdDesc(
+                CompleteStatus.COMPLETE, recommendAge, adminChild)
+            .stream()
+            .map(book -> mainBookListDTO.builder()
                 .bookId(book.getId())
                 .bookName(book.getName())
                 .bookMaker(book.getMaker())
                 .bookCoverUrl(book.getCoverUrl())
-                .build();
+                .build())
+            .toList();
+    }
+
+    private List<mainBookListDTO> getRecentBookList(RecommendAge recommendAge, Child adminChild) {
+        return bookRepository.findTop15ByCompleteAndRecommendAgeAndChildNotOrderByIdDesc(
+                CompleteStatus.COMPLETE, recommendAge, adminChild)
+            .stream()
+            .map(book -> mainBookListDTO.builder()
+                .bookId(book.getId())
+                .bookName(book.getName())
+                .bookMaker(book.getMaker())
+                .bookCoverUrl(book.getCoverUrl())
+                .build())
+            .toList();
     }
 
     public List<BookLandingListResponse> findBookLandingList() {
@@ -74,8 +87,8 @@ public class BookService {
 
         for (Book book : bookList) {
             bookLandingListResponses.add(BookLandingListResponse.builder()
-                    .bookCoverUrl(book.getCoverUrl())
-                    .build());
+                .bookCoverUrl(book.getCoverUrl())
+                .build());
         }
 
         return bookLandingListResponses;
