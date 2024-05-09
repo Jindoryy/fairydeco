@@ -109,6 +109,7 @@ async function storyToImage(pageStory, bookId, pageId) {
               console.log("Final attempt using future link");
               return await downloadAndUploadImage(response.data.future_links[0], pageId, bookId);
           } else if (response.data.status === 'error') {
+              console.log(response.data);
               console.log(`Error on try ${retryCount + 1}, retrying...`);
               retryCount++;
               continue;
