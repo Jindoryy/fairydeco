@@ -1,33 +1,8 @@
 //storyRoutes.js
 const express = require('express');
 const router = express.Router();
-const storyController = require('../controllers/storyController');
 const imageController = require('../controllers/imageController');
-
-/**
- * @swagger
- * /stories/test:
- *   get:
- *     summary: 서버 테스트
- *     description: 간단한 메시지를 반환하여 익스프레스 서버가 정상 작동 중임을 테스트합니다.
- *     responses:
- *       200:
- *         description: 메시지가 성공적으로 검색되었습니다.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "서버가 정상적으로 작동하고 있습니다."
- *       500:
- *         description: 내부 서버 오류가 발생했습니다.
- */
-router.get('/test', storyController.test);
+const storyController = require('../controllers/storyController');
 
 /**
  * @swagger
@@ -105,5 +80,8 @@ router.post('/create-image', imageController.createImage);
  *       500:
  *         description: 서버 오류로 인해 이미지 생성을 시작할 수 없습니다.
  */
-router.post('/book-creation', imageController.bookCreation);
+router.post('/book/creation', imageController.bookCreation);
+
+router.post('/book-creation', storyController.bookStableCreation);
+
 module.exports = router;
