@@ -24,22 +24,21 @@ export default function Story() {
     const [title, setTitle] = useState('')
     const [story, setStory] = useState([])
 
-    const [userId, setUserId] = useState("")
+    const [userId, setUserId] = useState('')
     useEffect(() => {
-        let value = localStorage.getItem("userId") || ""
+        let value = localStorage.getItem('userId') || ''
         setUserId(value)
         getStory(bookId)
-      }, [])
+    }, [])
 
     const getStory = async (bookId) => {
-        
         try {
             const response = await axios.get(
                 `${apiUrl}/book/story-detail/${bookId}`
             )
-            if (response.data.data.userId != localStorage.getItem("userId")) {
-                alert("접근 권한이 없습니다!")
-                router.push("/")
+            if (response.data.data.userId != localStorage.getItem('userId')) {
+                alert('접근 권한이 없습니다!')
+                router.push('/')
             }
             const book = response.data.data
             setTitle(book.bookName)
