@@ -141,7 +141,7 @@ public class OpenAiService {
             if(tmp.length<7){
                 continue;
             }
-            story += "\n\n 동화체로 바꿔주고 구조는 유지하되 존댓말로 4살 아이가 보기에 자연스럽게 바꿔줘";
+            story += "\n\n 동화체로 바꿔주고 구조는 유지하되 존댓말로 어린 아이가 보기에 자연스럽게 바꿔줘";
              request = new StoryRequest(model, story);
              storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
             story = storyResponse.getChoices().get(0).getMessage().getContent();

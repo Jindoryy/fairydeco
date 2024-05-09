@@ -48,6 +48,7 @@ public class BookController {
         return new SuccessResponse<>(bookService.createBookImage(bookCreateRequestDto));
     }
 
+
     @Operation(summary = "아이 나이에 맞는 동화 + 샘플 동화", description = "책장에서 보여줄 최신 동화 목록과 샘플 동화 목록을 반환한다.")
     @GetMapping("/main-list/{childId}")
     public SuccessResponse<BookMainListResponse> getBookMainList(@PathVariable Integer childId) {
