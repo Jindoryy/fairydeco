@@ -2,14 +2,28 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Baby } from '@phosphor-icons/react/dist/ssr'
+import {
+    HouseLine,
+    Baby,
+    SpeakerHigh,
+    SpeakerSimpleX,
+    Play,
+    Pause,
+    CaretCircleLeft,
+    CaretCircleRight,
+} from '@phosphor-icons/react/dist/ssr'
 import Script from 'next/script'
 import Link from 'next/link'
+import TitleBox from './components/titleBox'
 
 const TurnPage = () => {
     const pathname = usePathname()
     const [jQueryLoaded, setJQueryLoaded] = useState(false)
     const [data, setData] = useState(null)
+
+    // 버튼 토글 상태 관리
+    const [isAudioPlaying, setIsAudioPlaying] = useState(false) // 음성 재생 상태
+    const [isAutoPlay, setIsAutoPlay] = useState(false) // 자동 재생 상태
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const bookId = pathname.split('/').pop()
@@ -30,6 +44,26 @@ const TurnPage = () => {
         fetchData() // useEffect가 마운트될 때 데이터 가져오기
     }, [])
 
+    // 버튼 토글 로직
+    const toggleAudioPlayback = () => {
+        setIsAudioPlaying((prev) => !prev) // 음성 재생 상태 토글
+    }
+
+    const toggleAutoPlay = () => {
+        setIsAutoPlay((prev) => !prev) // 자동 재생 상태 토글
+    }
+
+    // Event handlers to turn the pages
+    const handlePageBackward = () => {
+        const book = window.jQuery('#book')
+        book.turn('previous') // Turn to the previous page
+    }
+
+    const handlePageForward = () => {
+        const book = window.jQuery('#book')
+        book.turn('next') // Turn to the next page
+    }
+
     useEffect(() => {
         if (jQueryLoaded && data) {
             const $ = window.jQuery
@@ -41,7 +75,7 @@ const TurnPage = () => {
                     class: `page flex items-center justify-center ${
                         page % 2 === 0
                             ? 'bg-gradient-to-r from-white to-gray-300'
-                            : 'bg-gradient-to-l from-white to-gray-200'
+                            : 'bg-gradient-to-l from-white to-gray-300'
                     }`,
                     id: `page-${page}`,
                 }).html(content)
@@ -87,7 +121,7 @@ const TurnPage = () => {
                                 content = pageContent
                                     ? p % 2 === 0
                                         ? `<img src="${pageContent}" class="object-contain w-full h-full" alt="Page Image" />`
-                                        : `<div class="flex flex-col items-center justify-center text-center text-3xl text-black break-keep px-8">${pageContent}</div>`
+                                        : `<div class="flex flex-col items-center justify-center text-center text-2xl text-black break-keep px-8 !font-storyFont">${pageContent}</div>`
                                     : '<div class="flex items-center justify-center text-center text-3xl text-red-500">No Content Available</div>'
                             }
 
@@ -122,20 +156,112 @@ const TurnPage = () => {
 
     return (
         <>
-            <div className="flex min-h-screen flex-col items-center justify-center font-ourFont">
+            <div className="flex min-h-screen flex-col items-center justify-center bg-[#FFFDEA] font-ourFont">
                 <Script
                     src="https://code.jquery.com/jquery-3.7.1.min.js"
                     onLoad={() => setJQueryLoaded(true)}
                 />
                 <Script src="/turn.min.js" />
 
-                <Link href="/">
-                    <Baby size={32} />
-                </Link>
+                {/* Header Div */}
+                <div
+                    id="headerDiv"
+                    className="flex w-full items-center justify-between px-4 py-2"
+                >
+                    {/* Left Section */}
+                    <Link
+                        href="/"
+                        className="ml-8 flex flex-grow justify-start"
+                    >
+                        <HouseLine
+                            size={45}
+                            weight="fill"
+                            style={{ color: '#A0D468' }}
+                        />
+                    </Link>
 
+                    {/* Central Section */}
+                    <div className="ml-32 flex flex-grow items-center justify-center text-center">
+                        <TitleBox
+                            title={data?.data?.bookName}
+                            bookId={bookId}
+                        />
+                    </div>
+
+                    {/* Right Section */}
+                    <div
+                        id="right"
+                        className="flex flex-grow justify-end space-x-4 text-center"
+                    >
+                        <Link href="/">
+                            <div className="flex flex-col items-center">
+                                <Baby size={32} style={{ color: '#A0D468' }} />
+                                <div className="text-sm text-black">지은이</div>
+                            </div>
+                        </Link>
+                        {/* 음성 재생 및 멈춤 토글 */}
+                        <div
+                            className="flex flex-col items-center"
+                            onClick={toggleAudioPlayback} // 클릭 이벤트로 토글
+                        >
+                            {isAudioPlaying ? (
+                                <>
+                                    <SpeakerSimpleX
+                                        size={32}
+                                        weight="fill"
+                                        style={{ color: '#A0D468' }}
+                                    />
+                                    <div className="text-sm text-black">
+                                        음성멈춤
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <SpeakerHigh
+                                        size={32}
+                                        weight="fill"
+                                        style={{ color: '#A0D468' }}
+                                    />
+                                    <div className="text-sm text-black">
+                                        음성재생
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        {/* 자동 재생 및 멈춤 토글 */}
+                        <div
+                            className="flex flex-col items-center"
+                            onClick={toggleAutoPlay} // 클릭 이벤트로 토글
+                        >
+                            {isAutoPlay ? (
+                                <>
+                                    <Pause
+                                        size={32}
+                                        weight="fill"
+                                        style={{ color: '#A0D468' }}
+                                    />
+                                    <div className=" text-sm text-black">
+                                        멈춤
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <Play
+                                        size={32}
+                                        weight="fill"
+                                        style={{ color: '#A0D468' }}
+                                    />
+                                    <div className=" text-sm text-black">
+                                        자동재생
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
                 <div
                     id="book"
-                    className="relative flex h-[700px]  w-[1400px] items-center justify-center bg-white shadow-lg"
+                    className="relative flex h-[600px]  w-[1200px] items-center justify-center bg-white shadow-lg"
                     style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)' }}
                 >
                     <div className="cover flex h-full flex-col justify-end bg-white">
@@ -164,18 +290,39 @@ const TurnPage = () => {
                         </div>
                     </div>
                 </div>
+                {/* Page Controls */}
                 <div
                     id="controls"
-                    className="mt-5 w-[800px] text-center text-2xl font-bold"
+                    className="my-5 flex w-[800px] items-center  justify-center text-2xl font-bold"
                 >
+                    <CaretCircleLeft
+                        size={32}
+                        weight="fill"
+                        style={{
+                            color: '#A0D468',
+                            marginRight: '10px',
+                            cursor: 'pointer',
+                        }}
+                        onClick={handlePageBackward} // Event handler for backward navigation
+                    />
                     <input
                         type="text"
                         size="3"
                         id="page-number"
                         className="border border-gray-400 text-center"
                     />
-                    <span class="ml-2">/</span>
+                    <span className="ml-2">/</span>
                     <span id="number-pages" className="ml-2"></span>
+                    <CaretCircleRight
+                        size={32}
+                        weight="fill"
+                        style={{
+                            color: '#A0D468',
+                            marginLeft: '10px',
+                            cursor: 'pointer',
+                        }}
+                        onClick={handlePageForward} // Event handler for forward navigation
+                    />
                 </div>
             </div>
         </>

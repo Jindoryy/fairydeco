@@ -65,7 +65,7 @@ public class OpenAiService {
         // 이미지가 만약 있을 경우 건희형이 만든 image to text 서비스 메서드 사용해서 한줄 스토리 받음
         Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
         String age = "Y";
-        String prompt = "키워드로 동화를 8장면 이상으로 각 대본의 끝에는 끝! 이 단어를 무조건 넣어줘. 그리고 이야기가 흥미로워야 하고 말이 잘 이어져야해. 마지막으로 4살이 보기에 쉬운 단어로만 구성되어야 하고 이상한 단어가 없어야해. 시작은  옛날 옛적에, 로 시작해줘.";
+        String prompt = "많은 사람이 흥미를 느끼는 내용이 들어가야해. 키워드를 이용하여 씬을 8페이지로 나누고 각 대본의 끝에는 끝! 이 단어를 넣어줘. 마지막으로 4살이 보기에 쉬운 단어로만 구성되어야 하고 이상한 단어가 없어야해. 시작은  옛날 옛적에, 로 시작해줘.";
         if ((LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0, 4))) > 5) {
             age = "O";
             prompt = "키워드로 동화를 8장면 이상으로 각 대본의 끝에는 끝! 이 단어를 무조건 넣어줘. 그리고 이야기가 흥미로워야 하고 교훈적이고 말이 잘 이어져야해. 마지막으로 6살이 보기에 쉬운 단어로만 구성되어야 하고 이상한 단어가 없어야해. 시작은  옛날 옛적에, 로 시작해줘.";
@@ -90,7 +90,7 @@ public class OpenAiService {
             gender = "여";
         }
 //        prompt += "\n(LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0,4)))+"살 "+ gender+"자 아이가 보기 좋은 동화를 8컷으로 만들어줘"+ ", 줄거리는 " + savedBook.getPrompt();
-        prompt += "\n\n 키워드는 :" + savedBook.getPrompt();
+        prompt += "\n\n 키워드 :" + savedBook.getPrompt();
         // 스토리 생성
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
         String[] bookStories;
