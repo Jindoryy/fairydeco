@@ -24,7 +24,7 @@ async function processQueue() {
 async function bookStableCreation(req, res) {
     const startTime = new Date();  // 시작 시간 기록
     console.log(`CHECK : BOOK CREATION STARTED AT ${startTime.toISOString()}`);
-    const { bookId } = req.body;
+    const { userId, bookId, childId } = req.body;
 
     // 데이터베이스 연결 시도
     const connection = await connectDB();
@@ -65,11 +65,16 @@ async function bookStableCreation(req, res) {
             await connection.query('UPDATE book SET book_cover_url = ? WHERE book_id = ?', [coverImageUrl, bookId]);
             await connection.query(`UPDATE book SET book_complete = 'COMPLETE' WHERE book_id = ?`, [bookId]);
             console.log("PHASE 6 : COVER IMAGE CREATED AND DB UPDATED");
+            
+            const endUrl = `http://k10a402.p.ssafy.io:8081/book/end?userId=${userId}&bookId=${bookId}`;
+            await axios.get(endUrl);
+            console.log("PHASE 7: SEND SSE SUCCESS");
         } catch (error) {
+            console.log("PHASE 7: FAILED");
             console.error('Failed during book creation process:', error);
         } finally {
             await connection.end();  // 작업 완료 후 DB 연결 종료
-            console.log("PHASE 7 : DB CONNECTION CLOSED");
+            console.log("PHASE 8 : DB CONNECTION CLOSED");
         }
     });
 

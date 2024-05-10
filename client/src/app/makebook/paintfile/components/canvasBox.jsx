@@ -1,9 +1,17 @@
 'use client'
+
 import { fabric } from 'fabric'
 import { useEffect, useRef, useState } from 'react'
-import { Circle, ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import {
+    Circle,
+    ArrowCircleLeft,
+    Trash,
+    PencilLine,
+    HandSwipeRight,
+    Eraser,
+} from '@phosphor-icons/react/dist/ssr'
 
 export default function CanvasBox() {
     const router = useRouter()
@@ -11,31 +19,41 @@ export default function CanvasBox() {
     const canvasContainerRef = useRef(null)
     const canvasRef = useRef(null)
     const [canvas, setCanvas] = useState(null)
+    const [activeTool, setActiveTool] = useState('pen')
     const [activeColor, setActiveColor] = useState('black')
 
     useEffect(() => {
         const canvasContainer = canvasContainerRef.current
         // 캔버스 생성
         const newCanvas = new fabric.Canvas(canvasRef.current, {
-            width: '900px',
-            height: '540px',
+            width: canvasContainer.offsetWidth,
+            height: canvasContainer.offsetHeight,
         })
         setCanvas(newCanvas)
 
+        // 휠을 이용해서 줌인/줌아웃
+        newCanvas.on('mouse:wheel', function (opt) {
+            const delta = opt.e.deltaY
+            let zoom = newCanvas.getZoom()
+            zoom *= 0.999 ** delta
+            if (zoom > 20) zoom = 20
+            if (zoom < 0.01) zoom = 0.01
+            newCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom)
+            opt.e.preventDefault()
+            opt.e.stopPropagation()
+        })
+
         // 윈도우가 리사이즈가 되었을 때 실행
         const handleResize = () => {
-            if (!canvasContainer) return
-            const parentWidth = canvasContainer.offsetWidth
-            const parentHeight = canvasContainer.offsetHeight
             newCanvas.setDimensions({
-                width: '900px',
-                height: '540px',
+                width: canvasContainer.offsetWidth,
+                height: canvasContainer.offsetHeight,
             })
         }
         window.addEventListener('resize', handleResize)
 
         // 처음 접속했을 때 캔버스에 그리기 가능하도록 설정
-        newCanvas.freeDrawingBrush.width = 1
+        newCanvas.freeDrawingBrush.width = 5
         newCanvas.isDrawingMode = true
 
         // 언마운트 시 캔버스 정리, 이벤트 제거
@@ -46,31 +64,122 @@ export default function CanvasBox() {
     }, [])
 
     useEffect(() => {
+        if (!canvasContainerRef.current || !canvasRef.current || !canvas) return
+
+        canvas.off('mouse:down')
+        canvas.off('mouse:move')
+        canvas.off('mouse:up')
+
+        switch (activeTool) {
+            case 'select':
+                handleSelectTool()
+                break
+
+            case 'pen':
+                handlePenTool()
+                break
+
+            case 'hand':
+                handleHandTool()
+                break
+        }
+    }, [activeTool])
+
+    const handleSelectTool = () => {
+        canvas.isDrawingMode = false
+        canvas.selection = true
+        canvas.defaultCursor = 'default'
+    }
+    const handlePenTool = () => {
+        canvas.freeDrawingBrush.width = 5
+        canvas.isDrawingMode = true
+    }
+    const handleHandTool = () => {
+        canvas.isDrawingMode = false
+        canvas.selection = false
+        canvas.defaultCursor = 'move'
+
+        let panning = false
+        const handleMouseDown = () => {
+            panning = true
+        }
+        const handleMouseMove = (event) => {
+            if (panning) {
+                const delta = new fabric.Point(
+                    event.e.movementX,
+                    event.e.movementY
+                )
+                canvas.relativePan(delta)
+            }
+        }
+        const handleMouseUp = () => {
+            panning = false
+        }
+        canvas.on('mouse:down', handleMouseDown)
+        canvas.on('mouse:move', handleMouseMove)
+        canvas.on('mouse:up', handleMouseUp)
+    }
+
+    useEffect(() => {
         handlePenColor(activeColor)
     }, [activeColor])
 
     const handlePenColor = (color) => {
         if (!canvas) return
-        canvas.freeDrawingBrush.width = 1
-        canvas.freeDrawingBrush.color = `${color}`
-        canvas.isDrawingMode = true
-    }
-    const goBack = () => {
-        router.push('/makebook')
+        if (color == 'white') {
+            canvas.freeDrawingBrush.width = 20
+            canvas.freeDrawingBrush.color = `${color}`
+            canvas.isDrawingMode = true
+        } else {
+            canvas.freeDrawingBrush.width = 5
+            canvas.freeDrawingBrush.color = `${color}`
+            canvas.isDrawingMode = true
+        }
     }
 
-    const makeBook = async () => {
+    const goBook = () => {
         if (canvas.getObjects().length === 0) {
             alert('캔버스에 그림을 그려주세요.')
             return
         }
-
+        if (confirm('이 그림으로 동화를 만들까요 ?')) {
+            makeBook()
+        }
+    }
+    const makeBook = async () => {
         try {
             // 캔버스를 이미지로 변환
+            canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas))
             const imageData = canvas.toDataURL({ format: 'jpeg', quality: 0.8 })
+
+            // Convert data URI to Blob
+            function dataURItoBlob(dataURI) {
+                const byteString = atob(dataURI.split(',')[1])
+                const mimeString = dataURI
+                    .split(',')[0]
+                    .split(':')[1]
+                    .split(';')[0]
+                const ab = new ArrayBuffer(byteString.length)
+                const ia = new Uint8Array(ab)
+                for (let i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i)
+                }
+                return new Blob([ab], { type: mimeString })
+            }
+
+            // Convert Blob to File
+            function blobToFile(theBlob, fileName) {
+                return new File([theBlob], fileName, { type: theBlob.type })
+            }
+
+            // Convert canvas image data to File
+            const blob = dataURItoBlob(imageData)
+            const file = blobToFile(blob, 'canvas_image.jpg')
+            console.log(file)
+
             const bookFormData = new FormData()
             bookFormData.append('childId', localStorage.getItem('childId'))
-            bookFormData.append('bookPicture', imageData)
+            bookFormData.append('bookPicture', file)
             const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -88,82 +197,170 @@ export default function CanvasBox() {
             console.error('Error fetching data:', error)
         }
     }
+    const goBack = () => {
+        if (confirm('뒤로 가면 그림이 다 지워져요!')) {
+            router.push('/makebook')
+        }
+    }
     return (
-        <div className="relative h-dvh w-dvw">
+        <div className="h-dvh w-dvw">
+            <div>
+                <div
+                    className="canvas-container absolute inset-0"
+                    ref={canvasContainerRef}
+                >
+                    <canvas ref={canvasRef} className="border-2" />
+                </div>
+                <div className="tool-bar absolute right-5 top-5 z-50 flex flex-col gap-3 rounded-lg border border-gray-100 bg-gray-100 p-3 shadow-md">
+                    <button
+                        onClick={() => setActiveColor('black')}
+                        disabled={
+                            setActiveColor === 'black' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'black' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-black"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('red')}
+                        disabled={
+                            setActiveColor === 'red' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'red' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-customRed"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('orange')}
+                        disabled={
+                            setActiveColor === 'orange' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'orange' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-orange-500"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('yellow')}
+                        disabled={
+                            setActiveColor === 'yellow' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'yellow' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-yellow-300"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('green')}
+                        disabled={
+                            setActiveColor === 'green' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'green' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-green-600"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('blue')}
+                        disabled={
+                            setActiveColor === 'blue' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'blue' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-blue-700"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('indigo')}
+                        disabled={
+                            setActiveColor === 'indigo' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'indigo' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-indigo-900"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('purple')}
+                        disabled={
+                            setActiveColor === 'purple' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'purple' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-fuchsia-800"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('brown')}
+                        disabled={
+                            setActiveColor === 'brown' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'brown' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Circle
+                            size={30}
+                            weight="fill"
+                            className="text-amber-900"
+                        />
+                    </button>
+                    <button
+                        onClick={() => setActiveColor('white')}
+                        disabled={
+                            setActiveColor === 'white' || activeTool != 'pen'
+                        }
+                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'white' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                        <Eraser size={23} />
+                    </button>
+                    <button onClick={() => canvas.clear()} className="btn">
+                        <Trash size={23} />
+                    </button>
+                </div>
+            </div>
+            <div className="absolute bottom-0 flex w-full">
+                <button
+                    className="btn w-full rounded-none border-none bg-customDarkYellow text-xl hover:bg-customDarkYellow"
+                    onClick={goBook}
+                >
+                    동화 만들기
+                </button>
+            </div>
             <button
-                className="btn btn-ghost relative ml-2 h-auto w-1/12 pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
+                className="btn btn-ghost absolute left-0 h-auto w-1/12 pt-4 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                 onClick={goBack}
             >
                 <ArrowCircleLeft
                     size={80}
                     weight="fill"
-                    className="text-white"
+                    className="text-customDarkYellow"
                 />
             </button>
-            <div className="relative m-auto flex h-5/6 w-3/4 items-center rounded-3xl border-none bg-customBlueBorder text-5xl font-thin shadow-innerShadow hover:bg-customBlueBorder">
-                <div className="ml-4 mt-8 flex h-full w-5/6">
-                    <div className="relative h-5/6 w-4/5">
-                        <canvas
-                            ref={canvasRef}
-                            className="rounded-xl border bg-white"
-                        />
-                        <div className="tool-bar absolute left-5 top-5 flex flex-col rounded bg-gray-200 p-1 shadow-md">
-                            <button
-                                onClick={() => setActiveColor('black')}
-                                disabled={setActiveColor === 'black'}
-                                className="btn btn-xs"
-                            >
-                                <Circle
-                                    size={20}
-                                    weight="fill"
-                                    className="text-black"
-                                />
-                            </button>
-                            <button
-                                onClick={() => setActiveColor('red')}
-                                disabled={setActiveColor === 'red'}
-                                className="btn btn-xs"
-                            >
-                                <Circle
-                                    size={20}
-                                    weight="fill"
-                                    className="text-customRed"
-                                />
-                            </button>
-                            <button
-                                onClick={() => setActiveColor('green')}
-                                disabled={setActiveColor === 'green'}
-                                className="btn btn-xs"
-                            >
-                                <Circle
-                                    size={20}
-                                    weight="fill"
-                                    className="text-green-600"
-                                />
-                            </button>
-                            <button
-                                onClick={() => setActiveColor('blue')}
-                                disabled={setActiveColor === 'blue'}
-                                className="btn btn-xs"
-                            >
-                                <Circle
-                                    size={20}
-                                    weight="fill"
-                                    className="text-blue-700"
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex justify-center">
-                    <button
-                        className="btn btn-lg w-full border-none bg-customDarkYellow text-lg font-thin hover:bg-customDarkYellow"
-                        onClick={makeBook}
-                    >
-                        동화 만들기!
-                    </button>
-                </div>
-            </div>
         </div>
     )
 }

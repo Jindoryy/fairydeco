@@ -30,39 +30,47 @@ export default function ChooseButton() {
                     className="text-white"
                 />
             </button>
-            <div className="relative flex h-4/5 w-full justify-center pt-8">
-                <button
-                    className="btn relative m-4 mr-8 h-5/6 w-1/3 rounded-3xl border-none bg-customBlueBorder p-4 text-5xl font-thin shadow-innerShadow hover:bg-customBlueBorder "
-                    onClick={goPainting}
-                >
-                    <div className="h-10/12 relative flex w-full animate-wiggle items-center justify-center">
-                        <Image
-                            src={PencilImage}
-                            alt="연필그림"
-                            width={300}
-                            height={300}
-                            objectFit="cover"
-                            quality={100}
-                        />
-                    </div>
-                    지금 그려볼래요!
-                </button>
-                <button
-                    className="btn relative m-4 ml-8 h-5/6 w-1/3 rounded-3xl border-none bg-customDarkYellow p-4 text-5xl font-thin shadow-innerShadow hover:bg-customDarkYellow"
-                    onClick={goUpload}
-                >
-                    <div className="h-10/12 relative flex w-full animate-bounce items-center justify-center">
-                        <Image
-                            src={FileImage}
-                            alt="파일 그림"
-                            width={300}
-                            height={300}
-                            objectFit="cover"
-                            quality={100}
-                        />
-                    </div>
-                    이미 그렸어요
-                </button>
+            <div className="flex h-5/6 flex-col items-center justify-start">
+                <div className="relative top-0 h-auto text-2xl text-white">
+                    그림 한 장으로 동화를 만들어봐요!
+                </div>
+                <div className="relative top-0 h-auto text-4xl text-white">
+                    함께 그림을 그려볼까요?
+                </div>
+                <div className="relative flex h-full w-full items-start justify-center">
+                    <button
+                        className="btn relative m-4 mr-8 h-5/6 w-1/3 rounded-3xl border-none bg-customBlueBorder p-4 text-5xl font-thin shadow-innerShadow hover:bg-customBlueBorder "
+                        onClick={goPainting}
+                    >
+                        <div className="h-10/12 relative flex w-full animate-wiggle items-center justify-center">
+                            <Image
+                                src={PencilImage}
+                                alt="연필그림"
+                                width={300}
+                                height={300}
+                                objectFit="cover"
+                                quality={100}
+                            />
+                        </div>
+                        지금 그려볼래요
+                    </button>
+                    <button
+                        className="btn relative m-4 ml-8 h-5/6 w-1/3 rounded-3xl border-none bg-customDarkYellow p-4 text-5xl font-thin shadow-innerShadow hover:bg-customDarkYellow"
+                        onClick={goUpload}
+                    >
+                        <div className="h-10/12 relative flex w-full animate-bounce items-center justify-center">
+                            <Image
+                                src={FileImage}
+                                alt="파일 그림"
+                                width={300}
+                                height={300}
+                                objectFit="cover"
+                                quality={100}
+                            />
+                        </div>
+                        그림이 있어요
+                    </button>
+                </div>
             </div>
         </div>
     )

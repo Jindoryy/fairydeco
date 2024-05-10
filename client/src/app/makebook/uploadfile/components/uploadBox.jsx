@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
+import { useSse } from '../../../components/sseProvider'
 
 export default function UploadBox() {
     const router = useRouter()
@@ -12,6 +13,7 @@ export default function UploadBox() {
     const [childId, setChildId] = useState('')
     const [kidImage, setKidImage] = useState()
     const [kidImageView, setKidImageView] = useState('')
+    const { connect } = useSse()
 
     useEffect(() => {
         setChildId(localStorage.getItem('childId'))
@@ -54,6 +56,10 @@ export default function UploadBox() {
                 alert(
                     '이야기를 만들기 시작했어요! 3분정도 기다려주세요. 다른 아이의 그림을 보러갈까요?'
                 )
+                const userId = localStorage.getItem('userId') // userId 가져오기
+                if (userId) {
+                    connect(userId) // SSE 이벤트 연결 시작
+                }
                 router.push('/bookList')
             } else {
                 alert('이야기 만들기가 실패했어요 다시 한 번 해주세요!')

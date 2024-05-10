@@ -11,14 +11,17 @@ import DoorImage from '../../../../public/image/door.png'
 import { useRouter } from 'next/navigation'
 import { Baby } from '@phosphor-icons/react/dist/ssr'
 import { useState, useEffect } from 'react'
+import { useSse } from '../../components/sseProvider'
 
 export default function ButtonBox() {
     const router = useRouter()
     const [userId, setUserId] = useState()
+    const { connect } = useSse()
 
     useEffect(() => {
         if (localStorage.getItem('userId'))
             setUserId(localStorage.getItem('userId'))
+        connect(1)
     }, [])
 
     const goProfile = () => {
