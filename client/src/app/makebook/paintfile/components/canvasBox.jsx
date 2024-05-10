@@ -1,7 +1,7 @@
 'use client'
 import { fabric } from 'fabric'
 import { useEffect, useRef, useState } from 'react'
-import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
+import { ArrowCircleLeft, Circle } from '@phosphor-icons/react/dist/ssr'
 import { useRouter } from 'next/navigation'
 
 export default function CanvasBox() {
