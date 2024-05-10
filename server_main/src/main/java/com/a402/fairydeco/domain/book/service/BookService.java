@@ -216,4 +216,9 @@ public class BookService {
         }
         return false;
     }
+
+    public Book getBookById(Integer bookId) {
+        Optional<Book> book = bookRepository.findById(bookId);
+        return book.orElseThrow(() -> new RuntimeException("Book not found"));
+    }
 }
