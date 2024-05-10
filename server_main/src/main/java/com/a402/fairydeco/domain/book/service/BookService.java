@@ -193,7 +193,6 @@ public class BookService {
                 RestTemplate restTemplate = new RestTemplate();
 
                 try {
-                    System.out.println(request.getBookId() +" !! "+request.getPageId());
                     ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
                     // 응답이 정상이면 true 반환
                     if (response.getStatusCode() == HttpStatus.OK) {
