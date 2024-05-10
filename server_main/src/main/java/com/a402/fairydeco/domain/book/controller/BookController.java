@@ -132,13 +132,13 @@ public class BookController {
     }
 
     @Operation(summary = "SSE 구독", description = "SSE로 동화 생성 완료 알림 구독")
-    @GetMapping("/sse/{bookId}")
-    public ResponseEntity<SseEmitter> subscribeToBookCreation(@PathVariable Integer bookId) {
+    @GetMapping("/sse/{userId}")
+    public ResponseEntity<SseEmitter> subscribeToBookCreation(@PathVariable Integer userId) {
         //테스트 완료 되면 서비스 코드 분리 진행하겠습니다.
         SseEmitter sseEmitter = new SseEmitter(0L); // 0L로 설정하여 연결 무기한 유지
-        sseEmitters.put(bookId, sseEmitter);
-        sseEmitter.onCompletion(() -> sseEmitters.remove(bookId));
-        sseEmitter.onTimeout(() -> sseEmitters.remove(bookId));
+        sseEmitters.put(userId, sseEmitter);
+        sseEmitter.onCompletion(() -> sseEmitters.remove(userId));
+        sseEmitter.onTimeout(() -> sseEmitters.remove(userId));
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "text/event-stream; charset=UTF-8");
