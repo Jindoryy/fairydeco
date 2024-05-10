@@ -5,7 +5,6 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { useRouter } from 'next/navigation'
 import toast, { Toaster } from 'react-hot-toast'
-import { motion, AnimatePresence } from 'framer-motion'
 
 const useStore = create(
     persist(
@@ -17,12 +16,8 @@ const useStore = create(
         }),
         {
             name: 'sse-storage',
-            storage: {
-                // 변경된 부분: 'storage' 옵션 사용
-                getItem: (name) => localStorage.getItem(name),
-                setItem: (name, value) => localStorage.setItem(name, value),
-                removeItem: (name) => localStorage.removeItem(name),
-            },
+            serialize: (state) => JSON.stringify(state),
+            deserialize: (str) => JSON.parse(str),
         }
     )
 )
@@ -33,16 +28,34 @@ export function SseProvider({ children }) {
     const { eventSource, setEventSource, clearEventSource } = useStore()
     const router = useRouter()
 
+    const closeConnection = useCallback(() => {
+        console.log('연결을 종료합니다. 현재 eventSource:', eventSource)
+
+        if (eventSource && typeof eventSource.close === 'function') {
+            eventSource.close()
+            clearEventSource()
+        } else {
+            console.error(
+                '유효하지 않은 eventSource를 닫으려고 했습니다:',
+                eventSource
+            )
+        }
+    }, [eventSource, clearEventSource])
+
     const connect = useCallback(
         (userId) => {
-            if (eventSource) {
-                eventSource.close()
-            }
+            console.log('Connecting with userID:', userId)
 
+            if (!userId) return
+            closeConnection()
+
+            console.log('check1')
             const sse = new EventSource(
-                `https://fairydeco.site/api/book/sse/${userId}`
+                `http://localhost:8080/book/sse/${userId}`
             )
             setEventSource(sse, userId)
+
+            console.log('check2')
 
             sse.addEventListener('book-complete', (event) => {
                 console.log(event.data)
@@ -93,27 +106,19 @@ export function SseProvider({ children }) {
                 clearEventSource()
             })
 
-            sse.onerror = () => {
-                sse.close()
-                clearEventSource()
+            sse.onerror = (error) => {
+                console.error('Failed to connect SSE', error)
+                closeConnection()
             }
         },
-        [eventSource, setEventSource, clearEventSource]
+        [setEventSource, clearEventSource, closeConnection, router]
     )
 
     useEffect(() => {
-        const storedUserId = localStorage.getItem('sse-storage')?.userId
-        if (storedUserId) {
-            connect(storedUserId)
-        }
-
         return () => {
-            if (eventSource) {
-                eventSource.close()
-            }
-            clearEventSource()
+            closeConnection()
         }
-    }, [connect])
+    }, [closeConnection])
 
     return (
         <SseContext.Provider value={{ connect, disconnect: clearEventSource }}>
