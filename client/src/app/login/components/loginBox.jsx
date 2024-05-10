@@ -2,7 +2,7 @@
 
 import { ArrowFatLeft } from '@phosphor-icons/react/dist/ssr'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 export default function LoginBox() {
@@ -10,6 +10,15 @@ export default function LoginBox() {
     const router = useRouter()
     const [userId, setUserId] = useState('')
     const [password, setPassword] = useState('')
+
+    useEffect(() => {
+        let value
+        value = localStorage.getItem('userId') || ''
+        if (value) {
+            alert('이미 로그인 하셨습니다!')
+            router.push('/profile')
+        }
+    }, [])
 
     const goBack = () => {
         router.push('/')
