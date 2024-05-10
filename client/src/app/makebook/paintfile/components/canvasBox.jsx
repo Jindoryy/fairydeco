@@ -50,7 +50,7 @@ export default function CanvasBox() {
     }
 
     return (
-        <div className="shadow-innerShadow relative top-16 m-auto flex h-[500px] w-3/4 flex-col items-center justify-center rounded-3xl border-none bg-customBlueBorder text-5xl font-thin hover:bg-customBlueBorder">
+        <div className="relative top-16 m-auto flex h-[500px] w-3/4 flex-col items-center justify-center rounded-3xl border-none bg-customBlueBorder text-5xl font-thin shadow-innerShadow hover:bg-customBlueBorder">
             <div className="ml-10 mt-4 flex h-full w-full">
                 <div className="relative h-4/5 w-4/5">
                     <canvas
@@ -58,6 +58,17 @@ export default function CanvasBox() {
                         className="rounded-xl border bg-white"
                     />
                     <div className="tool-bar absolute left-5 top-5 flex flex-col rounded bg-gray-200 p-1 shadow-md">
+                        <button
+                            onClick={() => setActiveColor('black')}
+                            disabled={setActiveColor === 'black'}
+                            className="btn btn-xs"
+                        >
+                            <Circle
+                                size={20}
+                                weight="fill"
+                                className="text-black"
+                            />
+                        </button>
                         <button
                             onClick={() => setActiveColor('red')}
                             disabled={setActiveColor === 'red'}
@@ -89,17 +100,6 @@ export default function CanvasBox() {
                                 size={20}
                                 weight="fill"
                                 className="text-blue-700"
-                            />
-                        </button>
-                        <button
-                            onClick={() => setActiveColor('black')}
-                            disabled={setActiveColor === 'black'}
-                            className="btn btn-xs"
-                        >
-                            <Circle
-                                size={20}
-                                weight="fill"
-                                className="text-black"
                             />
                         </button>
                     </div>

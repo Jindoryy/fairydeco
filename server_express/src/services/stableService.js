@@ -1,4 +1,4 @@
-//bookService.js
+//stableService.js
 const { OpenAI } = require("openai");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const axios = require("axios");
@@ -23,11 +23,12 @@ async function createImagePrompt(pageStory) {
         messages: [
           { "role": "system", "content": "You are an assistant who helps generate prompts for StableDiffusion." },
           { "role": "user", "content": `Create a english prompt for a StableDiffusion based on the following story: "${pageStory}". The prompt should describe a scene suitable for children. The prompt should follow these conditions:
-            - One single image
-            - No speech bubbles
-            - No text or letters
-            - Cute and child-friendly. Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.` }
-        ],
+          - One single image
+          - No speech bubbles
+          - No text or letters
+          - Cute and child-friendly
+          - The main characters are human. Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.`
+        }],
         max_tokens: 500
       });
       return gptResponse.choices[0].message.content;
@@ -37,9 +38,9 @@ async function createImagePrompt(pageStory) {
     }
 }
 
-async function storyToImage(pageStory, bookId, pageId) {
+async function storyToImage(pageStory, bookId, pageId, attempt = 2) {
   const convertprompt = await createImagePrompt(pageStory);
-  console.log(pageId+" "+convertprompt)
+  // console.log(pageId+" "+convertprompt)
   const url = "https://stablediffusionapi.com/api/v4/dreambooth";
 
   const headers = {
@@ -73,35 +74,42 @@ async function storyToImage(pageStory, bookId, pageId) {
   while (retryCount < maxRetries) {
       try {
           const response = await axios.post(url, payload, { headers });
-          // console.log(response);
           if (response.data.status === 'success') {
-              const timeout = 600000; // 10 minutes in milliseconds
+              const timeout = 200000; // 10 minutes in milliseconds
               const retryInterval = 15000; // 15 seconds in milliseconds
               const startTime = Date.now();
-              console.log(pageId + response.data.output[0]);
+              console.log(pageId + " "+response.data.output[0]);
               while (Date.now() - startTime < timeout) {
                   try {
                       await new Promise(resolve => setTimeout(resolve, retryInterval));
                       const imageData = await downloadAndUploadImage(response.data.output[0], bookId, pageId);
                       if (imageData) {
+                          console.log(pageId + " "+response.meta.seed);
                           return imageData;
                       }
                   } catch (downloadError) {
                       console.log(`Attempt to download main image failed for pageId: ${pageId}, retrying...`, downloadError.message);
+                      try {
+                        const imageData = await downloadAndUploadImage(response.data.proxy_links[0], bookId, pageId);
+                        return imageData;
+                    } catch (proxyError) {
+                        console.log(`Proxy download also failed for pageId: ${pageId}`, proxyError.message);
+                    }
                   }
               }
               console.log("Final attempt using proxy link.");
               return await downloadAndUploadImage(response.data.output[0], bookId, pageId);
           } else if (response.data.status === 'processing') {
-              const timeout = 600000; // 10 minutes in milliseconds
+              const timeout = 120000; // 2 minutes in milliseconds
               const retryInterval = 15000; // 15 seconds in milliseconds
               const startTime = Date.now();
               console.log(pageId + response.data.future_links[0])
               while (Date.now() - startTime < timeout) {
                   try {
                       await new Promise(resolve => setTimeout(resolve, retryInterval));
-                      const imageData = await downloadAndUploadImage(response.data.future_links[0], pageId, bookId);
+                      const imageData = await downloadAndUploadImage(response.data.future_links[0], bookId, pageId);
                       if (imageData) {
+                        console.log(pageId + " "+response.meta.seed);
                           return imageData;
                       }
                   } catch (downloadError) {
@@ -111,7 +119,6 @@ async function storyToImage(pageStory, bookId, pageId) {
               console.log("Final attempt using future link");
               return await downloadAndUploadImage(response.data.future_links[0], pageId, bookId);
           } else if (response.data.status === 'error') {
-              console.log(response.data);
               console.log(`Error on try ${retryCount + 1}, retrying...`);
               retryCount++;
               continue;
@@ -119,31 +126,43 @@ async function storyToImage(pageStory, bookId, pageId) {
               throw new Error("Unhandled image generation status.");
           }
       } catch (error) {
-          console.error(`Error handling image generation on try ${retryCount + 1}:`, error);
+          console.error(`Error handling image generation on try ${retryCount + 1}`);
           retryCount++;
           if (retryCount >= maxRetries) {
               return null;
           }
       }
   }
-  console.error('All retry attempts failed.');
+  if (attempt !== 0) {
+        console.log(`Retrying once more for pageId: ${pageId}.`);
+        return await storyToImage(pageStory, bookId, pageId, attempt - 1);
+  }   
   return null;
 }
 
-
 async function downloadAndUploadImage(imageUrl, key, value) {
-    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-    const imageData = Buffer.from(response.data, 'binary');
-    const s3Params = {
-        Bucket: process.env.S3_BUCKET,
-        Key: `storybook-images/${key}-${value}.png`,
-        Body: imageData,
-        ContentType: 'image/png'
-    };
-    await s3Client.send(new PutObjectCommand(s3Params));
-    const uploadedUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Params.Key}`;
-    console.log(`Upload successful: ${uploadedUrl}`);
-    return uploadedUrl;
+    try {
+        console.log(`Attempting to download image from URL: ${imageUrl}`);
+        const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+        if (response.status === 200) {
+            const imageData = Buffer.from(response.data, 'binary');
+            const s3Params = {
+                Bucket: process.env.S3_BUCKET,
+                Key: `storybook-images/${key}-${value}.png`,
+                Body: imageData,
+                ContentType: 'image/png'
+            };
+            await s3Client.send(new PutObjectCommand(s3Params));
+            const uploadedUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Params.Key}`;
+            console.log(`Upload successful: ${uploadedUrl}`);
+            return uploadedUrl;
+        } else {
+            throw new Error('Failed to download image: Server responded with status');
+        }
+    } catch (error) {
+        console.error('Failed to download or upload image');
+        throw error;  // Re-throw to handle in calling function
+    }
 }
 
 module.exports = {
