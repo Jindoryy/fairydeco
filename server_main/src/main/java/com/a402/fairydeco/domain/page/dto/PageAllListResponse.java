@@ -14,6 +14,7 @@ public class PageAllListResponse {
     private Integer pageId;
     private String pageStory;
     private String pageimageUrl;
-    //voiceUrl 필요 시 추가
+    private String pageVoiceUrl;
+    private Integer pageVoiceDuration;
 
 }

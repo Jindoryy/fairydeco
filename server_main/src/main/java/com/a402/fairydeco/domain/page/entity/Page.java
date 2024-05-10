@@ -50,7 +50,7 @@ public class Page extends BaseEntity {
     private String voiceUrl;
 
     @Column(name = "page_voice_duration")
-    private int voiceDuration;
+    private Integer voiceDuration;
 
     public void updateStory(String story){
         this.story = story;

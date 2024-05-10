@@ -104,6 +104,7 @@ public class UserService {
             .childName(child.getName())
             .childBirth(child.getBirth())
             .childGender(child.getGender())
+            .childProfileUrl(child.getProfileUrl())
             .bookList(books)
             .build();
     }
