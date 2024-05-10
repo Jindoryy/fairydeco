@@ -23,7 +23,7 @@ module.exports = {
             },
             fontFamily: {
                 ourFont: ['TTHakgyoansimMonggeulmonggeulR'],
-                storyFont: ['GowunDodumRegular'],
+                storyFont: ['NanumMyeongjoR'],
             },
             boxShadow: {
                 customShadow: '0 2px 2px 0 #C4B6B5',

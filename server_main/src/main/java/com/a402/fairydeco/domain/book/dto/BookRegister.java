@@ -12,13 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class BookRegister {
 
     private int childId;
-    private String bookMaker;
     private MultipartFile bookPicture;
 
     @Builder
-    public BookRegister(int childId, String bookMaker, MultipartFile bookPicture) {
+    public BookRegister(int childId, MultipartFile bookPicture) {
         this.childId = childId;
-        this.bookMaker = bookMaker;
         this.bookPicture = bookPicture;
     }
 
