@@ -59,7 +59,7 @@ public class FileUtil {
       );
       putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
       amazonS3Client.putObject(putObjectRequest);
-      return fileName;
+      return baseUrl+fileName;
     } catch (AmazonServiceException e) {
     }
     return null;

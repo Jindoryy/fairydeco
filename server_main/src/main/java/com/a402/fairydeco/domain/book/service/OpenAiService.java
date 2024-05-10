@@ -13,9 +13,11 @@ import com.a402.fairydeco.global.common.dto.StoryResponse;
 import com.a402.fairydeco.global.common.exception.CustomException;
 import com.a402.fairydeco.global.common.exception.ErrorCode;
 import com.a402.fairydeco.global.util.FileUtil;
+import com.a402.fairydeco.global.util.VoiceUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
 import java.net.http.HttpClient;
 
 import lombok.RequiredArgsConstructor;
@@ -54,8 +56,10 @@ public class OpenAiService {
     private String apiURL;
     @Value("${openai.api.image}")
     private String openAiImageApiKey;
+
     private final RestTemplate restTemplate;
     private final FileUtil fileUtil;
+    private final VoiceUtil voiceUtil;
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     @Transactional
@@ -143,7 +147,7 @@ public class OpenAiService {
                     if (tmp.length < 7) {
                         continue;
                     }
-                    String finePrompt = "넌 지금부터 스토리텔링 전문가야. 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 전체적으로 자연스럽지 않은 문장은 어린 아이가 이해할 수 있도록 쉬운 단어로 구성해서 자연스럽게 바꿔줘";
+                    String finePrompt = "넌 지금부터 스토리텔링 전문가야. 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 전체적으로 자연스럽지 않은 문장은 4살 아이가 이해할 수 있도록 쉬운 단어로 구성해서 자연스럽게 바꿔줘";
                     finePrompt += "\n\n " + story;
                     request = new StoryRequest(fineModel, finePrompt);
                     storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
@@ -167,20 +171,23 @@ public class OpenAiService {
                     }
                 }
                 // 각 page 8개 db에 저장하는 작업
-                Page[] tmpPage = new Page[bookStories.length];
                 for (int i = 0; i < bookStories.length; i++) {
+                   // 목소리 파일 생성 후 s3 저장
+                    File voice = voiceUtil.createVoice(bookStories[i]);
                     Page page = Page.builder()
                             .book(savedBook)
-                            .story(bookStories[i]) //공백제거
+                            .story(bookStories[i])
+                            .voiceUrl(fileUtil.uploadMP3(voice))
+                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
                             .build();
-                    tmpPage[i] = pageRepository.save(page);
+                    pageRepository.save(page);
                 }
+
                 BookCreateRequestDto bookCreateRequestDto = BookCreateRequestDto.builder()
                         .userId(child.getUser().getId())
                         .bookId(savedBook.getId())
                         .childId(child.getId())
                         .build();
-                System.out.println(bookCreateRequestDto.getUserId()+" "+bookCreateRequestDto.getChildId()+" "+bookCreateRequestDto.getBookId());
                 return bookCreateRequestDto;
             } catch (Exception e) {
                 // 예외 처리

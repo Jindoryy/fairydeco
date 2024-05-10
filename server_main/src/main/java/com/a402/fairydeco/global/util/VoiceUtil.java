@@ -58,7 +58,6 @@ public class VoiceUtil {
           outputStream.write(bytes, 0, read);
         }
         is.close();
-        System.out.println("1" + f);
         return f;
       } else {  // 오류 발생
         br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
@@ -68,13 +67,10 @@ public class VoiceUtil {
           response.append(inputLine);
         }
         br.close();
-        System.out.println(response.toString());
       }
     } catch (Exception e) {
-      System.out.println(e);
     }
 
-    System.out.println(f);
     return f;
   }
 
