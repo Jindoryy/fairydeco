@@ -48,6 +48,11 @@ export default function LoginBox() {
         }
     }
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            doLogin()
+        }
+    }
     return (
         <>
             <div
@@ -68,6 +73,7 @@ export default function LoginBox() {
                     <input
                         className="h-14 w-full rounded-xl bg-white pl-2 text-2xl text-black outline-customGreen"
                         onChange={handleUserId}
+                        onKeyPress={handleKeyPress}
                     ></input>
                 </div>
                 <div className="w-11/12 px-8">
@@ -78,6 +84,7 @@ export default function LoginBox() {
                         type="password"
                         className="h-14 w-full rounded-xl bg-white pl-2 text-2xl text-black outline-customGreen"
                         onChange={handlePassword}
+                        onKeyPress={handleKeyPress}
                     ></input>
                 </div>
                 <div className="mt-8 flex w-11/12 justify-between px-8">
