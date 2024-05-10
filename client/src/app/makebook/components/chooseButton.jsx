@@ -19,9 +19,9 @@ export default function ChooseButton() {
     }
 
     return (
-        <div>
+        <>
             <button
-                className="btn btn-ghost relative ml-2 h-10 w-1/12 pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
+                className="btn btn-ghost relative ml-2 h-auto w-1/12 pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                 onClick={goBack}
             >
                 <ArrowCircleLeft
@@ -30,12 +30,12 @@ export default function ChooseButton() {
                     className="text-white"
                 />
             </button>
-            <div className="relative flex h-auto w-full items-center justify-center pt-12">
+            <div className="relative flex h-dvh w-full justify-center">
                 <button
-                    className="shadow-innerShadow btn relative m-4 mr-8 h-[500px] w-1/3 rounded-3xl border-none bg-customBlueBorder p-4 text-5xl font-thin hover:bg-customBlueBorder "
+                    className="btn relative m-4 mr-8 h-3/4 w-1/3 rounded-3xl border-none bg-customBlueBorder p-4 text-5xl font-thin shadow-innerShadow hover:bg-customBlueBorder "
                     onClick={goPainting}
                 >
-                    <div className="h-10/12 animate-wiggle relative flex w-full items-center justify-center">
+                    <div className="h-10/12 relative flex w-full animate-wiggle items-center justify-center">
                         <Image
                             src={PencilImage}
                             alt="연필그림"
@@ -48,7 +48,7 @@ export default function ChooseButton() {
                     지금 그려볼래요!
                 </button>
                 <button
-                    className="shadow-innerShadow bg-customDarkYellow hover:bg-customDarkYellow btn relative m-4 ml-8 h-[500px] w-1/3 rounded-3xl border-none p-4 text-5xl font-thin"
+                    className="btn relative m-4 ml-8 h-3/4 w-1/3 rounded-3xl border-none bg-customDarkYellow p-4 text-5xl font-thin shadow-innerShadow hover:bg-customDarkYellow"
                     onClick={goUpload}
                 >
                     <div className="h-10/12 relative flex w-full animate-bounce items-center justify-center">
@@ -64,6 +64,6 @@ export default function ChooseButton() {
                     이미 그렸어요
                 </button>
             </div>
-        </div>
+        </>
     )
 }

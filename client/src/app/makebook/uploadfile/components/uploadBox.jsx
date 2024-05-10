@@ -9,12 +9,14 @@ import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
 export default function UploadBox() {
     const router = useRouter()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
-    // const childId = localStorage.getItem('childId')
-    const childId = 4
+    const childId = localStorage.getItem('childId')
     const [kidImage, setKidImage] = useState()
     const [kidImageView, setKidImageView] = useState('')
     const handleFileChange = (event) => {
         const file = event.target.files[0]
+        if (!file) {
+            return
+        }
         const reader = new FileReader()
         setKidImage(file)
 
@@ -33,6 +35,7 @@ export default function UploadBox() {
     }
     const getStory = async () => {
         const bookFormData = new FormData()
+
         bookFormData.append('childId', childId)
         bookFormData.append('bookPicture', kidImage)
 
@@ -61,7 +64,7 @@ export default function UploadBox() {
     return (
         <>
             <button
-                className="btn btn-ghost relative ml-2 h-10 w-1/12 pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
+                className="btn btn-ghost relative ml-2 h-auto w-1/12 pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                 onClick={goBack}
             >
                 <ArrowCircleLeft
@@ -70,7 +73,7 @@ export default function UploadBox() {
                     className="text-white"
                 />
             </button>
-            <div className="shadow-innerShadow bg-customDarkYellow hover:bg-customDarkYellow relative top-16 m-auto flex h-[500px] w-2/3 flex-col items-center justify-center rounded-3xl border-none p-4 text-5xl font-thin">
+            <div className="relative m-auto mt-8 flex h-3/4 w-2/3 flex-col items-center justify-center rounded-3xl border-none bg-customDarkYellow p-4 text-5xl font-thin shadow-innerShadow hover:bg-customDarkYellow">
                 <div className="flex h-4/5 min-h-[190px] w-full items-center justify-center rounded-2xl ">
                     <input
                         type="file"

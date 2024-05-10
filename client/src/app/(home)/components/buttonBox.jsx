@@ -37,21 +37,21 @@ export default function ButtonBox() {
     }
     const goPainting = () => {
         setTimeout(() => {
-            router.push('/painting')
+            router.push('/book/165')
         }, 200)
     }
     return (
-        <div>
-            <div className="mr-4 flex justify-end">
+        <div className="h-dvh w-dvw">
+            <div className="mr-2 flex h-auto justify-end pt-2">
                 <button
-                    className="btn btn-ghost relative ml-2 mt-2 h-10 w-1/12 pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
+                    className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-sm font-thin text-white hover:bg-transparent focus:bg-transparent"
                     onClick={goProfile}
                 >
-                    <Image src={Horse} alt="아이 선택" />
+                    <Image src={Horse} alt="아이 선택" width={80} height={80} />
                     아이 선택
                 </button>
             </div>
-            <div className="flex h-auto w-full items-center justify-between pl-20 pr-80">
+            <div className="flex h-1/3 w-full items-center justify-between pl-20 pr-80">
                 <div className="relative flex flex-col items-center justify-center">
                     <button
                         className="btn btn-ghost flex h-auto w-6/12 -rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent focus:bg-transparent"
@@ -66,12 +66,14 @@ export default function ButtonBox() {
                                 left: 0,
                             }}
                         />{' '}
-                        동화 만들기
+                        <span className="sm:text-sm md:text-lg lg:text-5xl">
+                            동화 만들기
+                        </span>
                     </button>
                 </div>
                 <div className="relative flex flex-col items-center justify-center">
                     <button
-                        className="btn  btn-ghost flex h-auto w-8/12 rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent focus:bg-transparent"
+                        className="btn btn-ghost flex h-auto w-8/12 rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent focus:bg-transparent"
                         onClick={goBookList}
                     >
                         <Image
@@ -84,11 +86,13 @@ export default function ButtonBox() {
                                 left: 0,
                             }}
                         />
-                        동화 보기
+                        <span className="sm:text-sm md:text-lg lg:text-5xl">
+                            동화 보기
+                        </span>
                     </button>
                 </div>
             </div>
-            <div className="flex h-auto w-full items-center justify-between pl-80 pr-40 pt-4">
+            <div className="flex h-1/3 w-full items-center justify-between pl-80 pr-40 pt-12">
                 <div className="relative flex flex-col items-center justify-center">
                     <button
                         className="btn  btn-ghost flex h-auto w-6/12 rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0  hover:bg-transparent focus:bg-transparent"
@@ -104,7 +108,9 @@ export default function ButtonBox() {
                                 left: 0,
                             }}
                         />{' '}
-                        나의 그림
+                        <span className="sm:text-sm md:text-lg lg:text-5xl">
+                            나의 그림
+                        </span>
                     </button>
                 </div>
                 <div className="relative flex flex-col items-center justify-center">
@@ -122,7 +128,9 @@ export default function ButtonBox() {
                                 left: 0,
                             }}
                         />{' '}
-                        그림 그리기
+                        <span className="sm:text-sm md:text-lg lg:text-5xl">
+                            동화 샘플보기
+                        </span>
                     </button>
                 </div>
             </div>
