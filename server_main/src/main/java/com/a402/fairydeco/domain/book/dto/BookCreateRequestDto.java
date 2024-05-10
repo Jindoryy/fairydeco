@@ -7,14 +7,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class BookCreateRequestDto {
-
+    private Integer userId;
+    private Integer childId;
     private Integer bookId;
-    private Integer pageId;
 
     @Builder
-    public BookCreateRequestDto(Integer bookId, Integer pageId){
+    public BookCreateRequestDto(Integer userId, Integer childId, Integer bookId){
+        this.userId = userId;
+        this.childId = childId;
         this.bookId = bookId;
-        this.pageId = pageId;
     }
 
 }
