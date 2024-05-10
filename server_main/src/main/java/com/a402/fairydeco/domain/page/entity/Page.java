@@ -46,6 +46,12 @@ public class Page extends BaseEntity {
     @Column(name = "page_image_name")
     private String imageName;
 
+    @Column(name = "page_voice_url", length = 1000)
+    private String voiceUrl;
+
+    @Column(name = "page_voice_duration")
+    private int voiceDuration;
+
     public void updateStory(String story){
         this.story = story;
     }
