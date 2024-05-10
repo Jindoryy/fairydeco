@@ -14,12 +14,16 @@ export default function Profile() {
 
     const router = useRouter()
 
-    const userId = 2
-
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL
-    const URL = `${apiUrl}/child/name-list/${userId}`
-
     useEffect(() => {
+        const userId = localStorage.getItem('userId')
+
+        if (!userId) {
+            router.push('/login') // Redirect to login if userId doesn't exist
+            return // Exit the effect early if no userId
+        }
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        const URL = `${apiUrl}/child/name-list/${userId}`
+
         const fetchData = async () => {
             try {
                 const response = await fetch(URL)
@@ -46,6 +50,11 @@ export default function Profile() {
     const openAddChildModal = () => setIsAddChildModalOpen(true) // Open AddChildModal
     const closeAddChildModal = () => setIsAddChildModalOpen(false) // Close AddChildModal
 
+    const handleImageClick = (childId) => {
+        localStorage.setItem('childId', childId) // Store the childId
+        router.push('/') // Navigate to the home page
+    }
+
     return (
         <div className="flex h-dvh w-dvw flex-col items-center justify-center bg-customDarkYellow p-4">
             <div className="mb-8 flex justify-center text-5xl">
@@ -63,7 +72,7 @@ export default function Profile() {
                                 src={child.childProfileUrl}
                                 alt={`${child.childName} profile`}
                                 className="h-[200px] w-[200px] transform cursor-pointer rounded-full object-cover transition-transform hover:scale-110 hover:border-4 hover:border-customOrange"
-                                onClick={() => openChangeInfoModal(child)} // Open modal
+                                onClick={() => handleImageClick(child.childId)} // Open modal
                             />
                             <div className="mt-4 flex items-center justify-center gap-2 text-center">
                                 <span className="text-3xl font-semibold">
