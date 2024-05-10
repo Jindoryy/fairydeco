@@ -61,8 +61,8 @@ export default function Profile() {
                 동화를 그릴 사람은 누구인가요?
             </div>
 
-            {kidsData ? (
-                <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            {kidsData && kidsData.data && kidsData.data.length > 0 ? (
+                <div className="mt-8 grid grid-cols-3 justify-items-center gap-4">
                     {kidsData.data.map((child) => (
                         <div
                             key={child.childId}
@@ -94,7 +94,12 @@ export default function Profile() {
                     </div>
                 </div>
             ) : (
-                <div>Loading...</div>
+                <div
+                    className="flex h-[200px] cursor-pointer flex-col items-center justify-center"
+                    onClick={openAddChildModal} // Open AddChildModal on click
+                >
+                    <PlusCircle size={150} />
+                </div>
             )}
 
             {isChangeInfoModalOpen && selectedChild && (
