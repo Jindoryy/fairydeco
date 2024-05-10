@@ -2,53 +2,75 @@
 
 import { useEffect, useState } from 'react'
 
-export default function KidsPaint() {
-    const [paint, setPaint] = useState(null)
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL
-    const childId = 1
-
-    useEffect(() => {
-        const fetchPaint = async () => {
-            try {
-                const response = await fetch(
-                    `${apiUrl}/book/child-picture-list/${childId}`
-                )
-                const jsonData = await response.json()
-                setPaint(jsonData)
-            } catch (error) {
-                console.error('Error fetching data:', error)
-            }
-        }
-
-        fetchPaint()
-    }, [apiUrl])
-
+export default function KidsPaint({ childId, childName, bookList }) {
     return (
-        <div>
-            <div className="mx-6 my-6 text-3xl">김아들의 동화</div>
-            <div className="mx-6 mb-3">
-                {paint?.data?.length > 0 ? (
-                    <div className="flex flex-row gap-4">
-                        {' '}
-                        {/* 가로 정렬 및 간격 추가 */}
-                        {paint.data.map((item, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col items-center"
-                            >
-                                {' '}
-                                {/* 이미지 정렬 */}
-                                <img
-                                    src={item.bookPictureUrl}
-                                    alt={`Book Image ${item.bookId}`}
-                                    style={{ width: '200px', height: '200px' }} // 크기 조절
-                                />
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div>No images found</div>
-                )}
+        <div className="pb-4">
+            <div className="mx-6 my-6 text-3xl">나의 동화</div>
+            <div className="h-[300px] rounded-[30px] bg-white pb-10 pt-6">
+                <div className="mx-6 mb-3 overflow-x-auto whitespace-nowrap">
+                    {bookList ? (
+                        <div className="flex flex-row gap-4">
+                            {bookList
+                                .filter((item) => item.bookCoverUrl !== null) // bookCoverUrl이 null이 아닌 경우만 필터링
+                                .map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="relative flex flex-shrink-0 flex-col items-center"
+                                    >
+                                        <img
+                                            src={item.bookCoverUrl}
+                                            alt={`Book Cover ${item.bookId}`}
+                                            style={{
+                                                width: '180px',
+                                                height: '240px',
+                                                borderRadius: '10px',
+                                            }}
+                                        />
+                                        <div
+                                            className="absolute bottom-1 w-full p-1 text-center  text-2xl text-white"
+                                            style={{
+                                                '-webkit-text-stroke':
+                                                    '1px black', // 검정색 1px 스트로크 추가
+                                            }}
+                                        >
+                                            {item.bookName}
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
+                    ) : (
+                        <div>No books found</div>
+                    )}
+                </div>
+            </div>
+            <div className="mx-6 my-6 text-3xl">나의 그림</div>
+            <div className="h-[300px] rounded-[30px] bg-white pb-10 pt-6">
+                <div className="mx-6 mb-3 overflow-x-auto whitespace-nowrap ">
+                    {bookList ? (
+                        <div className="flex flex-row gap-4">
+                            {bookList
+                                .filter((item) => item.bookPictureUrl !== null) // bookPictureUrl이 null이 아닌 경우만 필터링
+                                .map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex flex-shrink-0 flex-col items-center"
+                                    >
+                                        <img
+                                            src={item.bookPictureUrl}
+                                            alt={`Book Picture ${item.bookId}`}
+                                            style={{
+                                                width: '180px',
+                                                height: '240px',
+                                                borderRadius: '10px',
+                                            }}
+                                        />
+                                    </div>
+                                ))}
+                        </div>
+                    ) : (
+                        <div>No images found</div> // No images available
+                    )}
+                </div>
             </div>
         </div>
     )

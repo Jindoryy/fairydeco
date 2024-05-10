@@ -29,3 +29,8 @@ body {
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+    font-family: 'nanum-myeongjo-regular';
+    src: 'https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap';
+}
