@@ -100,7 +100,7 @@ export default function ButtonBox() {
                                 width={80}
                                 height={80}
                             />
-                            로그아웃
+                            나가기
                         </button>
                     </>
                 ) : (
