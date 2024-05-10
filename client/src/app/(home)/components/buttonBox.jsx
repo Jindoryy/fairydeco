@@ -65,11 +65,11 @@ export default function ButtonBox() {
     }
     return (
         <div className="h-dvh w-dvw">
-            <div className="mr-2 flex h-auto justify-end pt-2">
+            <div className="mr-2 flex h-auto justify-start pt-2">
                 {userId ? (
                     <>
                         <button
-                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-sm font-thin text-white hover:bg-transparent focus:bg-transparent"
+                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                             onClick={goProfile}
                         >
                             <Image
@@ -84,7 +84,7 @@ export default function ButtonBox() {
                 ) : (
                     <>
                         <button
-                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-sm font-thin text-white hover:bg-transparent focus:bg-transparent"
+                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                             onClick={goLogin}
                         >
                             <Image
