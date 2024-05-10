@@ -28,8 +28,8 @@ export default function CanvasBox() {
             const parentWidth = canvasContainer.offsetWidth
             const parentHeight = canvasContainer.offsetHeight
             newCanvas.setDimensions({
-                width: parentWidth * 0.8,
-                height: parentHeight * 0.9,
+                width: '900px',
+                height: '540px',
             })
         }
         window.addEventListener('resize', handleResize)

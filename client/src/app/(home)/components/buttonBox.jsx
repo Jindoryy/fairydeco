@@ -24,6 +24,7 @@ export default function ButtonBox() {
         if (!userId) {
             alert('로그인을 해주세요!')
             router.push('/login')
+            return
         }
         router.push('/profile')
     }
