@@ -50,6 +50,9 @@ public class BookController {
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
         CompletableFuture<BookCreateRequestDto> future = openAiService.register(bookRegister);
+        if(future == null){
+            return new SuccessResponse<>(HttpStatus.BAD_REQUEST.value());
+        }
         future.thenRun(() -> {
             try {
                 BookCreateRequestDto result = future.get(); // 비동기 작업의 결과 가져오기

@@ -111,6 +111,11 @@ public class OpenAiService {
         // 이미지 있으면 이미지 따로저장 + 이미지분석으로 키워드 가져옴
         // image to text 메서드
         ImgPromptDto imgPromptDto = createPromptKidImg(bookRegister.getBookPicture());
+        String[] promptTmp = imgPromptDto.getPrompt().split(",");
+        if(promptTmp.length != 5){
+            System.out.println("키워드 분석 실패");
+            return null;
+        }
         Book book = Book.builder()
                 .child(childRepository.findById(child.getId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
                 .name(child.getName() + "의 이야기")
