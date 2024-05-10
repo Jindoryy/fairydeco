@@ -9,14 +9,19 @@ import Horse from '../../../../public/image/horse.png'
 import ProfileImage from '../../../../public/image/profilebook.png'
 import { useRouter } from 'next/navigation'
 import { Baby } from '@phosphor-icons/react/dist/ssr'
+import { useState, useEffect } from 'react'
 
 export default function ButtonBox() {
     const router = useRouter()
+    const [userId, setUserId] = useState()
+
+    useEffect(() => {
+        if (localStorage.getItem('userId'))
+            setUserId(localStorage.getItem('userId'))
+    }, [])
 
     const goProfile = () => {
-        setTimeout(() => {
-            router.push('/profile')
-        }, 200)
+        router.push('/profile')
     }
 
     const goMakeBook = () => {
@@ -40,16 +45,44 @@ export default function ButtonBox() {
             router.push('/book/165')
         }, 200)
     }
+
+    const goLogin = () => {
+        router.push('/login')
+    }
     return (
         <div className="h-dvh w-dvw">
             <div className="mr-2 flex h-auto justify-end pt-2">
-                <button
-                    className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-sm font-thin text-white hover:bg-transparent focus:bg-transparent"
-                    onClick={goProfile}
-                >
-                    <Image src={Horse} alt="아이 선택" width={80} height={80} />
-                    아이 선택
-                </button>
+                {userId ? (
+                    <>
+                        <button
+                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-sm font-thin text-white hover:bg-transparent focus:bg-transparent"
+                            onClick={goProfile}
+                        >
+                            <Image
+                                src={Horse}
+                                alt="아이 선택"
+                                width={80}
+                                height={80}
+                            />
+                            아이 선택
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <button
+                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-sm font-thin text-white hover:bg-transparent focus:bg-transparent"
+                            onClick={goLogin}
+                        >
+                            <Image
+                                src={Horse}
+                                alt="아이 선택"
+                                width={80}
+                                height={80}
+                            />
+                            로그인
+                        </button>
+                    </>
+                )}
             </div>
             <div className="flex h-1/3 w-full items-center justify-between pl-20 pr-80">
                 <div className="relative flex flex-col items-center justify-center">
