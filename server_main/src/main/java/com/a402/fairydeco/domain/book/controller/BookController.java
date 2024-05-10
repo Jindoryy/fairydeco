@@ -14,12 +14,17 @@ import com.a402.fairydeco.domain.book.service.OpenAiService;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,9 +48,17 @@ public class BookController {
 
     @Operation(summary = "동화 만들기", description = "들어오는 이미지를 통해 스토리 생성 및 이미지 생성")
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-        public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
-        BookCreateRequestDto bookCreateRequestDto = openAiService.register(bookRegister);
-        return new SuccessResponse<>(bookService.createBookImage(bookCreateRequestDto));
+    public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
+        CompletableFuture<BookCreateRequestDto> future = openAiService.register(bookRegister);
+        future.thenRun(() -> {
+            try {
+                BookCreateRequestDto result = future.get(); // 비동기 작업의 결과 가져오기
+                bookService.createBookImage(result);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        return new SuccessResponse<>(HttpStatus.OK.value());
     }
 
 
@@ -95,15 +108,15 @@ public class BookController {
     @GetMapping("/end/{bookId}")
     public SuccessResponse<?> bookComplete(@PathVariable Integer bookId) {
         //테스트 완료 되면 서비스 코드 분리 진행하겠습니다.
-        System.out.println("동화 생성 완료: "+bookId);
+        System.out.println("동화 생성 완료: " + bookId);
         SseEmitter sseEmitter = sseEmitters.get(bookId);
         if (sseEmitter != null) {
             try {
                 sseEmitter.send(SseEmitter.event()
-                    .name("book-complete")
-                    .data("동화책 " + bookId + "의 제작이 완료되었습니다."));
+                        .name("book-complete")
+                        .data("동화책 " + bookId + "의 제작이 완료되었습니다."));
                 sseEmitter.complete();
-        //동화 제작이 실패 했습니다.
+                //동화 제작이 실패 했습니다.
             } catch (IOException e) {
                 sseEmitters.remove(bookId);
             }

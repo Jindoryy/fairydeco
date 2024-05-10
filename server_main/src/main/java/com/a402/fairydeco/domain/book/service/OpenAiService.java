@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Transactional
@@ -58,13 +59,13 @@ public class OpenAiService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     @Transactional
-    public BookCreateRequestDto register(BookRegister bookRegister) throws IOException {
+    public CompletableFuture<BookCreateRequestDto> register(BookRegister bookRegister) throws IOException {
         // 1. 들어온 내용을 바탕으로 동화 등록
         // 2. 프롬프트로 동화 스토리 생성
         // 3. 동화 스토리 save 후 return
         // 이미지가 만약 있을 경우 건희형이 만든 image to text 서비스 메서드 사용해서 한줄 스토리 받음
         Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
-        String age = "Y";
+        String age;
         String prompt = "<동화 스토리 작성 프롬프트>\n" +
                 "\n" +
                 "넌 지금부터 동화 스토리텔링 전문가야. 아래 키워드를 활용하여 많은 사람이 흥미를 느낄만한 글을 작성해 줘야 해. 이 프롬프트를 전송하면 아래의 단계를 진행해 줘.\n" +
@@ -99,6 +100,8 @@ public class OpenAiService {
                 "    *대본은 디테일이 중요해. 필요한 단어나 배경지식이 있다면 외부에서 검색해서 스토리의 완성도를 더 깊이있게 만들어줘";
         if ((LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0, 4))) > 5) {
             age = "O";
+        } else {
+            age = "Y";
         }
         // 이미지 null이면 키워드 그냥 더하고
         // 이미지 있으면 이미지 따로저장 + 이미지분석으로 키워드 가져옴
@@ -114,73 +117,76 @@ public class OpenAiService {
                 .recommendAge(RecommendAge.valueOf(age))
                 .build();
         Book savedBook = bookRepository.save(book);
-        // 동화 ai로 제작
-        String gender = "남";
-        if (child.getGender().toString().equals("WOMAN")) {
-            gender = "여";
+        if (age.equals("Y")) {
+            prompt += "\n\n 쉬운단어로 각 대본은 50자 정도로 무조건 8컷 이상 만들어줘. 키워드 :" + savedBook.getPrompt();
+        } else {
+            prompt += "\n\n 쉬운단어로 각 대본은 150자 정도로 무조건 8컷 이상 만들어줘. 키워드 :" + savedBook.getPrompt();
         }
-       if(age.equals("Y")){
-           prompt += "\n\n 쉬운단어로 각 대본은 50자 정도로 무조건 8컷 이상 만들어줘. 키워드 :" + savedBook.getPrompt();
-       }
-       else{
-           prompt += "\n\n 쉬운단어로 각 대본은 150자 정도로 무조건 8컷 이상 만들어줘. 키워드 :" + savedBook.getPrompt();
-       }
         // 스토리 생성
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
-        String[] bookStories;
-        String model = model1;
-        if (age.equals("O")) {
-            model = model2;
-        }
-        while (true) {
-            // 나이가 어리면 model1으로
-            // 나이 많으면 model2로 실행
-            StoryRequest request = new StoryRequest(model, prompt);
-            StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
-            String story = storyResponse.getChoices().get(0).getMessage().getContent();
-            System.out.println(story);
-            String[] tmp = story.split("\n");
-            if(tmp.length<7){
-                continue;
-            }
-            String finePrompt = "넌 지금부터 스토리텔링 전문가야. 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 전체적으로 자연스럽지 않은 문장은 어린 아이가 이해할 수 있도록 쉬운 단어로 구성해서 자연스럽게 바꿔줘";
-            finePrompt += "\n\n " + story;
-             request = new StoryRequest(fineModel, finePrompt);
-             storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
-            String fineStory = storyResponse.getChoices().get(0).getMessage().getContent();
-            bookStories = fineStory.split("끝!"); // 8개로 나눔
-            System.out.println(fineStory);
-            if (bookStories.length >= 7) {
-                break;
-                // 8개가 아니라면 루프를 다시 시작
-            }
-        }
-        // 앞에 1. , 2. 지우는 작업
-        for (int i = 0; i < bookStories.length; i++) {
-            bookStories[i] = bookStories[i].trim();
-            int tmp = i + 1;
-                for(int j=0;j<bookStories[i].length();j++){
-                    if(bookStories[i].substring(j,j+1).equals(".")){
-                        bookStories[i] = bookStories[i].substring(j+1,bookStories[i].length());
+        String finalPrompt = prompt;
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String[] bookStories;
+                String model = model1;
+                if (age.equals("O")) {
+                    model = model2;
+                }
+                while (true) {
+                    // 나이가 어리면 model1으로
+                    // 나이 많으면 model2로 실행
+                    StoryRequest request = new StoryRequest(model, finalPrompt);
+                    StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
+                    String story = storyResponse.getChoices().get(0).getMessage().getContent();
+                    System.out.println(story);
+                    String[] tmp = story.split("\n");
+                    if (tmp.length < 7) {
+                        continue;
+                    }
+                    String finePrompt = "넌 지금부터 스토리텔링 전문가야. 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 전체적으로 자연스럽지 않은 문장은 어린 아이가 이해할 수 있도록 쉬운 단어로 구성해서 자연스럽게 바꿔줘";
+                    finePrompt += "\n\n " + story;
+                    request = new StoryRequest(fineModel, finePrompt);
+                    storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
+                    String fineStory = storyResponse.getChoices().get(0).getMessage().getContent();
+                    bookStories = fineStory.split("끝!"); // 8개로 나눔
+                    System.out.println(fineStory);
+                    if (bookStories.length >= 7) {
                         break;
+                        // 8개가 아니라면 루프를 다시 시작
                     }
                 }
-        }
-        // 각 page 8개 db에 저장하는 작업
-        Page[] tmpPage = new Page[bookStories.length];
-        for (int i = 0; i < bookStories.length; i++) {
-            Page page = Page.builder()
-                    .book(bookRepository.findById(savedBook.getId()).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR)))
-                    .story(bookStories[i]) //공백제거
-                    .build();
-            tmpPage[i] = pageRepository.save(page);
-        }
-        BookCreateRequestDto bookCreateRequestDto = BookCreateRequestDto.builder()
-                .bookId(savedBook.getId())
-                .pageId(tmpPage[0].getId())
-                .build();
-
-        return bookCreateRequestDto;
+                // 앞에 1. , 2. 지우는 작업
+                for (int i = 0; i < bookStories.length; i++) {
+                    bookStories[i] = bookStories[i].trim();
+                    int tmp = i + 1;
+                    for (int j = 0; j < bookStories[i].length(); j++) {
+                        if (bookStories[i].substring(j, j + 1).equals(".")) {
+                            bookStories[i] = bookStories[i].substring(j + 1, bookStories[i].length());
+                            break;
+                        }
+                    }
+                }
+                // 각 page 8개 db에 저장하는 작업
+                Page[] tmpPage = new Page[bookStories.length];
+                for (int i = 0; i < bookStories.length; i++) {
+                    Page page = Page.builder()
+                            .book(savedBook)
+                            .story(bookStories[i]) //공백제거
+                            .build();
+                    tmpPage[i] = pageRepository.save(page);
+                }
+                BookCreateRequestDto bookCreateRequestDto = BookCreateRequestDto.builder()
+                        .userId(child.getUser().getId())
+                        .bookId(savedBook.getId())
+                        .childId(child.getId())
+                        .build();
+                System.out.println(bookCreateRequestDto.getUserId()+" "+bookCreateRequestDto.getChildId()+" "+bookCreateRequestDto.getBookId());
+                return bookCreateRequestDto;
+            } catch (Exception e) {
+                // 예외 처리
+                return null;
+            }
+        });
     }
 
     public ImgPromptDto createPromptKidImg(MultipartFile image) throws IOException {
