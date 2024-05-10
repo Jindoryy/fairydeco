@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
@@ -9,9 +9,14 @@ import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
 export default function UploadBox() {
     const router = useRouter()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
-    const childId = localStorage.getItem('childId')
+    const [childId, setChildId] = useState('')
     const [kidImage, setKidImage] = useState()
     const [kidImageView, setKidImageView] = useState('')
+
+    useEffect(() => {
+        setChildId(localStorage.getItem('childId'))
+    }, [])
+
     const handleFileChange = (event) => {
         const file = event.target.files[0]
         if (!file) {
