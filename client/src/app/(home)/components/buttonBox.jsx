@@ -25,14 +25,14 @@ export default function ButtonBox() {
             alert('로그인을 해주세요!')
             router.push('/login')
             return
-        }
-        router.push('/profile')
+        } else router.push('/profile')
     }
 
     const goMakeBook = () => {
         if (!userId) {
             alert('로그인을 해주세요!')
             router.push('/login')
+            return
         }
         setTimeout(() => {
             router.push('/makebook')
@@ -48,6 +48,7 @@ export default function ButtonBox() {
         if (!userId) {
             alert('로그인을 해주세요!')
             router.push('/login')
+            return
         }
         setTimeout(() => {
             router.push('/mypage')
