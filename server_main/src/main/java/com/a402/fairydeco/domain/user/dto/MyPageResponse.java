@@ -20,6 +20,7 @@ public class MyPageResponse {
     private String childName;
     private LocalDate childBirth;
     private GenderStatus childGender;
+    private String childProfileUrl;
     private List<MyPageBookDTO> bookList;
 
 }

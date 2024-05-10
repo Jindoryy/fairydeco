@@ -167,6 +167,8 @@ public class BookService {
                         .pageId(page.getId())
                         .pageStory(page.getStory())
                         .pageimageUrl(page.getImageUrl())
+                        .pageVoiceUrl(page.getVoiceUrl())
+                        .pageVoiceDuration(page.getVoiceDuration())
                         .build())
                 .toList();
 

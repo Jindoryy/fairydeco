@@ -42,6 +42,9 @@ dependencies {
 
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // mp3 duration extract
+    implementation 'com.mpatric:mp3agic:0.9.1'
 }
 
 tasks.named('test') {
