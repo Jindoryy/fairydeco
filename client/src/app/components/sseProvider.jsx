@@ -51,7 +51,7 @@ export function SseProvider({ children }) {
 
             console.log('check1')
             const sse = new EventSource(
-                `http://localhost:8080/book/sse/${userId}`
+                `https://fairydeco.site/api/book/sse/${userId}`
             )
             setEventSource(sse, userId)
 
