@@ -1,11 +1,11 @@
 cloud:
   aws:
     s3:
-      bucket: ${S3_BUCKET}
-      base-url: https://fairydecos3.s3.ap-northeast-2.amazonaws.com/
-    credentials:
-      access-key: ${AWS_ACCESS_KEY_ID}
-      secret-key: ${AWS_SECRET_ACCESS_KEY}
+      bucket: fairydeco
+      base-url: https://fairydeco.s3.ap-northeast-2.amazonaws.com/
+      credentials:
+        access-key: ${CLOUD_AWS_CREDENTIALS_ACCESSKEY}
+        secret-key: ${CLOUD_AWS_CREDENTIALS_SECRETKEY}
     region:
       static: ap-northeast-2
       auto: false
