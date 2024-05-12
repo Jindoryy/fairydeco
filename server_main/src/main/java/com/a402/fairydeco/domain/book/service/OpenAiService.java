@@ -70,28 +70,6 @@ public class OpenAiService {
         // 이미지가 만약 있을 경우 건희형이 만든 image to text 서비스 메서드 사용해서 한줄 스토리 받음
         Child child = childRepository.findById(bookRegister.getChildId()).orElseThrow(() -> new CustomException(ErrorCode.CHILD_NOT_FOUND_ERROR));
         String age;
-//        String prompt = "<동화 스토리 작성 프롬프트>\n" +
-//                "\n" +
-//                "넌 지금부터 동화 스토리텔링 전문가야. 아래 키워드를 활용하여 많은 사람이 흥미를 느낄만한 글을 작성해 줘야 해. 이 프롬프트를 전송하면 아래의 단계를 진행해 줘.\n" +
-//                "\n" +
-//                "1. 씬을 8장 이상으로 나누고 각 씬별 대본을 작성해 줘. 대본은 아래의 구조로 작성해 줘.\n" +
-//                "    구조:\n" +
-//                "    1. 내용1 끝!\n" +
-//                "    2. 내용2 끝!\n" +
-//                "    3. 내용3 끝!\n" +
-//                "    4. 내용4 끝!\n" +
-//                "    5. 내용5 끝!\n" +
-//                "    6. 내용6 끝!\n" +
-//                "    7. 내용7 끝!\n" +
-//                "    8. 내용8 끝!\n" +
-//                "\n" +
-//                "2. 주의사항:\n" +
-//                "    *도입부: 2초 내로 사람들의 흥미를 유발할 수 있는 문구나 주제를 넣어줘.\n" +
-//                "    *각 씬의 대본은 끝에는 끝! 이 단어를 넣어서 8장 이상으로 무조건 나누고 구체적으로 작성해야해. 그리고 전부 한글로 작성해야해.\n" +
-//                "    *많은 사람들이 좋아하고 관심있어 하는 대중적이고 유명한 키워드를 중간 중간 넣어줘.\n" +
-//                "    *대본은 디테일이 중요해. 필요한 단어나 배경지식이 있다면 외부에서 검색해서 스토리의 완성도를 더 깊이있게 만들어줘";
-
-        String prompt = "";
 
         if ((LocalDate.now().getYear() - Integer.parseInt(child.getBirth().toString().substring(0, 4))) > 5) {
             age = "O";
@@ -103,10 +81,34 @@ public class OpenAiService {
         // image to text 메서드
         ImgPromptDto imgPromptDto = createPromptKidImg(bookRegister.getBookPicture());
         String[] promptTmp = imgPromptDto.getPrompt().split(",");
-        if(promptTmp.length != 5){
+        if (promptTmp.length != 5) {
             System.out.println("키워드 분석 실패");
             return null;
         }
+        String prompt = "너는 동화 작가야. 너가 동화를 잘 써주면 내가 1억달러를 줄게. \n" +
+                "내가 키워드를 주면 그것들과 관련된 동화를 만들어 주면 돼.\n" +
+                "양식은 다음과 같아.\n" +
+                "\n" +
+                "키워드 : " + imgPromptDto.getPrompt() + "\n" +
+                "양식은 JSON 포맷이야\n" +
+                "```\n\n" +
+                "{\n" +
+                "   \"등장인물\" : [\n" +
+                "    {\n" +
+                "      \"이름1\" : \"인물 정보1\",\n" +
+                "    },\n" +
+                "    {\n" +
+                "       \"이름2\" : \"인물 정보2\",\n" +
+                "    },\n" +
+                "    ........\n" +
+                "   ],\n" +
+                "   \"제목\" : ,\n" +
+                "   \"내용 배열\" : [ \"내용 1\", \"내용 2\", ... ],\n" +
+                "}\n\n" +
+                "```\n" +
+                "키워드 중에 동물이나 사람을 등장인물로 해줘.\n" +
+                "인물 정보에 인물의 외관적 특징을 최대한 자세히 묘사해줘\n";
+
         Book book = Book.builder()
                 .child(childRepository.findById(child.getId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
                 .name(child.getName() + "의 이야기")
@@ -117,18 +119,21 @@ public class OpenAiService {
                 .recommendAge(RecommendAge.valueOf(age))
                 .build();
         Book savedBook = bookRepository.save(book);
+        // 프롬프트 나이대별 생성
         if (age.equals("Y")) {
-            prompt += "목적 : 키워드로 동화 스토리를 생성해줘 주고 구분을 쉽게 할 수 있도록 양식을 무조건 지켜서 8개로 시뮬레이션해 양식으로 문자열 파싱을 할거라서 각 스토리 끝에 '끝!'은 꼭 지켜줘야해\n " +
-                    "양식 : {번호. 내용 끝!} ex) 1. 내용1 끝!  2. 내용2 끝! 3. 내용3 끝! ....... 8. 내용8 끝!\n" +
-                    "주의사항 : 3~5세 아이를 위한 동화라 내용은 창의적이고 흥미를 유발하지만 이해도는 크게 필요없는 내용으로 부탁해 그리고 단어는 3~5세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했어요 등의 부드러운 말투를 사용해줘. 양식으로 문자열 파싱을 할거라서 각 스토리 끝에 '끝!'은 꼭 지켜줘야해. 그리고 결과물만 출력해줘 다른 멘트는 하지마 추가적으로 동화 내용의 문맥이 논리적이고 어색하지 않은지도 시뮬레이션해서 수정해야해\n" +
+            prompt += "스토리는 내용 8개 정도로 한 내용은 2~3줄 정도로 짧게 구성\n" +
+                    "3~5세 아이를 위한 동화라 내용은 흥미를 유발하지만 이해도는 크게 필요없는 내용으로 써줘\n" +
+                    "문맥이 어색하지 않도록, 내용이 이어지도록 구성해줘\n" +
+                    "그리고 단어는 3~5세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
-                    "키워드 :"+ savedBook.getPrompt();
+                    "시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         } else {
-            prompt += "목적 : 키워드로 동화 스토리를 생성해줘 주고 구분을 쉽게 할 수 있도록 양식을 무조건 지켜서 8개로 시뮬레이션해 양식으로 문자열 파싱을 할거라서 각 스토리 끝에 '끝!'은 꼭 지켜줘야해 \n" +
-                    "양식 : {번호. 내용 끝!} ex) 1. 내용1 끝!  2. 내용2 끝! 3. 내용3 끝! ....... 8. 내용8 끝!\n" +
-                    "주의사항 : 6~8세 아이를 위한 동화라 내용은 창의적이고 교훈을 줄 수 있는 내용으로 부탁해 그리고 단어는 6~8세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했어요 등의 부드러운 말투를 사용해줘. 양식으로 문자열 파싱을 할거라서 각 스토리 끝에 '끝!'은 꼭 지켜줘야해. 그리고 내용은 각 200자 이상으로 결과물만 출력해줘 다른 멘트는 하지마 추가적으로 동화 내용의 문맥이 논리적이고 어색하지 않은지도 시뮬레이션해서 수정해야해\n" +
+            prompt += "스토리는 내용 8개 정도로 한 내용은 5~6줄 정도로 구성\n" +
+                    "6~7세 아이를 위한 동화라 내용은 창의적이고 교육적인 내용으로 작성해줘\n" +
+                    "문맥이 어색하지 않도록, 내용이 이어지도록 구성해줘\n" +
+                    "그리고 단어는 6~7세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
-                    "키워드 :"+ savedBook.getPrompt();
+                    "시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         }
         // 스토리 생성
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
@@ -147,38 +152,40 @@ public class OpenAiService {
                     StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
                     String story = storyResponse.getChoices().get(0).getMessage().getContent();
                     System.out.println(story);
-                    String[] tmp = story.split("끝!");
-                    System.out.println(tmp.length);
-                    if (tmp.length < 7) {
+                    // '''json과 ''' 사이의 부분의 인덱스 찾기
+                    if(!story.substring(0,1).equals("{")){
+                        story = story.substring(8,story.length()-4);
+                        System.out.println(story);
+                    }
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    // JSON 문자열을 JsonNode로 읽어오기
+                    JsonNode jsonNode = objectMapper.readTree(story);
+                    // "내용 배열"에 해당하는 JsonNode 가져오기
+                    JsonNode contentArrayNode = jsonNode.get("내용 배열");
+                    // JsonNode를 배열로 변환
+                    bookStories = objectMapper.treeToValue(contentArrayNode, String[].class);
+
+                    // JSON 문자열을 JsonElement로 파싱
+//                    JsonElement jsonElement = JsonParser.parseString(story);
+//                    // JsonElement에서 JsonObject 추출
+//                    JsonObject jsonObject = jsonElement.getAsJsonObject();
+//                    // "내용 배열"에 해당하는 JsonArray 추출
+//                    JsonArray storyList = jsonObject.getAsJsonArray("내용 배열");
+                    // JsonArray를 배열로 변환
+//                    bookStories = new Gson().fromJson(storyList, String[].class);
+                    System.out.println(bookStories.length);
+                    if (bookStories.length < 8) {
                         continue;
                     }
-                    String finePrompt = "넌 지금부터 동화 제작 전문가야. 문장마다 끝!을 사용하는 구조는 유지하고 현재 문장에서 영어가 들어간 단어는 한국어로 바꿔주고, 자연스럽지 않은 문장은 자연스럽게 바꿔주고 전체적으로 4살 아이가 이해할 수 있는 단어들로 구성해줘";
-                    finePrompt += "\n\n " + story;
-                    request = new StoryRequest(fineModel, finePrompt);
-                    storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
-                    String fineStory = storyResponse.getChoices().get(0).getMessage().getContent();
-                    bookStories = fineStory.split("끝!"); // 8개로 나눔
-                    System.out.println(bookStories.length+"~~");
-                    System.out.println(fineStory);
-                    if (bookStories.length >= 7) {
-                        break;
-                        // 8개가 아니라면 루프를 다시 시작
+
+                    for (String tmp : bookStories) {
+                        System.out.println(tmp);
                     }
-                }
-                // 앞에 1. , 2. 지우는 작업
-                for (int i = 0; i < bookStories.length; i++) {
-                    bookStories[i] = bookStories[i].trim();
-                    int tmp = i + 1;
-                    for (int j = 0; j < bookStories[i].length(); j++) {
-                        if (bookStories[i].substring(j, j + 1).equals(".")) {
-                            bookStories[i] = bookStories[i].substring(j + 1, bookStories[i].length());
-                            break;
-                        }
-                    }
+                    break;
                 }
                 // 각 page 8개 db에 저장하는 작업
                 for (int i = 0; i < bookStories.length; i++) {
-                   // 목소리 파일 생성 후 s3 저장
+                    // 목소리 파일 생성 후 s3 저장
                     File voice = voiceUtil.createVoice(bookStories[i]);
                     Page page = Page.builder()
                             .book(savedBook)
