@@ -9,13 +9,16 @@ import com.a402.fairydeco.domain.book.dto.BookRegister;
 import com.a402.fairydeco.domain.book.dto.BookStoryDetailResponse;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateRequest;
 import com.a402.fairydeco.domain.book.dto.BookTitleUpdateResponse;
+import com.a402.fairydeco.domain.book.entity.Book;
 import com.a402.fairydeco.domain.book.service.BookService;
 import com.a402.fairydeco.domain.book.service.OpenAiService;
 import com.a402.fairydeco.global.common.dto.SuccessResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -50,6 +54,9 @@ public class BookController {
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
         CompletableFuture<BookCreateRequestDto> future = openAiService.register(bookRegister);
+        if(future == null){
+            return new SuccessResponse<>(HttpStatus.BAD_REQUEST.value());
+        }
         future.thenRun(() -> {
             try {
                 BookCreateRequestDto result = future.get(); // 비동기 작업의 결과 가져오기
@@ -105,18 +112,21 @@ public class BookController {
     }
 
     @Operation(summary = "동화 생성 완료 알림", description = "생성 완료된 동화 알림 수신")
-    @GetMapping("/end/{bookId}")
-    public SuccessResponse<?> bookComplete(@PathVariable Integer bookId) {
+    @GetMapping("/end")
+    public SuccessResponse<?> bookComplete(@RequestParam Integer userId, @RequestParam Integer bookId) {
         //테스트 완료 되면 서비스 코드 분리 진행하겠습니다.
         System.out.println("동화 생성 완료: " + bookId);
-        SseEmitter sseEmitter = sseEmitters.get(bookId);
-        if (sseEmitter != null) {
+        Book book = bookService.getBookById(bookId);
+        SseEmitter emitter = sseEmitters.get(userId);
+        if (emitter != null) {
             try {
-                sseEmitter.send(SseEmitter.event()
-                        .name("book-complete")
-                        .data("동화책 " + bookId + "의 제작이 완료되었습니다."));
-                sseEmitter.complete();
-                //동화 제작이 실패 했습니다.
+                Map<String, Object> data = new HashMap<>();
+                data.put("bookId", book.getId());
+                data.put("bookName", book.getName());
+                data.put("bookCoverUrl", book.getCoverUrl());
+
+                emitter.send(SseEmitter.event().name("book-complete").data(new ObjectMapper().writeValueAsString(data)));
+                emitter.complete();
             } catch (IOException e) {
                 sseEmitters.remove(bookId);
             }
@@ -125,13 +135,13 @@ public class BookController {
     }
 
     @Operation(summary = "SSE 구독", description = "SSE로 동화 생성 완료 알림 구독")
-    @GetMapping("/sse/{bookId}")
-    public ResponseEntity<SseEmitter> subscribeToBookCreation(@PathVariable Integer bookId) {
-        //테스트 완료 되면 서비스 코드 분리 진행하겠습니다.
+    @GetMapping("/sse/{userId}")
+    public ResponseEntity<SseEmitter> subscribeToBookCreation(@PathVariable Integer userId) {
+        System.out.println("SSE - userId : "+userId);
         SseEmitter sseEmitter = new SseEmitter(0L); // 0L로 설정하여 연결 무기한 유지
-        sseEmitters.put(bookId, sseEmitter);
-        sseEmitter.onCompletion(() -> sseEmitters.remove(bookId));
-        sseEmitter.onTimeout(() -> sseEmitters.remove(bookId));
+        sseEmitters.put(userId, sseEmitter);
+        sseEmitter.onCompletion(() -> sseEmitters.remove(userId));
+        sseEmitter.onTimeout(() -> sseEmitters.remove(userId));
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "text/event-stream; charset=UTF-8");

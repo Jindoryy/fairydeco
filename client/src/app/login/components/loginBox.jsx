@@ -2,7 +2,7 @@
 
 import { ArrowFatLeft } from '@phosphor-icons/react/dist/ssr'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 export default function LoginBox() {
@@ -10,6 +10,15 @@ export default function LoginBox() {
     const router = useRouter()
     const [userId, setUserId] = useState('')
     const [password, setPassword] = useState('')
+
+    useEffect(() => {
+        let value
+        value = localStorage.getItem('userId') || ''
+        if (value) {
+            alert('이미 로그인 하셨습니다!')
+            router.push('/profile')
+        }
+    }, [])
 
     const goBack = () => {
         router.push('/')
@@ -48,6 +57,11 @@ export default function LoginBox() {
         }
     }
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            doLogin()
+        }
+    }
     return (
         <>
             <div
@@ -68,6 +82,7 @@ export default function LoginBox() {
                     <input
                         className="h-14 w-full rounded-xl bg-white pl-2 text-2xl text-black outline-customGreen"
                         onChange={handleUserId}
+                        onKeyPress={handleKeyPress}
                     ></input>
                 </div>
                 <div className="w-11/12 px-8">
@@ -78,6 +93,7 @@ export default function LoginBox() {
                         type="password"
                         className="h-14 w-full rounded-xl bg-white pl-2 text-2xl text-black outline-customGreen"
                         onChange={handlePassword}
+                        onKeyPress={handleKeyPress}
                     ></input>
                 </div>
                 <div className="mt-8 flex w-11/12 justify-between px-8">

@@ -7,31 +7,36 @@ import Shelf from '../../../../public/image/shelf.png'
 import House from '../../../../public/image/house.png'
 import Horse from '../../../../public/image/horse.png'
 import ProfileImage from '../../../../public/image/profilebook.png'
+import DoorImage from '../../../../public/image/door.png'
 import { useRouter } from 'next/navigation'
 import { Baby } from '@phosphor-icons/react/dist/ssr'
 import { useState, useEffect } from 'react'
+import { useSse } from '../../components/sseProvider'
 
 export default function ButtonBox() {
     const router = useRouter()
     const [userId, setUserId] = useState()
+    const { connect } = useSse()
 
     useEffect(() => {
         if (localStorage.getItem('userId'))
             setUserId(localStorage.getItem('userId'))
+        connect(1)
     }, [])
 
     const goProfile = () => {
         if (!userId) {
             alert('로그인을 해주세요!')
             router.push('/login')
-        }
-        router.push('/profile')
+            return
+        } else router.push('/profile')
     }
 
     const goMakeBook = () => {
         if (!userId) {
             alert('로그인을 해주세요!')
             router.push('/login')
+            return
         }
         setTimeout(() => {
             router.push('/makebook')
@@ -47,6 +52,7 @@ export default function ButtonBox() {
         if (!userId) {
             alert('로그인을 해주세요!')
             router.push('/login')
+            return
         }
         setTimeout(() => {
             router.push('/mypage')
@@ -61,28 +67,49 @@ export default function ButtonBox() {
     const goLogin = () => {
         router.push('/login')
     }
+
+    const doLogout = () => {
+        localStorage.setItem('childId', '')
+        localStorage.setItem('userId', '')
+        setUserId('')
+        alert('다음에 또 만나요~!')
+    }
+
+    useEffect(() => {}, [userId])
     return (
         <div className="h-dvh w-dvw">
             <div className="mr-2 flex h-auto justify-end pt-2">
                 {userId ? (
                     <>
                         <button
-                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-sm font-thin text-white hover:bg-transparent focus:bg-transparent"
+                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                             onClick={goProfile}
                         >
                             <Image
                                 src={Horse}
                                 alt="아이 선택"
+                                width={70}
+                                height={70}
+                            />
+                            아이 선택
+                        </button>
+                        <button
+                            className="btn btn-ghost relative mt-2 h-auto w-1/12 text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
+                            onClick={doLogout}
+                        >
+                            <Image
+                                src={DoorImage}
+                                alt="아이 선택"
                                 width={80}
                                 height={80}
                             />
-                            아이 선택
+                            나가기
                         </button>
                     </>
                 ) : (
                     <>
                         <button
-                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-sm font-thin text-white hover:bg-transparent focus:bg-transparent"
+                            className="btn btn-ghost relative ml-2 mt-2 h-auto w-1/12 text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                             onClick={goLogin}
                         >
                             <Image
@@ -179,6 +206,7 @@ export default function ButtonBox() {
                     </button>
                 </div>
             </div>
+            <div className="relative bottom-0 flex justify-end"></div>
         </div>
     )
 }
