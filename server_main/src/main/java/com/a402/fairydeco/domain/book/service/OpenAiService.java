@@ -183,7 +183,6 @@ public class OpenAiService {
                     }
                     break;
                 }
-                bookStories = new String[8];
                 // 각 page 8개 db에 저장하는 작업
                 for (int i = 0; i < bookStories.length; i++) {
                     // 목소리 파일 생성 후 s3 저장
