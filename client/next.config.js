@@ -28,6 +28,49 @@ const nextConfig = {
           port: '',
           pathname: '/**'
         },
+        {
+          protocol: 'https',
+          hostname: 'i.ytimg.com',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'thumbnail6.coupangcdn.com',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'mblogthumb-phinf.pstatic.net',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'www.book21.com',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'image.aladin.co.kr',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'kkoma.net',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'image.yes24.com',
+          port: '',
+          pathname: '/**'
+        },
+        
       ],
     }
   };

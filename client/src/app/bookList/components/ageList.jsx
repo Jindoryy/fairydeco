@@ -53,13 +53,16 @@ export default function Bookshelf () {
 
   }, []);
 
+  const goBook = (bookId) => {
+    router.push(`/book/${bookId}`)
+  }
 
   return (
     <div className="w-full h-full flex flex-col">
       <div className="ml-12">
         <div className="flex mt-32 relative h-auto ml-8">
           {spines && sampleList && sampleList.filter(book => book.bookCoverUrl).map((book, index) => (
-            <div className={`relative w-[50px] h-[300px] top-0 ml-0.5 hover:z-1 border-2 rounded-md bg-${spines[index].backgroundColor} hover:transform hover:-translate-x-10 hover:-translate-y-20 hover:-rotate-12`} key={index}>
+            <div onClick={(e) => goBook(book.bookId)} className={`relative w-[50px] h-[300px] top-0 ml-0.5 hover:z-1 border-2 rounded-md bg-${spines[index].backgroundColor} hover:transform hover:-translate-x-10 hover:-translate-y-20 hover:-rotate-12`} key={index}>
               <div className="absolute rounded-md font-bold text-center h-[100%] ">
                 <div className="m-1 absolute top-0 left-3 text-xs text-gray-700 ">{book.bookName}</div>
                 <div className="m-1 absolute left-3 bottom-0 text-xs text-gray-700 ">{book.bookMaker}</div>
@@ -76,7 +79,7 @@ export default function Bookshelf () {
       <div className="absolute right-16 bottom-12">
         <div className="flex mt-32 relative h-auto m-auto ml-8">
           {spines && recentList && recentList.filter(book => book.bookCoverUrl).map((book, index) => (
-            <div className={`relative w-[50px] h-[300px] top-0 ml-0.5 hover:z-1 border-2 rounded-md bg-${spines[index].backgroundColor} hover:transform hover:-translate-x-20 hover:-translate-y-20 hover:-rotate-12 `} key={index}>
+            <div onClick={(e) => goBook(book.bookId)} className={`relative w-[50px] h-[300px] top-0 ml-0.5 hover:z-1 border-2 rounded-md bg-${spines[index].backgroundColor} hover:transform hover:-translate-x-20 hover:-translate-y-20 hover:-rotate-12 `} key={index}>
               <div className="absolute rounded-md font-bold text-center h-[100%]">
                 <div className="m-1 absolute top-0 left-0 text-xs text-gray-700 ">{book.bookName}</div>
                 <div className="m-1 absolute bottom-0 text-xs text-gray-700  left-1/4">{book.bookMaker}</div>
