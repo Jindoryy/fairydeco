@@ -74,106 +74,99 @@ async function summaryMainStory(fairyTaleStory) {
     }
 }
 
-async function storyToImage(prompt, bookId, pageId, attempt = 2) {
-  // console.log(pageId+" "+convertprompt)
-  const url = "https://stablediffusionapi.com/api/v4/dreambooth";
+async function storyToImage(childAge, prompt, bookId, pageId, attempt = 2) {
+    const url = "https://stablediffusionapi.com/api/v4/dreambooth";
 
-  const headers = {
-      'Content-Type': 'application/json'
-  };
+    let modelId, loraModel;
+    if (childAge > 5) {
+        modelId = "SDXL"; // 5세 초과일 경우 모델
+        loraModel = null; // LoRA 설정을 사용하지 않음
+    } else {
+        modelId = "test"; // 5세 이하일 경우 모델
+        loraModel = "test"; // LoRA 설정
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json'
+    };
 
-  const payload = {
-      key: process.env.API_KEY,
-      model_id: "sdxl",
-      prompt: prompt+"((masterpiece)), best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k",
-      negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, deformed, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra legs, anime",
-      width: "512",
-      height: "512",
-      samples: "1",
-      num_inference_steps: "21",
-      safety_checker: "no",
-      enhance_prompt: "yes",
-      seed: 2098127623,
-      guidance_scale: 7.5,
-      multi_lingual: "yes",
-      panorama: "no",
-      self_attention: "no",
-      upscale: "no",
-      lora_model: "storybookredmond-unbound",
-      webhook: null,
-      track_id: null
-  };
+    const payload = {
+        key: process.env.API_KEY,
+        model_id: "sdxl",
+        prompt: prompt + "((masterpiece)), best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k",
+        negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, deformed, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra legs, anime",
+        width: "512",
+        height: "512",
+        samples: "1",
+        num_inference_steps: "21",
+        safety_checker: "no",
+        enhance_prompt: "yes",
+        seed: 2098127623,
+        guidance_scale: 7.5,
+        multi_lingual: "yes",
+        panorama: "no",
+        self_attention: "no",
+        upscale: "no",
+        lora_model: "storybookredmond-unbound",
+        webhook: null,
+        track_id: null
+    };
 
-  let retryCount = 0;
-  const maxRetries = 3;
+    let retryCount = 0;
+    const maxRetries = 3;
+    let imageData = null;
 
-  while (retryCount < maxRetries) {
-      try {
-          const response = await axios.post(url, payload, { headers });
-          if (response.data.status === 'success') {
-              const timeout = 200000; // 10 minutes in milliseconds
-              const retryInterval = 15000; // 15 seconds in milliseconds
-              const startTime = Date.now();
-              console.log(pageId + " "+response.data.output[0]);
-              while (Date.now() - startTime < timeout) {
-                  try {
-                      await new Promise(resolve => setTimeout(resolve, retryInterval));
-                      const imageData = await downloadAndUploadImage(response.data.output[0], bookId, pageId);
-                      if (imageData) {
-                          console.log(pageId + " "+response.meta.seed);
-                          return imageData;
-                      }
-                  } catch (downloadError) {
-                      console.log(`Attempt to download main image failed for pageId: ${pageId}, retrying...`, downloadError.message);
-                      try {
-                        const imageData = await downloadAndUploadImage(response.data.proxy_links[0], bookId, pageId);
-                        return imageData;
-                    } catch (proxyError) {
-                        console.log(`Proxy download also failed for pageId: ${pageId}`, proxyError.message);
-                    }
-                  }
-              }
-              console.log("Final attempt using proxy link.");
-              return await downloadAndUploadImage(response.data.output[0], bookId, pageId);
-          } else if (response.data.status === 'processing') {
-              const timeout = 120000; // 2 minutes in milliseconds
-              const retryInterval = 15000; // 15 seconds in milliseconds
-              const startTime = Date.now();
-              console.log(pageId + response.data.future_links[0])
-              while (Date.now() - startTime < timeout) {
-                  try {
-                      await new Promise(resolve => setTimeout(resolve, retryInterval));
-                      const imageData = await downloadAndUploadImage(response.data.future_links[0], bookId, pageId);
-                      if (imageData) {
-                        console.log(pageId + " "+response.meta.seed);
-                          return imageData;
-                      }
-                  } catch (downloadError) {
-                      console.log(`Attempt to download main image failed for pageId: ${pageId}, retrying...`, downloadError.message);
-                  }
-              }
-              console.log("Final attempt using future link");
-              return await downloadAndUploadImage(response.data.future_links[0], bookId, pageId);
-          } else if (response.data.status === 'error') {
-              console.log(`Error on try ${retryCount + 1}, retrying...`);
-              retryCount++;
-              continue;
-          } else {
-              throw new Error("Unhandled image generation status.");
-          }
-      } catch (error) {
-          console.error(`Error handling image generation on try ${retryCount + 1}`);
-          retryCount++;
-          if (retryCount >= maxRetries) {
-              return null;
-          }
-      }
-  }
-  if (attempt !== 0) {
-        console.log(`Retrying once more for pageId: ${pageId}.`);
-        return await storyToImage(pageStory, bookId, pageId, attempt - 1);
-  }   
-  return null;
+    while (retryCount < maxRetries && imageData == null) {
+        try {
+            const response = await axios.post(url, payload, { headers });
+            if (response.data.status === 'success') {
+                const imageUrl = response.data.output[0];
+                imageData = await downloadAndUploadImage(imageUrl, bookId, pageId);
+                if (imageData) {
+                    console.log(pageId + " Image successfully uploaded: " + imageData);
+                    return imageData;
+                }
+            } else if (response.data.status === 'processing') {
+                // 처리 상태일 때의 로직을 유지합니다.
+                imageData = await handleProcessingState(response, bookId, pageId);
+            } else if (response.data.status === 'error') {
+                console.log(`Error on try ${retryCount + 1}: ${response.data.error_message}, retrying...`);
+                retryCount++;
+            } else {
+                throw new Error("Unhandled image generation status.");
+            }
+        } catch (error) {
+            console.error(`Error handling image generation on try ${retryCount + 1}: ${error.message}`);
+            retryCount++;
+            if (retryCount >= maxRetries && attempt > 0) {
+                console.log(`Retrying once more for pageId: ${pageId}, remaining attempts: ${attempt - 1}.`);
+                return await storyToImage(prompt, bookId, pageId, attempt - 1);
+            }
+        }
+    }
+
+    return imageData ? imageData : null;
+}
+
+async function handleProcessingState(response, bookId, pageId) {
+    const timeout = 120000; // 2 minutes in milliseconds
+    const retryInterval = 15000; // 15 seconds in milliseconds
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeout) {
+        try {
+            await new Promise(resolve => setTimeout(resolve, retryInterval));
+            const futureImageUrl = response.data.future_links[0];
+            const imageData = await downloadAndUploadImage(futureImageUrl, bookId, pageId);
+            if (imageData) {
+                console.log(pageId + " Image successfully uploaded from future link: " + imageData);
+                return imageData;
+            }
+        } catch (downloadError) {
+            console.error(`Attempt to download main image failed for pageId: ${pageId}, retrying...`, downloadError.message);
+        }
+    }
+    console.log("Final attempt using future link");
+    return await downloadAndUploadImage(response.data.future_links[0], bookId, pageId);
 }
 
 async function downloadAndUploadImage(imageUrl, key, value) {
@@ -201,8 +194,23 @@ async function downloadAndUploadImage(imageUrl, key, value) {
     }
 }
 
+function calculateAge(birthDate) {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+  
+    // 오늘 날짜가 생일 이전의 달에 있거나, 같은 달이지만 일자가 이전인 경우에 나이에서 1을 빼줍니다.
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+  
+    return age;
+  }
+
 module.exports = {
   summaryMainStory,
   createImagePrompt,
   storyToImage,
+  calculateAge
 };
