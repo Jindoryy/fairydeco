@@ -2,9 +2,19 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-export default function TitleBox({ title, bookId }) {
+export default function TitleBox({ title, bookId, childId }) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [newTitle, setNewTitle] = useState('')
+    const [localStorageChildId, setLocalStorageChildId] = useState(null)
+
+    useEffect(() => {
+        console.log(childId)
+        setNewTitle(title)
+        const storedChildId = localStorage.getItem('childId')
+        if (storedChildId) {
+            setLocalStorageChildId(storedChildId)
+        }
+    }, [title])
 
     useEffect(() => {
         setNewTitle(title)
@@ -15,7 +25,12 @@ export default function TitleBox({ title, bookId }) {
     }
 
     const handleTitleButton = (event) => {
-        changeTitle()
+        // 입력된 childId와 로컬 스토리지에서 가져온 childId를 비교하여 일치할 때에만 제목 수정 함수를 호출합니다.
+        if (childId == localStorageChildId) {
+            changeTitle()
+        } else {
+            alert('지은이만 제목을 수정할 수 있어요.')
+        }
     }
 
     const changeTitle = async () => {
