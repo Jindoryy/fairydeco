@@ -12,22 +12,31 @@ export default function Mypage() {
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
-    const childId = localStorage.getItem('childId')
-    const URL = `${apiUrl}/user/mypage/${childId}`
+    if (typeof window !== 'undefined') {
+        localStorage.getItem('accesstoken')
+    }
 
-    // 데이터를 가져와서 상태에 저장
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(URL)
-                const jsonData = await response.json()
-                setUserInfo(jsonData)
-            } catch (error) {
-                console.error('Error fetching data:', error)
+        if (typeof window !== 'undefined') {
+            const accessToken = localStorage.getItem('accesstoken')
+            if (accessToken) {
+                const childId = localStorage.getItem('childId')
+                const URL = `${apiUrl}/user/mypage/${childId}`
+
+                // 데이터를 가져와서 상태에 저장
+                const fetchData = async () => {
+                    try {
+                        const response = await fetch(URL)
+                        const jsonData = await response.json()
+                        setUserInfo(jsonData)
+                    } catch (error) {
+                        console.error('Error fetching data:', error)
+                    }
+                }
+
+                fetchData() // useEffect가 마운트될 때 데이터 가져오기
             }
         }
-
-        fetchData() // useEffect가 마운트될 때 데이터 가져오기
     }, [])
 
     useEffect(() => {
