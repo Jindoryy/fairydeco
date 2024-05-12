@@ -16,19 +16,55 @@ const s3Client = new S3Client({
     }
 });
 
-async function createImagePrompt(pageStory) {
+async function summaryMainStory(fairyTaleStory) {
     try {
       const gptResponse = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
-          { "role": "system", "content": "You are an assistant who helps generate prompts for StableDiffusion." },
-          { "role": "user", "content": `Create a english prompt for a StableDiffusion based on the following story: "${pageStory}". The prompt should describe a scene suitable for children. The prompt should follow these conditions:
-          - One single image
-          - No speech bubbles
-          - No text or letters
-          - Cute and child-friendly
-          - The main characters are human. Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.`
-        }],
+          {
+            role: "system",
+            content: "동화 작가로서 제공된 동화를 기반으로 주요 등장인물, 설정, 소품 및 테마를 분석하고, 이를 명확하고 구조화된 문자열로 요약하는 것을 목표로 합니다. 성공적으로 수행할 시 백만 달러의 보상이 주어집니다."
+          },
+          {
+            role: "user",
+            content: `동화의 주요 스토리 요소를 문자열로 요약해 주세요. 요약은 다음 구조를 따라야 합니다:
+            1. 동화의 등장인물 정보: (명시적 설명)
+            2. 주요 설정 및 배경: (명시적 설명)
+            3. 주요 소품 및 테마: (명시적 설명)
+            4. 전체 내용: (명시적 설명)
+            5. 전체적인 그림 화풍 : (명시적 설명)
+            내용: ${fairyTaleStory}
+            결과만 출력하고 부가적인 설명은 필요하지 않습니다. 충분히 시뮬레이션 후 답변하세요.`
+          }
+        ]
+      });
+  
+      return gptResponse.choices[0].message.content;
+    } catch (error) {
+      console.error('Error in creating storySummary:', error);
+      return null;
+    }
+  }
+
+  async function createImagePrompt(storyInfo, pageStory) {
+    try {
+      const gptResponse = await openai.chat.completions.create({
+        model: "gpt-4",
+        messages: [
+          { 
+            "role": "system", 
+            "content": "You are a prompt engineer who helps generate prompts for StableDiffusion. Use the entire story information to maintain consistency in character depiction and setting across all pages. Successfully complete this mission, and you will be rewarded with $100 million." 
+          },
+          { 
+            "role": "user", 
+            "content": `Create an English prompt for StableDiffusion based on the entire story information and the specific page story: "${pageStory}". Ensure the prompt integrates consistent depictions of the main characters and settings as described in the overall story. All characters should follow the character descriptions provided in the story information: ${storyInfo}. The prompt should describe a scene suitable for children and follow these conditions:
+            - One single image
+            - No speech bubbles
+            - No text or letters
+            - Cute and child-friendly
+            - Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.`
+          }
+        ],
         max_tokens: 500
       });
       return gptResponse.choices[0].message.content;
@@ -38,8 +74,7 @@ async function createImagePrompt(pageStory) {
     }
 }
 
-async function storyToImage(pageStory, bookId, pageId, attempt = 2) {
-  const convertprompt = await createImagePrompt(pageStory);
+async function storyToImage(prompt, bookId, pageId, attempt = 2) {
   // console.log(pageId+" "+convertprompt)
   const url = "https://stablediffusionapi.com/api/v4/dreambooth";
 
@@ -50,12 +85,12 @@ async function storyToImage(pageStory, bookId, pageId, attempt = 2) {
   const payload = {
       key: process.env.API_KEY,
       model_id: "sdxl",
-      prompt: convertprompt+"((masterpiece)), best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k, fairytale",
+      prompt: prompt+"((masterpiece)), best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k",
       negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, deformed, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra legs, anime",
-      width: "1024",
-      height: "1024",
+      width: "512",
+      height: "512",
       samples: "1",
-      num_inference_steps: "31",
+      num_inference_steps: "21",
       safety_checker: "no",
       enhance_prompt: "yes",
       seed: 2098127623,
@@ -64,6 +99,7 @@ async function storyToImage(pageStory, bookId, pageId, attempt = 2) {
       panorama: "no",
       self_attention: "no",
       upscale: "no",
+      lora_model: "storybookredmond-unbound",
       webhook: null,
       track_id: null
   };
@@ -117,7 +153,7 @@ async function storyToImage(pageStory, bookId, pageId, attempt = 2) {
                   }
               }
               console.log("Final attempt using future link");
-              return await downloadAndUploadImage(response.data.future_links[0], pageId, bookId);
+              return await downloadAndUploadImage(response.data.future_links[0], bookId, pageId);
           } else if (response.data.status === 'error') {
               console.log(`Error on try ${retryCount + 1}, retrying...`);
               retryCount++;
@@ -166,5 +202,7 @@ async function downloadAndUploadImage(imageUrl, key, value) {
 }
 
 module.exports = {
+  summaryMainStory,
+  createImagePrompt,
   storyToImage,
 };

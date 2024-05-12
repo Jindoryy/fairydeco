@@ -41,16 +41,27 @@ async function bookStableCreation(req, res) {
         res.status(404).send(`No pages found for the given BOOK ID : ${bookId}, PAGE ID : ${pageId}`);
         return;
     }
+    const storyJoin = results.map(page => page.page_story.replace(/^\d{1,2}\.\s/, '')).join(' ')
     res.status(200).send({ success: true, message: "동화 제작 중..." });
     console.log("PHASE 3 : DB RETRIEVAL SUCCESS, RETURN SUCCESS RESPONSE");
     
     // 작업을 큐에 추가
     queue.push(async () => {
         try {
+            // 동화 요약 정보 생성
+            const storyInfo = await stableService.summaryMainStory(storyJoin);
+
             // 이미지 생성 및 URL 저장
-            const imageUrls = await Promise.all(results.map(page =>
-                stableService.storyToImage(page.page_story, bookId, page.page_id)
-            ));
+            const imageUrls = await Promise.all(results.map(async page => {
+                try {
+                    const prompt = await stableService.createImagePrompt(storyInfo, page.page_story);
+                    return await stableService.storyToImage(prompt, bookId, page.page_id);
+                } catch (error) {
+                    console.error(`Error processing page ${page.page_id}: ${error}`);
+                    return null;
+                }
+            }));
+            console.log(imageUrls)
             console.log("PHASE 4 : IMAGE URLs RETRIEVED");
 
             // 페이지 이미지 URL 업데이트
@@ -60,8 +71,8 @@ async function bookStableCreation(req, res) {
             console.log("PHASE 5 : PAGE IMAGE URLs UPDATED");
 
             // 커버 이미지 생성 및 업로드
-            const allPageStories = results.map(page => page.page_story.replace(/^\d{1,2}\.\s/, '')).join(' ');
-            const coverImageUrl = await stableService.storyToImage(allPageStories, "title", bookId);
+            const coverImagePrompt = await stableService.createImagePrompt(storyJoin, "title");
+            const coverImageUrl = await stableService.storyToImage(coverImagePrompt, bookId, "title");
             await connection.query('UPDATE book SET book_cover_url = ? WHERE book_id = ?', [coverImageUrl, bookId]);
             await connection.query(`UPDATE book SET book_complete = 'COMPLETE' WHERE book_id = ?`, [bookId]);
             console.log("PHASE 6 : COVER IMAGE CREATED AND DB UPDATED");
