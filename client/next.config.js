@@ -10,6 +10,24 @@ const nextConfig = {
           port: '',
           pathname: '/storybook-images/**',
         },
+        {
+          protocol: 'https',
+          hostname: 'contents.kyobobook.co.kr',
+          port: '',
+          pathname: '/sih/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'cdn.crowdpic.net',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'bookthumb-phinf.pstatic.net',
+          port: '',
+          pathname: '/**'
+        },
       ],
     }
   };
