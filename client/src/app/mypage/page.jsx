@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import KidsPaint from './components/kidsPaint'
-import axios from 'axios'
 import { HouseLine, Baby } from '@phosphor-icons/react/dist/ssr'
+
+import KidsPainting from './components/kidsPainting'
 
 export default function Mypage() {
     const [userInfo, setUserInfo] = useState(null)
@@ -87,7 +87,7 @@ export default function Mypage() {
                 </div>
             </div>
             {showKidsPaint && (
-                <KidsPaint
+                <KidsPainting
                     childId={childId}
                     childName={childName}
                     bookList={bookList}

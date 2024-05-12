@@ -5,6 +5,15 @@ export default function AddChildModal({ onClose, onSubmit }) {
     const [birthday, setBirthday] = useState('') // Track the child's birthday
     const [gender, setGender] = useState('male') // Default gender is male
 
+    // 현재 날짜를 YYYY-MM-DD 형식의 문자열로 가져오는 함수
+    const getCurrentDate = () => {
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = String(now.getMonth() + 1).padStart(2, '0') // 월은 0부터 시작하므로 1을 더하고 문자열로 변환
+        const day = String(now.getDate()).padStart(2, '0') // 일
+        return `${year}-${month}-${day}`
+    }
+
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const URL = `${apiUrl}/child`
 
@@ -91,6 +100,7 @@ export default function AddChildModal({ onClose, onSubmit }) {
                         type="date"
                         value={birthday}
                         onChange={(e) => setBirthday(e.target.value)}
+                        max={getCurrentDate()} // 현재 날짜를 최대값으로 설정
                         placeholder="YYYY-MM-DD" // Placeholder
                         className="w-full rounded-lg bg-customBlue p-2"
                     />

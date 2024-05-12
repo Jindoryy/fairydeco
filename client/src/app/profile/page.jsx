@@ -14,6 +14,13 @@ export default function Profile() {
 
     const router = useRouter()
 
+    // onSubmit 콜백 함수 정의
+    const handleAddChild = (newChild) => {
+        // 새로운 아이 정보를 기존 데이터에 추가하거나 업데이트하는 로직
+        const updatedKidsData = [...kidsData.data, newChild]
+        setKidsData({ ...kidsData, data: updatedKidsData })
+    }
+
     useEffect(() => {
         const userId = localStorage.getItem('userId')
 
@@ -57,8 +64,11 @@ export default function Profile() {
 
     return (
         <div className="flex h-dvh w-dvw flex-col items-center justify-center bg-customDarkYellow p-4">
-            <div className="mb-8 flex justify-center text-5xl">
+            <div className="mb-4 flex justify-center text-5xl">
                 동화를 그릴 사람은 누구인가요?
+            </div>
+            <div className="mb-8 flex justify-center text-xl text-gray-500">
+                (아이는 최대 6명까지만 등록이 가능합니다.)
             </div>
 
             {kidsData && kidsData.data && kidsData.data.length > 0 ? (
@@ -86,12 +96,18 @@ export default function Profile() {
                             </div>
                         </div>
                     ))}
-                    <div
-                        className="flex h-[200px] cursor-pointer flex-col items-center justify-center"
-                        onClick={openAddChildModal} // Open AddChildModal on click
-                    >
-                        <PlusCircle size={150} />
-                    </div>
+
+                    {kidsData &&
+                    kidsData.data &&
+                    kidsData.data.length > 6 ? null : ( // 만약 kidsData가 존재하고 데이터가 6개인 경우 // PlusCircle을 렌더링하지 않음
+                        // 그 외의 경우
+                        <div
+                            className="flex h-[200px] cursor-pointer flex-col items-center justify-center"
+                            onClick={openAddChildModal} // AddChildModal 열기
+                        >
+                            <PlusCircle size={150} />
+                        </div>
+                    )}
                 </div>
             ) : (
                 <div
@@ -112,7 +128,10 @@ export default function Profile() {
             )}
 
             {isAddChildModalOpen && (
-                <AddChildModal onClose={closeAddChildModal} />
+                <AddChildModal
+                    onClose={closeAddChildModal}
+                    onSubmit={handleAddChild}
+                />
             )}
         </div>
     )
