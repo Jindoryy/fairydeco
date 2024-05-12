@@ -85,6 +85,13 @@ export function SseProvider({ children }) {
                     </div>
                 ))
 
+                if (Notification.permission === 'granted') {
+                    new Notification('동화책 제작 완료!', {
+                        body: `${bookName}의 제작이 완료되었습니다.`,
+                        icon: bookCoverUrl,
+                    })
+                }
+
                 sse.close()
                 clearEventSource()
             })
@@ -102,6 +109,21 @@ export function SseProvider({ children }) {
             connect(userId)
         }
     }, [userId])
+
+    useEffect(() => {
+        if ('Notification' in window) {
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    console.log('Notification permission granted.')
+                } else {
+                    console.log('Notification permission denied.')
+                }
+            })
+        } else {
+            console.log('This browser does not support notifications.')
+            return
+        }
+    }, [])
 
     return (
         <SseContext.Provider value={{ connect, disconnect: clearEventSource }}>
