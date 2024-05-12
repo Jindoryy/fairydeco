@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import KidsDrawing from './kidsDrawing'
 
-export default function KidsPainting({ childId, childName, bookList }) {
+export default function KidsPainting({ bookList }) {
     const [showModal, setShowModal] = useState(false) // 모달 보여주기 여부를 관리하는 상태
     const [selectedBook, setSelectedBook] = useState(null)
 
