@@ -9,15 +9,15 @@ import toast, { Toaster } from 'react-hot-toast'
 const useStore = create(
     persist(
         (set) => ({
-            eventSource: null,
             userId: null,
-            setEventSource: (es, uid) => set({ eventSource: es, userId: uid }),
-            clearEventSource: () => set({ eventSource: null, userId: null }),
+            setEventSource: (uid) => set({ userId: uid }),
+            clearEventSource: () => set({ userId: null }),
         }),
         {
             name: 'sse-storage',
-            serialize: (state) => JSON.stringify(state),
-            deserialize: (str) => JSON.parse(str),
+            onRehydrateStorage: () => (state) => {
+                console.log('상태 복원 완료:', state)
+            },
         }
     )
 )
@@ -25,35 +25,18 @@ const useStore = create(
 const SseContext = createContext()
 
 export function SseProvider({ children }) {
-    const { eventSource, setEventSource, clearEventSource } = useStore()
+    const { setEventSource, clearEventSource, userId } = useStore()
     const router = useRouter()
-
-    const closeConnection = useCallback(() => {
-        console.log('연결을 종료합니다. 현재 eventSource:', eventSource)
-
-        if (eventSource && typeof eventSource.close === 'function') {
-            eventSource.close()
-            clearEventSource()
-        } else {
-            console.error(
-                '유효하지 않은 eventSource를 닫으려고 했습니다:',
-                eventSource
-            )
-        }
-    }, [eventSource, clearEventSource])
 
     const connect = useCallback(
         (userId) => {
             console.log('Connecting with userID:', userId)
 
-            if (!userId) return
-            closeConnection()
-
             console.log('check1')
             const sse = new EventSource(
-                `http://localhost:8080/book/sse/${userId}`
+                `https://fairydeco.site/api/book/sse/${userId}`
             )
-            setEventSource(sse, userId)
+            setEventSource(userId)
 
             console.log('check2')
 
@@ -102,23 +85,45 @@ export function SseProvider({ children }) {
                     </div>
                 ))
 
+                if (Notification.permission === 'granted') {
+                    new Notification('동화책 제작 완료!', {
+                        body: `${bookName}의 제작이 완료되었습니다.`,
+                        icon: bookCoverUrl,
+                    })
+                }
+
                 sse.close()
                 clearEventSource()
             })
 
             sse.onerror = (error) => {
                 console.error('Failed to connect SSE', error)
-                closeConnection()
+                // clearEventSource()
             }
         },
-        [setEventSource, clearEventSource, closeConnection, router]
+        [setEventSource, clearEventSource, router]
     )
 
     useEffect(() => {
-        return () => {
-            closeConnection()
+        if (userId) {
+            connect(userId)
         }
-    }, [closeConnection])
+    }, [userId])
+
+    useEffect(() => {
+        if ('Notification' in window) {
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    console.log('Notification permission granted.')
+                } else {
+                    console.log('Notification permission denied.')
+                }
+            })
+        } else {
+            console.log('This browser does not support notifications.')
+            return
+        }
+    }, [])
 
     return (
         <SseContext.Provider value={{ connect, disconnect: clearEventSource }}>

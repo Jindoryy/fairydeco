@@ -54,6 +54,9 @@ public class BookController {
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessResponse<?> register(BookRegister bookRegister) throws IOException {
         CompletableFuture<BookCreateRequestDto> future = openAiService.register(bookRegister);
+        if(future == null){
+            return new SuccessResponse<>(HttpStatus.BAD_REQUEST.value());
+        }
         future.thenRun(() -> {
             try {
                 BookCreateRequestDto result = future.get(); // 비동기 작업의 결과 가져오기
@@ -134,7 +137,7 @@ public class BookController {
     @Operation(summary = "SSE 구독", description = "SSE로 동화 생성 완료 알림 구독")
     @GetMapping("/sse/{userId}")
     public ResponseEntity<SseEmitter> subscribeToBookCreation(@PathVariable Integer userId) {
-        //테스트 완료 되면 서비스 코드 분리 진행하겠습니다.
+        System.out.println("SSE - userId : "+userId);
         SseEmitter sseEmitter = new SseEmitter(0L); // 0L로 설정하여 연결 무기한 유지
         sseEmitters.put(userId, sseEmitter);
         sseEmitter.onCompletion(() -> sseEmitters.remove(userId));
