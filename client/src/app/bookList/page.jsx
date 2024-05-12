@@ -1,3 +1,11 @@
+import AgeList from './components/ageList'
+
+
 export default function BookList() {
-    return <div>북리스트</div>
+    return (
+        <div className='h-auto'>
+            <AgeList />
+
+        </div>
+    )
 }
