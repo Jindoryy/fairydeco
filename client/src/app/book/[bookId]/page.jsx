@@ -83,7 +83,7 @@ const TurnPage = () => {
         if (jQueryLoaded && data) {
             const $ = window.jQuery
             const book = $('#book') // book 요소 선택
-            const numberOfPages = 18 // 총 페이지 수
+            const numberOfPages = data?.data?.pageList?.length * 2 + 2 // 총 페이지 수
 
             const addPage = (page, content) => {
                 const element = $('<div />', {
@@ -199,6 +199,7 @@ const TurnPage = () => {
                         <TitleBox
                             title={data?.data?.bookName}
                             bookId={bookId}
+                            childId={data?.data?.childId}
                         />
                     </div>
 
@@ -273,37 +274,39 @@ const TurnPage = () => {
                         </div>
                     </div>
                 </div>
-                <div
-                    id="book"
-                    className="relative flex h-[600px]  w-[1200px] items-center justify-center bg-white shadow-lg"
-                    style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)' }}
-                >
-                    <div className="cover flex h-full flex-col justify-end bg-white">
-                        <img
-                            src={data?.data?.bookCoverUrl}
-                            alt="Cover"
-                            style={{
-                                width: '100%',
-                                height: '85%',
-                                objectFit: 'cover',
-                            }}
-                        />
-                        <div
-                            style={{
-                                height: '15%',
-                                width: '100%',
-                                backgroundColor: 'white',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <h1 className="text-5xl text-black">
-                                {data ? data.data.bookName : 'Loading...'}
-                            </h1>
+                {data ? (
+                    <div
+                        id="book"
+                        className="relative flex h-[600px]  w-[1200px] items-center justify-center bg-white shadow-lg"
+                        style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)' }}
+                    >
+                        <div className="cover flex h-full flex-col justify-end bg-white">
+                            <img
+                                src={data?.data?.bookCoverUrl}
+                                alt="Cover"
+                                style={{
+                                    width: '100%',
+                                    height: '85%',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                            <div
+                                style={{
+                                    height: '15%',
+                                    width: '100%',
+                                    backgroundColor: 'white',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <h1 className="text-5xl text-black">
+                                    {data ? data.data.bookName : 'Loading...'}
+                                </h1>
+                            </div>
                         </div>
                     </div>
-                </div>
+                ) : null}
                 {/* Page Controls */}
                 <div
                     id="controls"

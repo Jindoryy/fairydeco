@@ -28,7 +28,7 @@ export default function KidsDrawing({
                     <div className="my-3 text-3xl">제목 : {bookName}</div>
                 </div>
                 <div className="flex justify-center">
-                    <img src={bookPictureUrl} className="w-4/5"></img>
+                    <img src={bookPictureUrl} className="mb-3 w-4/5"></img>
                 </div>
                 <Link href={`/book/${bookId}`} className="flex justify-center">
                     <div className="rounded-full bg-customBlueBorder px-6 py-3 text-black">
