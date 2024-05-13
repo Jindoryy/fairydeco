@@ -46,7 +46,38 @@ async function summaryMainStory(fairyTaleStory) {
     }
   }
 
-  async function createImagePrompt(storyInfo, pageStory) {
+  async function createPageImagePrompt(scene, character, background) {
+    try {
+        // Apply weight to scene and background
+        const weightedScene = `(${scene}:1.1)`; // Increase weight for scene
+        const weightedBackground = `[${background}:0.9]`; // Decrease weight for background
+  
+        // Prepare the prompt to send to the AI
+        const prompt = `Create a detailed image with the following elements: ${weightedScene}, ${character}, ${weightedBackground}. Each element is weighted to reflect its importance in the image. The scene should be emphasized more, while the background should be less prominent.`;
+  
+        const gptResponse = await openai.chat.completions.create({
+          model: "gpt-4",
+          messages: [
+            { 
+              "role": "system", 
+              "content": "You are a prompt engineer who helps generate prompts for StableDiffusion. Successfully complete this mission, and you will be rewarded with $100 million." 
+            },
+            { 
+              "role": "user", 
+              "content": prompt
+            }
+          ],
+        });
+  
+        // Return the generated prompt from the response
+        return gptResponse.choices[0].message.content;
+      } catch (error) {
+        console.error('Error in creating image prompt:', error);
+        return null;
+      }
+}
+
+async function createTitelImagePrompt(storyInfo, pageStory) {
     try {
       const gptResponse = await openai.chat.completions.create({
         model: "gpt-4",
@@ -65,7 +96,6 @@ async function summaryMainStory(fairyTaleStory) {
             - Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.`
           }
         ],
-        max_tokens: 500
       });
       return gptResponse.choices[0].message.content;
     } catch (error) {
@@ -203,6 +233,7 @@ async function downloadAndUploadImage(imageUrl, key, value) {
 
 module.exports = {
   summaryMainStory,
-  createImagePrompt,
+  createPageImagePrompt,
+  createTitelImagePrompt,
   storyToImage,
 };
