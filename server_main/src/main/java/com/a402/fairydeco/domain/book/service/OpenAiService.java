@@ -115,10 +115,11 @@ public class OpenAiService {
                 "                \"backgroundDescription\": \"배경묘사8\"\n" +
                 "                \"pageStory\" : \"장면 별 스토리8\"\n "+
                 "                ]" +
-                "}\n\n" +
+                "}\n" +
                 "```\n" +
-                "키워드 중에 동물이나 사람을 등장인물로 해줘.\n" +
-                "인물 정보에 인물의 외관적 특징을 최대한 자세히 묘사해줘\n";
+//                "키워드 중에 동물이나 사람을 등장인물로 해줘.\n" +
+//                "인물 정보에 인물의 외관적 특징을 최대한 자세히 묘사해줘\n" +
+                "characterDescription은 등장인물이 사람이라면 피부색, 성별, 나이 및 외관 정보를 구체적으로 적어줘, 그리고 동물이라면 어떤 동물인지 그리고 무슨 색인지 구체적으로 적어줘, 사물이라면 어떤 사물이고 무슨 색인지 구체적으로 적어줘\n";
 
         Book book = Book.builder()
                 .child(childRepository.findById(child.getId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
@@ -131,20 +132,24 @@ public class OpenAiService {
                 .build();
         Book savedBook = bookRepository.save(book);
         // 프롬프트 나이대별 생성
+        String[] content = {"친구를 배신한 것을 후회하는", "거짓말한 것을 후회하는", "포기하지 않고 열심히 노력해서 결국 성공하는","두려움을 이겨내고 극복하는","위험을 고려해서 현명한 결정을 내리는", "행동하기 전에 잘 생각해보라는",
+        "자기 능력을 과신하다가 큰 실수를 저지르는", "나쁜 마음씨를 갖고 살면 벌을 받고, 착하게 살면 복을 받는다는", "형제간의 깊은 우애를 배울 수 있는", "다른 사람들의 이야기를 듣고 그들의 경험을 통해 배우는", "현상을 관찰하고 자연의 흐름을 이해함으로 깊은 이해를 얻는",
+        "자신을 돌아보고 분석함으로 깨달음을 얻는"};
+
         if (age.equals("Y")) {
-            prompt += "pages는 내용 8개 정도로 한 page의 pageStory는 2~3줄 정도로 짧게 구성\n" +
+            prompt += "pages의 크기는 8개로 각 page의 pageStory는 2~3줄 정도로 짧게 구성\n" +
                     "3~5세 아이를 위한 동화라 내용은 흥미를 유발하지만 이해도는 크게 필요없는 내용으로 써줘\n" +
-                    "문맥이 어색하지 않도록, 내용이 이어지도록 구성해줘\n" +
+                    "문맥이 어색하지 않도록, 내용이 전체적으로 이어지도록 구성해줘\n" +
                     "그리고 단어는 3~5세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
-                    "시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
+                    "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         } else {
-            prompt += "pages는 내용 8개 정도로 한 page의 pageStory는 5~7줄 정도로 구성\n" +
-                    "6~7세 아이를 위한 동화라 내용은 창의적이고 교육적인 내용으로 작성해줘\n" +
-                    "문맥이 어색하지 않도록, 내용이 이어지도록 구성해줘\n" +
+            prompt += "pages의 크기는 8개로 각 page의 pageStory는 최소 5~7줄 정도로 구성\n" +
+                    "6~7세 아이를 위한 동화라 "+content[(int)(Math.random()* content.length)]+" 내용으로 작성해줘\n" +
+                    "문맥이 어색하지 않도록, 내용이 전체적으로 이어지도록 구성해줘\n" +
                     "그리고 단어는 6~7세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
-                    "시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
+                    "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         }
         // 스토리 생성
         // 프롬프트는 그대로 while 문으로 8컷 이하시 재생성
@@ -196,15 +201,15 @@ public class OpenAiService {
                 // 각 page 8개 db에 저장하는 작업
                 for (int i = 0; i < pageStories.length; i++) {
                     // 목소리 파일 생성 후 s3 저장
-                    File voice = voiceUtil.createVoice(pageStories[i]);
+//                    File voice = voiceUtil.createVoice(pageStories[i]);
                     Page page = Page.builder()
                             .book(savedBook)
                             .story(pageStories[i])
                             .sceneDescription(sceneDescriptions[i])
                             .characterDescription(characterDescriptions[i])
                             .backgroundDescription(backgroundDescriptions[i])
-                            .voiceUrl(fileUtil.uploadMP3(voice))
-                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
+//                            .voiceUrl(fileUtil.uploadMP3(voice))
+//                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
                             .build();
                     pageRepository.save(page);
                 }
@@ -266,7 +271,7 @@ public class OpenAiService {
     private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-                "이미지를 분석해서 옆의 예시처럼 키워드만 5개 뽑아줘    농부, 부자, 사자, 계란, 친구");
+                "이미지를 분석해서 옆의 예시처럼 키워드만 5개 뽑아줘  ex) 키워드1, 키워드2, 키워드3, 키워드4, 키워드5");
         String requestBody = String.format("""
                 {
                     "model": "gpt-4-turbo",
