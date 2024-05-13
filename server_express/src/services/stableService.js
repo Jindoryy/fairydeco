@@ -28,7 +28,8 @@ async function summaryMainStory(fairyTaleStory) {
           {
             role: "user",
             content: `동화의 주요 스토리 요소를 문자열로 요약해 주세요. 요약은 다음 구조를 따라야 합니다:
-            1. 동화의 등장인물 정보: (명시적 설명)
+            1. 동화의 등장인물 정보: (명시적 설명 등장인물이 가장 중요해 이름과 어떻게 생겼는지 외관묘사를 디테일하게 해야해)
+            # 등장인물의 정보는 사람인지 동물인지 사물인지, 사람이라면 피부색, 인종, 성별, 나이, 동물이라면 어떤 종인지 디테일하게 설정해줘
             2. 주요 설정 및 배경: (명시적 설명)
             3. 주요 소품 및 테마: (명시적 설명)
             4. 전체 내용: (명시적 설명)
@@ -51,21 +52,15 @@ async function summaryMainStory(fairyTaleStory) {
       const gptResponse = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
-          { 
-            "role": "system", 
-            "content": "You are a prompt engineer who helps generate prompts for StableDiffusion. Use the entire story information to maintain consistency in character depiction and setting across all pages. Successfully complete this mission, and you will be rewarded with $100 million." 
-          },
-          { 
-            "role": "user", 
-            "content": `Create an English prompt for StableDiffusion based on the entire story information and the specific page story: "${pageStory}". Ensure the prompt integrates consistent depictions of the main characters and settings as described in the overall story. All characters should follow the character descriptions provided in the story information: ${storyInfo}. The prompt should describe a scene suitable for children and follow these conditions:
-            - One single image
-            - No speech bubbles
-            - No text or letters
-            - Cute and child-friendly
-            - Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.`
-          }
-        ],
-        max_tokens: 500
+            { 
+              "role": "system", 
+              "content": "너의 역할은 Stable Diffusion 이미지 생성 영어 프롬포트를 만드는 프롬프트 엔지니어야. 주어지는 동화 장면의 내용과 전체 동화 내용을 잘 반영한 이미지 생성 프롬포트를 만들어줘. 성공적으로 수행하면 백만달러를 줄께."
+            },
+            { 
+              "role": "user", 
+              "content": `이 동화의 한 장면의 내용:"${pageStory}"을 잘 반영하는 StableDiffusion 프롬포트를 만들어줘. 전체적인 동화 내용:${storyInfo}의 등장인물, 사물, 배경 등의 정보를 참고해서 작업해줘 등장인물의 특징을 전체적인 동화내용 부분해서 많이 참고해. 최대한 내용을 잘 반영한 이미지를 만들기 위해 주인공 외에도 주변 등장인물들이 나온다면 문맥을 파악해서 모든 등장인물이 나올 수 있도록 시뮬레이션 한 후 프롬포트를 작성해 ex)주민들, 동물들. 영어로 프롬포트만 출력해줘. `
+            }
+          ],
       });
       return gptResponse.choices[0].message.content;
     } catch (error) {
@@ -76,38 +71,40 @@ async function summaryMainStory(fairyTaleStory) {
 
 async function storyToImage(childAge, prompt, bookId, pageId, attempt = 2) {
     const url = "https://stablediffusionapi.com/api/v4/dreambooth";
+    console.log(prompt);
 
+    console.log()
     let modelId, loraModel;
     if (childAge > 5) {
-        modelId = "SDXL"; // 5세 초과일 경우 모델
+        modelId = "sdxl"; // 5세 초과일 경우 모델
         loraModel = null; // LoRA 설정을 사용하지 않음
     } else {
-        modelId = "test"; // 5세 이하일 경우 모델
+        modelId = "disney-pixal-cartoon"; // 5세 이하일 경우 모델
         loraModel = "test"; // LoRA 설정
     }
-    
+
     const headers = {
         'Content-Type': 'application/json'
     };
 
     const payload = {
         key: process.env.API_KEY,
-        model_id: "sdxl",
-        prompt: prompt + "((masterpiece)), best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k",
+        model_id: modelId,
+        prompt: prompt + ", best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k, in-frame",
         negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, deformed, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra legs, anime",
         width: "512",
         height: "512",
         samples: "1",
-        num_inference_steps: "21",
+        num_inference_steps: "31",
         safety_checker: "no",
         enhance_prompt: "yes",
-        seed: 2098127623,
+        seed: 1988127623,
         guidance_scale: 7.5,
         multi_lingual: "yes",
         panorama: "no",
         self_attention: "no",
         upscale: "no",
-        lora_model: "storybookredmond-unbound",
+        lora_model: "child-book",
         webhook: null,
         track_id: null
     };
@@ -131,6 +128,7 @@ async function storyToImage(childAge, prompt, bookId, pageId, attempt = 2) {
                 imageData = await handleProcessingState(response, bookId, pageId);
             } else if (response.data.status === 'error') {
                 console.log(`Error on try ${retryCount + 1}: ${response.data.error_message}, retrying...`);
+                console.log(response.data);
                 retryCount++;
             } else {
                 throw new Error("Unhandled image generation status.");
