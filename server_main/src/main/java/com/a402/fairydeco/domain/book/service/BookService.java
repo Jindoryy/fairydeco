@@ -68,7 +68,7 @@ public class BookService {
     }
 
     private List<mainBookListDTO> getRecentBookList(RecommendAge recommendAge, Child adminChild) {
-        return bookRepository.findTop15ByCompleteAndRecommendAgeAndChildNotOrderByIdDesc(
+        return bookRepository.findTop15ByCompleteAndRecommendAgeAndChildNotAndCoverUrlIsNotNullOrderByIdDesc(
                 CompleteStatus.COMPLETE, recommendAge, adminChild)
             .stream()
             .map(book -> mainBookListDTO.builder()
