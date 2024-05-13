@@ -121,7 +121,7 @@ export default function Bookshelf() {
                 <div className="relative flex w-auto justify-between pr-12">
                     <div
                         onClick={goProfile}
-                        className="shadow-customDeepShadow mr-4 flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-full bg-customGreen"
+                        className="mr-4 flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-full bg-customGreen shadow-customDeepShadow"
                     >
                         <button>
                             <Baby
@@ -134,7 +134,7 @@ export default function Bookshelf() {
                     </div>
                     <div
                         onClick={goHome}
-                        className="shadow-customDeepShadow flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-full bg-customOrange"
+                        className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-full bg-customOrange shadow-customDeepShadow"
                     >
                         <button>
                             <HouseLine
@@ -194,6 +194,7 @@ export default function Bookshelf() {
                                             src={book.bookCoverUrl}
                                             alt={'책 표지'}
                                             fill
+                                            priority
                                         />
                                     </div>
                                 </div>
@@ -251,6 +252,7 @@ export default function Bookshelf() {
                                             src={book.bookCoverUrl}
                                             alt={'책 표지'}
                                             fill
+                                            priority
                                         />
                                     </div>
                                 </div>
