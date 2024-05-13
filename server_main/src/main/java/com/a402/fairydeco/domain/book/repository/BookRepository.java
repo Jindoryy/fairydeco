@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
 
-    List<Book> findTop15ByCompleteAndRecommendAgeAndChildNotOrderByIdDesc(CompleteStatus complete,
+    List<Book> findTop15ByCompleteAndRecommendAgeAndChildNotAndCoverUrlIsNotNullOrderByIdDesc(CompleteStatus complete,
         RecommendAge recommendAge, Child child);
 
     List<Book> findByCompleteAndRecommendAgeAndChildOrderByIdDesc(CompleteStatus complete,
