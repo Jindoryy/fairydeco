@@ -47,20 +47,52 @@ async function summaryMainStory(fairyTaleStory) {
     }
   }
 
-  async function createImagePrompt(storyInfo, pageStory) {
+  async function createPageImagePrompt(scene, character, background) {
+    try {
+        const prompt = `"${scene}"이 장면 정보를 기반으로 "${character}" 이 캐릭터 특징을 참고해서 간결하고 핵심적인 Stable Diffusion 영어 프롬포트를 작성해줘 배경은 이 설명을 참고해 배경 설명:"${background}". 프롬포트 결과만 출력해 다른 설명은 필요 없어`;
+
+        const gptResponse = await openai.chat.completions.create({
+          model: "gpt-4",
+          messages: [
+            { 
+              "role": "system", 
+              "content": "너는 이미지 생성을 위한 Stable Diffusion의 영어 프롬포트 제작을 맡은 프롬포트 엔지니어야. 성공적으로 임무를 수행하면 백만 달러를 줄께" 
+            },
+            { 
+              "role": "user", 
+              "content": prompt
+            }
+          ],
+        });
+  
+        // Return the generated prompt from the response
+        return gptResponse.choices[0].message.content;
+      } catch (error) {
+        console.error('Error in creating image prompt:', error);
+        return null;
+      }
+}
+
+async function createTitleImagePrompt(storyInfo, pageStory) {
     try {
       const gptResponse = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
-            { 
-              "role": "system", 
-              "content": "너의 역할은 Stable Diffusion 이미지 생성 영어 프롬포트를 만드는 프롬프트 엔지니어야. 주어지는 동화 장면의 내용과 전체 동화 내용을 잘 반영한 이미지 생성 프롬포트를 만들어줘. 성공적으로 수행하면 백만달러를 줄께."
-            },
-            { 
-              "role": "user", 
-              "content": `이 동화의 한 장면의 내용:"${pageStory}"을 잘 반영하는 StableDiffusion 프롬포트를 만들어줘. 전체적인 동화 내용:${storyInfo}의 등장인물, 사물, 배경 등의 정보를 참고해서 작업해줘 등장인물의 특징을 전체적인 동화내용 부분해서 많이 참고해. 최대한 내용을 잘 반영한 이미지를 만들기 위해 주인공 외에도 주변 등장인물들이 나온다면 문맥을 파악해서 모든 등장인물이 나올 수 있도록 시뮬레이션 한 후 프롬포트를 작성해 ex)주민들, 동물들. 영어로 프롬포트만 출력해줘. `
-            }
-          ],
+          { 
+            "role": "system", 
+            "content": "You are a prompt engineer who helps generate prompts for StableDiffusion. Use the entire story information to maintain consistency in character depiction and setting across all pages. Successfully complete this mission, and you will be rewarded with $100 million." 
+          },
+          { 
+            "role": "user", 
+            "content": `Create an English prompt for StableDiffusion based on the entire story information and the specific page story: "${pageStory}". Ensure the prompt integrates consistent depictions of the main characters and settings as described in the overall story. All characters should follow the character descriptions provided in the story information: ${storyInfo}. The prompt should describe a scene suitable for children and follow these conditions:
+            - One single image
+            - No speech bubbles
+            - No text or letters
+            - Cute and child-friendly
+            - Provide a detailed description including the setting, main characters, key actions, and the emotional tone or theme of the scene to ensure the generated image closely aligns with the story.`
+          }
+        ],
+        max_tokens: 500
       });
       return gptResponse.choices[0].message.content;
     } catch (error) {
@@ -89,7 +121,7 @@ async function storyToImage(childAge, prompt, bookId, pageId, attempt = 2) {
 
     const payload = {
         key: process.env.API_KEY,
-        model_id: modelId,
+        model_id: "sdxl",
         prompt: prompt + ", best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k, in-frame",
         negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, deformed, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra legs, anime",
         width: "512",
@@ -104,7 +136,7 @@ async function storyToImage(childAge, prompt, bookId, pageId, attempt = 2) {
         panorama: "no",
         self_attention: "no",
         upscale: "no",
-        lora_model: "child-book",
+        lora_model: "child-book,picture-book-illustration",
         webhook: null,
         track_id: null
     };
@@ -208,7 +240,8 @@ function calculateAge(birthDate) {
 
 module.exports = {
   summaryMainStory,
-  createImagePrompt,
+  createPageImagePrompt,
+  createTitleImagePrompt,
   storyToImage,
   calculateAge
 };
