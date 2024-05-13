@@ -88,7 +88,11 @@ async function bookStableCreation(req, res) {
             console.log("PHASE 7: FAILED");
             console.error('Failed during book creation process:', error);
         } finally {
-            await connection.end();  // 작업 완료 후 DB 연결 종료
+            const taskEndTime = new Date();
+            console.log(`Task completed for book ID ${bookId} at ${taskEndTime.toISOString()}`);
+            console.log(`Total time taken for task: ${((taskEndTime - startTime) / 60000).toFixed(2)} minutes`);
+
+            await connection.end();
             console.log("PHASE 8 : DB CONNECTION CLOSED");
         }
     });
