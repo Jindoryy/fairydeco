@@ -58,6 +58,7 @@ export default function UploadBox() {
                 )
                 const userId = localStorage.getItem('userId') // userId 가져오기
                 if (userId) {
+                    console.log(userId)
                     connect(userId) // SSE 이벤트 연결 시작
                 }
                 router.push('/bookList')
