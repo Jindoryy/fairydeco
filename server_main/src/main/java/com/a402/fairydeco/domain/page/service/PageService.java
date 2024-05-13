@@ -25,4 +25,9 @@ public class PageService {
         return storyUpdate.getPageStory();
     }
 
+    public String findPageOneRandom() {
+        Page page = pageRepository.findRandomPageWithImage();
+
+        return page.getImageUrl();
+    }
 }
