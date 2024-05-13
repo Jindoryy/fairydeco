@@ -7,6 +7,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { getRandomInt, randomChoice } from '../utils/helpers'
 import { Baby, HouseLine } from '@phosphor-icons/react/dist/ssr'
 import Horse from '../../../../public/image/horse.png'
+import Swal from 'sweetalert2'
 
 const availableColors = [
     '#FFD5CD',
@@ -27,6 +28,7 @@ export default function Bookshelf() {
     const [recentList, setRecentList] = useState([])
     const [clickedBookId, setClickedBookId] = useState()
     const containerRef = useRef(null)
+    const Swal = require('sweetalert2')
 
     const getBook = async () => {
         try {
@@ -42,7 +44,13 @@ export default function Bookshelf() {
     }
     useEffect(() => {
         if (!localStorage.getItem('childId')) {
-            alert('로그인을 먼저 해주세요!')
+            Swal.fire({
+                title: '앗!',
+                text: '로그인을 먼저 해주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+
             router.push('/login')
             return
         }
