@@ -12,6 +12,7 @@ import {
     HandSwipeRight,
     Eraser,
 } from '@phosphor-icons/react/dist/ssr'
+import Swal from 'sweetalert2'
 
 export default function CanvasBox() {
     const router = useRouter()
@@ -21,6 +22,7 @@ export default function CanvasBox() {
     const [canvas, setCanvas] = useState(null)
     const [activeTool, setActiveTool] = useState('pen')
     const [activeColor, setActiveColor] = useState('black')
+    const Swal = require('sweetalert2')
 
     useEffect(() => {
         const canvasContainer = canvasContainerRef.current
@@ -139,12 +141,33 @@ export default function CanvasBox() {
 
     const goBook = () => {
         if (canvas.getObjects().length === 0) {
-            alert('캔버스에 그림을 그려주세요.')
+            Swal.fire({
+                title: '앗!',
+                text: '캔버스에 그림을 그려주세요.',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
             return
         }
-        if (confirm('이 그림으로 동화를 만들까요 ?')) {
-            makeBook()
-        }
+        Swal.fire({
+            title: '다 그렸군요!',
+            text: '이 그림으로 동화를 만들까요?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '네! 만들어주세요!',
+            cancelButtonText: '아니오 다시 그릴래요!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                makeBook()
+                Swal.fire({
+                    title: '알겠어요!',
+                    text: '동화를 만들어드릴게요!',
+                    icon: 'success',
+                })
+            }
+        })
     }
     const makeBook = async () => {
         try {
@@ -186,21 +209,40 @@ export default function CanvasBox() {
                 },
             })
             if (data.status == 'success') {
-                alert(
-                    '이야기를 만들기 시작했어요! 3분정도 기다려주세요. 다른 아이의 그림을 보러갈까요?'
-                )
+                Swal.fire({
+                    title: '우와아!',
+                    text: '이야기를 만들기 시작했어요! 3분정도 기다려주세요. 다른 아이의 그림을 보러갈까요?',
+                    icon: 'success',
+                    confirmButtonText: '네',
+                })
                 router.push('/bookList')
             } else {
-                alert('이야기 만들기가 실패했어요 다시 한 번 해주세요!')
+                Swal.fire({
+                    title: '앗!',
+                    text: '이야기 만들기가 실패했어요 다시 한 번 해주세요!',
+                    icon: 'error',
+                    confirmButtonText: '네',
+                })
             }
         } catch (error) {
             console.error('Error fetching data:', error)
         }
     }
     const goBack = () => {
-        if (confirm('뒤로 가면 그림이 다 지워져요!')) {
-            router.push('/makebook')
-        }
+        Swal.fire({
+            title: '잠시만요!',
+            text: '뒤로 가면 그림이 다 지워져요! 괜찮나요?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '네',
+            cancelButtonText: '아니오',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.push('/makebook')
+            }
+        })
     }
     return (
         <div className="h-dvh w-dvw">

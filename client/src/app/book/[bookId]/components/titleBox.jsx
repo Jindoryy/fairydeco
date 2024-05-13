@@ -1,12 +1,13 @@
 'use client'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default function TitleBox({ title, bookId, childId }) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [newTitle, setNewTitle] = useState('')
     const [localStorageChildId, setLocalStorageChildId] = useState(null)
-
+    const Swal = require('sweetalert2')
     useEffect(() => {
         console.log(childId)
         setNewTitle(title)
@@ -29,7 +30,12 @@ export default function TitleBox({ title, bookId, childId }) {
         if (childId == localStorageChildId) {
             changeTitle()
         } else {
-            alert('지은이만 제목을 수정할 수 있어요.')
+            Swal.fire({
+                title: '앗!',
+                text: '지은이만 제목을 수정할 수 있어요.',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
         }
     }
 
@@ -40,9 +46,19 @@ export default function TitleBox({ title, bookId, childId }) {
                 bookName: newTitle,
             })
             if (response.data.status == 'success') {
-                alert('수정 되었습니다.')
+                Swal.fire({
+                    title: '우와!',
+                    text: '수정 되었습니다.',
+                    icon: 'success',
+                    confirmButtonText: '네',
+                })
             } else {
-                alert('수정이 실패했습니다. 다시 한 번 시도해주세요')
+                Swal.fire({
+                    title: '앗!',
+                    text: '수정이 실패했습니다. 다시 한 번 시도해주세요',
+                    icon: 'error',
+                    confirmButtonText: '네',
+                })
             }
         } catch (error) {
             console.error('title error', error)

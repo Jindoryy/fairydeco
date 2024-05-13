@@ -4,18 +4,25 @@ import { ArrowFatLeft } from '@phosphor-icons/react/dist/ssr'
 import { useRouter } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default function LoginBox() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const router = useRouter()
     const [userId, setUserId] = useState('')
     const [password, setPassword] = useState('')
+    const Swal = require('sweetalert2')
 
     useEffect(() => {
         let value
         value = localStorage.getItem('userId') || ''
         if (value) {
-            alert('이미 로그인 하셨습니다!')
+            Swal.fire({
+                title: '앗!',
+                text: '이미 로그인 했어요!',
+                icon: 'error',
+                confirmButtonText: '돌아가기',
+            })
             router.push('/profile')
         }
     }, [])
@@ -44,15 +51,28 @@ export default function LoginBox() {
             })
             if (response.data.status == 'success') {
                 localStorage.setItem('userId', response.data.data.userId)
-                alert('로그인 성공!')
+                Swal.fire({
+                    title: '안녕하세요!',
+                    text: '반가워요!',
+                    icon: 'success',
+                    confirmButtonText: '네, 반갑습니다!',
+                })
                 router.push('/profile')
             } else {
-                alert(
-                    '아이디가 없거나, 비밀번호가 틀렸습니다! 다시 입력해주세요!'
-                )
+                Swal.fire({
+                    title: '앗!',
+                    text: '아이디가 없거나, 비밀번호가 틀렸습니다! 다시 입력해주세요!',
+                    icon: 'error',
+                    confirmButtonText: '네',
+                })
             }
         } catch (error) {
-            alert('아이디가 없거나, 비밀번호가 틀렸습니다! 다시 입력해주세요!')
+            Swal.fire({
+                title: '앗!',
+                text: '아이디가 없거나, 비밀번호가 틀렸습니다! 다시 입력해주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
             console.error('Login error: ', error)
         }
     }
