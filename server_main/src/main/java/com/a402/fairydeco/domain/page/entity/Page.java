@@ -40,6 +40,15 @@ public class Page extends BaseEntity {
     @Column(name = "page_story", length = 1000)
     private String story;
 
+    @Column(name = "page_scene_description", length = 1000)
+    private String sceneDescription;
+
+    @Column(name = "page_character_description", length = 1000)
+    private String characterDescription;
+
+    @Column(name = "page_background_description", length = 1000)
+    private String backgroundDescription;
+
     @Column(name = "page_image_url", length = 1000)
     private String imageUrl;
 

@@ -34,8 +34,12 @@ async function bookStableCreation(req, res) {
     }
     console.log("PHASE 2 : DB CONNECTION SUCCESS");
 
+    // 아이 나이 정보 조회
+    const childBirth = await connection.query('SELECT child_birth FROM child WHERE child_id = ?', [childId]);
+    const childAge = stableService.calculateAge(childBirth);
+
     // 페이지 정보 쿼리
-    const [results] = await connection.query('SELECT page_id, page_story, page_scene_description, page_character_descriptions, page_background_description FROM page WHERE book_id = ?', [bookId]);
+    const [results] = await connection.query('SELECT page_id, page_story, page_scene_description, page_character_description, page_background_description FROM page WHERE book_id = ?', [bookId]);
     if (results.length === 0) {
         await connection.end();  // 결과가 없으면 연결 종료
         res.status(404).send(`No pages found for the given BOOK ID : ${bookId}, PAGE ID : ${pageId}`);
@@ -55,7 +59,7 @@ async function bookStableCreation(req, res) {
             const imageUrls = await Promise.all(results.map(async page => {
                 try {
                     const prompt = await stableService.createPageImagePrompt(page.page_scene_description, page.page_character_description, page.page_background_description);
-                    return await stableService.storyToImage(prompt, bookId, page.page_id);
+                    return await stableService.storyToImage(childAge, prompt, bookId, page.page_id);
                 } catch (error) {
                     console.error(`Error processing page ${page.page_id}: ${error}`);
                     return null;
@@ -71,8 +75,8 @@ async function bookStableCreation(req, res) {
             console.log("PHASE 5 : PAGE IMAGE URLs UPDATED");
 
             // 커버 이미지 생성 및 업로드
-            const coverImagePrompt = await stableService.createTitelImagePrompt(storyJoin, "title");
-            const coverImageUrl = await stableService.storyToImage(coverImagePrompt, bookId, "title");
+            const coverImagePrompt = await stableService.createTitleImagePrompt(storyJoin, "title");
+            const coverImageUrl = await stableService.storyToImage(childAge, coverImagePrompt, bookId, "title");
             await connection.query('UPDATE book SET book_cover_url = ? WHERE book_id = ?', [coverImageUrl, bookId]);
             await connection.query(`UPDATE book SET book_complete = 'COMPLETE' WHERE book_id = ?`, [bookId]);
             console.log("PHASE 6 : COVER IMAGE CREATED AND DB UPDATED");
@@ -84,7 +88,11 @@ async function bookStableCreation(req, res) {
             console.log("PHASE 7: FAILED");
             console.error('Failed during book creation process:', error);
         } finally {
-            await connection.end();  // 작업 완료 후 DB 연결 종료
+            const taskEndTime = new Date();
+            console.log(`Task completed for book ID ${bookId} at ${taskEndTime.toISOString()}`);
+            console.log(`Total time taken for task: ${((taskEndTime - startTime) / 60000).toFixed(2)} minutes`);
+
+            await connection.end();
             console.log("PHASE 8 : DB CONNECTION CLOSED");
         }
     });
@@ -95,3 +103,4 @@ async function bookStableCreation(req, res) {
 module.exports = {
   bookStableCreation,
 };
+
