@@ -1,4 +1,5 @@
 'use client'
+'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import FirstPage from './components/firstPage'
 import SecondPage from './components/secondPage'
@@ -46,8 +47,11 @@ export default function Landing() {
         return () => {
             outerDivRefCurrent.removeEventListener('wheel', wheelHandler)
         }
+    }, [currentPage])
 
+    useEffect(() => {
         const touchMoveHandler = (e) => {
+            e.preventDefault() // 터치 스크롤 동작 막기
             const deltaY = e.touches[0].clientY - touchStartY.current
             const { scrollTop } = outerDivRef.current
             const pageHeight = window.innerHeight
@@ -75,15 +79,21 @@ export default function Landing() {
             touchStartY.current = e.touches[0].clientY
         }
 
+        const touchEndHandler = () => {
+            touchStartY.current = 0
+        }
+
         const outerDivRefTouchCurrent = outerDivRef.current
         outerDivRefTouchCurrent.addEventListener(
             'touchstart',
             touchStartHandler
         )
-        outerDivRefTouchCurrent.addEventListener('touchmove', touchMoveHandler)
-        outerDivRefTouchCurrent.addEventListener('touchend', () => {
-            touchStartY.current = 0
-        })
+        outerDivRefTouchCurrent.addEventListener(
+            'touchmove',
+            touchMoveHandler,
+            { passive: false }
+        )
+        outerDivRefTouchCurrent.addEventListener('touchend', touchEndHandler)
 
         return () => {
             outerDivRefTouchCurrent.removeEventListener(
@@ -94,9 +104,10 @@ export default function Landing() {
                 'touchmove',
                 touchMoveHandler
             )
-            outerDivRefTouchCurrent.removeEventListener('touchend', () => {
-                touchStartY.current = 0
-            })
+            outerDivRefTouchCurrent.removeEventListener(
+                'touchend',
+                touchEndHandler
+            )
         }
     }, [currentPage])
 
