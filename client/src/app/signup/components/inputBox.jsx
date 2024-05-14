@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { LockKeyOpen } from '@phosphor-icons/react/dist/ssr'
+import Swal from 'sweetalert2'
 
 export default function InputBox() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
@@ -14,6 +15,7 @@ export default function InputBox() {
     const [userName, setUserName] = useState('')
     const [idCheck, setIdCheck] = useState('')
     const [pwCheck, setPwCheck] = useState('')
+    const Swal = require('sweetalert2')
 
     let checkId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{4,15}$/
     let checkPw = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{8,20}$/
@@ -30,11 +32,23 @@ export default function InputBox() {
     const handleId = async () => {
         if (userId.length == 0) {
             setIdCheck(false)
-            alert('아이디를 입력해주세요')
+            Swal.fire({
+                title: '앗!',
+                text: '아이디를 입력해주세요',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+
             return
         } else if (!checkId.test(userId)) {
             setIdCheck(false)
-            alert('아이디는 숫자+영어 4~15글자입니다.')
+            Swal.fire({
+                title: '앗!',
+                text: '아이디는 숫자+영어 4~15글자입니다.',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+
             return
         }
         try {
@@ -46,7 +60,12 @@ export default function InputBox() {
                     setIdCheck(true)
                 } else {
                     setIdCheck(false)
-                    alert('중복된 아이디입니다. 다른 아이디를 입력해주세요!')
+                    Swal.fire({
+                        title: '앗!',
+                        text: '중복된 아이디입니다. 다른 아이디를 입력해주세요!',
+                        icon: 'error',
+                        confirmButtonText: '네',
+                    })
                 }
             }
         } catch (error) {
@@ -75,15 +94,33 @@ export default function InputBox() {
 
     const handleSignup = async () => {
         if (!checkId.test(userId)) {
-            alert('아이디를 확인해주세요.')
+            Swal.fire({
+                title: '앗!',
+                text: '아이디를 확인해주세요.',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+
             return
         }
         if (!checkPw.test(password)) {
-            alert('비밀번호를 확인해주세요.')
+            Swal.fire({
+                title: '앗!',
+                text: '비밀번호를 확인해주세요.',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+
             return
         }
         if (!checkName.test(userName)) {
-            alert('이름을 확인해주세요.')
+            Swal.fire({
+                title: '앗!',
+                text: '이름을 확인해주세요.',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+
             return
         }
         try {
@@ -94,10 +131,20 @@ export default function InputBox() {
             })
             console.log(response.data)
             if (response.data.status == 'success') {
-                alert('회원가입이 되었습니다. 로그인을 해주세요!')
+                Swal.fire({
+                    title: '우와!',
+                    text: '회원가입이 되었습니다. 로그인을 해주세요!',
+                    icon: 'success',
+                    confirmButtonText: '네',
+                })
                 router.push('/login')
             } else {
-                alert('다시 한 번 시도해주세요.')
+                Swal.fire({
+                    title: '앗!',
+                    text: '다시 한 번 시도해주세요.',
+                    icon: 'error',
+                    confirmButtonText: '네',
+                })
             }
         } catch (error) {
             console.error('Failed to signup: ', error)

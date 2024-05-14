@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation'
 import { PlusCircle, PencilSimpleLine } from '@phosphor-icons/react'
 import ChangeInfoModal from './components/changeInfoModal'
 import AddChildModal from './components/addChildModal'
+import Swal from 'sweetalert2'
 
 export default function Profile() {
     const [kidsData, setKidsData] = useState(null)
     const [isChangeInfoModalOpen, setIsChangeInfoModalOpen] = useState(false)
     const [isAddChildModalOpen, setIsAddChildModalOpen] = useState(false)
     const [selectedChild, setSelectedChild] = useState(null) // Track the selected child
+    const Swal = require('sweetalert2')
 
     const router = useRouter()
 
@@ -18,8 +20,14 @@ export default function Profile() {
         const userId = localStorage.getItem('userId')
 
         if (!userId) {
-            router.push('/login') // Redirect to login if userId doesn't exist
-            return // Exit the effect early if no userId
+            Swal.fire({
+                title: '앗!',
+                text: '먼저 로그인을 해주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+            router.push('/login')
+            return
         }
         const apiUrl = process.env.NEXT_PUBLIC_API_URL
         const URL = `${apiUrl}/child/name-list/${userId}`

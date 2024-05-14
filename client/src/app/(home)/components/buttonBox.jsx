@@ -12,11 +12,13 @@ import { useRouter } from 'next/navigation'
 import { Baby } from '@phosphor-icons/react/dist/ssr'
 import { useState, useEffect } from 'react'
 import { useSse } from '../../components/sseProvider'
+import Swal from 'sweetalert2'
 
 export default function ButtonBox() {
     const router = useRouter()
     const [userId, setUserId] = useState()
     const { connect } = useSse()
+    const Swal = require('sweetalert2')
 
     useEffect(() => {
         if (localStorage.getItem('userId'))
@@ -26,7 +28,12 @@ export default function ButtonBox() {
 
     const goProfile = () => {
         if (!userId) {
-            alert('로그인을 해주세요!')
+            Swal.fire({
+                title: '앗!',
+                text: '먼저 로그인을 해주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
             router.push('/login')
             return
         } else router.push('/profile')
@@ -34,7 +41,12 @@ export default function ButtonBox() {
 
     const goMakeBook = () => {
         if (!userId) {
-            alert('로그인을 해주세요!')
+            Swal.fire({
+                title: '앗!',
+                text: '먼저 로그인을 해주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
             router.push('/login')
             return
         }
@@ -44,13 +56,28 @@ export default function ButtonBox() {
     }
 
     const goBookList = () => {
+        if (!userId) {
+            Swal.fire({
+                title: '앗!',
+                text: '먼저 로그인을 해주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+            router.push('/login')
+            return
+        }
         setTimeout(() => {
             router.push('/bookList')
         }, 200)
     }
     const goMypage = () => {
         if (!userId) {
-            alert('로그인을 해주세요!')
+            Swal.fire({
+                title: '앗!',
+                text: '먼저 로그인을 해주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
             router.push('/login')
             return
         }
@@ -72,7 +99,12 @@ export default function ButtonBox() {
         localStorage.setItem('childId', '')
         localStorage.setItem('userId', '')
         setUserId('')
-        alert('다음에 또 만나요~!')
+        Swal.fire({
+            title: '잘가요',
+            text: '다음에 또 만나요!!',
+            icon: 'success',
+            confirmButtonText: '네에',
+        })
     }
 
     useEffect(() => {}, [userId])

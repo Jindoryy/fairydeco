@@ -6,6 +6,7 @@ import com.a402.fairydeco.global.common.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,13 @@ public class PageController {
     public SuccessResponse<String> updateStory(@RequestBody StoryUpdate storyUpdate){
 
         return new SuccessResponse<>(pageService.updateStory(storyUpdate));
+    }
+
+    @Operation(summary = "동화 랜덤 그림", description = "동화의 그림 중 하나를 랜덤으로 반환한다.")
+    @GetMapping("/puzzle-image")
+    public SuccessResponse<String> getPuzzleImage() {
+
+        return new SuccessResponse<>(pageService.findPageOneRandom());
     }
 
 }

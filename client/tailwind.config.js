@@ -14,7 +14,7 @@ module.exports = {
                 customPink: '#FCEAE9',
                 customPurple: '#CA54C9',
                 customGreen: '#A0D468',
-                customLigntGreen: '#E9FFE5',
+                customLightGreen: '#E9FFE5',
                 customRed: '#DC2823',
                 customGray: '#807A7A',
                 customBlue: '#F3F4FF',
@@ -27,6 +27,7 @@ module.exports = {
             },
             boxShadow: {
                 customShadow: '0 2px 2px 0 #C4B6B5',
+                customDeepShadow: '4px 4px 4px 0 #C4B6B5',
                 innerShadow: 'inset -8px -8px 8px rgba(0, 0, 0, 0.3)',
             },
             animation: {

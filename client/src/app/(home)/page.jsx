@@ -12,6 +12,7 @@ export default function Home() {
                 quality={100}
                 alt={'메인 페이지 사진'}
                 className="brightness-[60%]"
+                priority
             />
             <ButtonBox />
         </div>

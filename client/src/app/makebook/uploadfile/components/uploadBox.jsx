@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
 import { useSse } from '../../../components/sseProvider'
+import Swal from 'sweetalert2'
 
 export default function UploadBox() {
     const router = useRouter()
@@ -14,6 +15,7 @@ export default function UploadBox() {
     const [kidImage, setKidImage] = useState()
     const [kidImageView, setKidImageView] = useState('')
     const { connect } = useSse()
+    const Swal = require('sweetalert2')
 
     useEffect(() => {
         setChildId(localStorage.getItem('childId'))
@@ -35,7 +37,13 @@ export default function UploadBox() {
     }
     const makeBook = () => {
         if (!kidImage) {
-            alert('그림을 업로드해주세요!')
+            Swal.fire({
+                title: '앗!',
+                text: '그림을 올려주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+
             return
         }
         getStory()
@@ -53,16 +61,25 @@ export default function UploadBox() {
                 },
             })
             if (data.status == 'success') {
-                alert(
-                    '이야기를 만들기 시작했어요! 3분정도 기다려주세요. 다른 아이의 그림을 보러갈까요?'
-                )
+                Swal.fire({
+                    title: '와우!',
+                    text: '이야기를 만들기 시작했어요! 3분정도 기다려주세요. 다른 아이의 그림을 보러갈까요?',
+                    icon: 'success',
+                    confirmButtonText: '네',
+                })
                 const userId = localStorage.getItem('userId') // userId 가져오기
                 if (userId) {
+                    console.log(userId)
                     connect(userId) // SSE 이벤트 연결 시작
                 }
                 router.push('/bookList')
             } else {
-                alert('이야기 만들기가 실패했어요 다시 한 번 해주세요!')
+                Swal.fire({
+                    title: '앗!',
+                    text: '이야기 만들기가 실패했어요 다시 한 번 해주세요!',
+                    icon: 'error',
+                    confirmButtonText: '네',
+                })
             }
         } catch (error) {
             console.error('Error fetching data:', error)
