@@ -238,10 +238,88 @@ function calculateAge(birthDate) {
     return age;
   }
 
+
+  async function createImageByPrompt(childAge, prompt, bookId, pageId, attempt = 2) {
+    const url = "https://stablediffusionapi.com/api/v4/dreambooth";
+    console.log(prompt);
+
+    console.log()
+    let modelId, loraModel;
+    if (childAge > 5) {
+        modelId = "sdxl"; // 5세 초과일 경우 모델
+        loraModel = null; // LoRA 설정을 사용하지 않음
+    } else {
+        modelId = "disney-pixal-cartoon"; // 5세 이하일 경우 모델
+        loraModel = "test"; // LoRA 설정
+    }
+
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    const payload = {
+        key: process.env.API_KEY,
+        model_id: "sdxl",
+        prompt: prompt + ", best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k, in-frame",
+        negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra leg",
+        width: "512",
+        height: "512",
+        samples: "1",
+        num_inference_steps: "31",
+        safety_checker: "no",
+        enhance_prompt: "yes",
+        seed: 1988127623,
+        guidance_scale: 7.5,
+        multi_lingual: "yes",
+        panorama: "no",
+        self_attention: "no",
+        upscale: "no",
+        lora_model: "child-book,picture-book-illustration",
+        webhook: null,
+        track_id: null
+    };
+
+    let retryCount = 0;
+    const maxRetries = 3;
+    let imageData = null;
+
+    while (retryCount < maxRetries && imageData == null) {
+        try {
+            const response = await axios.post(url, payload, { headers });
+            if (response.data.status === 'success') {
+                const imageUrl = response.data.output[0];
+                imageData = await downloadAndUploadImage(imageUrl, bookId, pageId);
+                if (imageData) {
+                    console.log(pageId + " Image successfully uploaded: " + imageData);
+                    return imageData;
+                }
+            } else if (response.data.status === 'processing') {
+                // 처리 상태일 때의 로직을 유지합니다.
+                imageData = await handleProcessingState(response, bookId, pageId);
+            } else if (response.data.status === 'error') {
+                console.log(`Error on try ${retryCount + 1}: ${response.data.error_message}, retrying...`);
+                console.log(response.data);
+                retryCount++;
+            } else {
+                throw new Error("Unhandled image generation status.");
+            }
+        } catch (error) {
+            console.error(`Error handling image generation on try ${retryCount + 1}: ${error.message}`);
+            retryCount++;
+            if (retryCount >= maxRetries && attempt > 0) {
+                console.log(`Retrying once more for pageId: ${pageId}, remaining attempts: ${attempt - 1}.`);
+                return await storyToImage(prompt, bookId, pageId, attempt - 1);
+            }
+        }
+    }
+
+    return imageData ? imageData : null;
+}
 module.exports = {
   summaryMainStory,
   createPageImagePrompt,
   createTitleImagePrompt,
   storyToImage,
-  calculateAge
+  calculateAge,
+  createImageByPrompt
 };
