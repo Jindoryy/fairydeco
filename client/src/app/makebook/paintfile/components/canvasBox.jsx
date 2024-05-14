@@ -13,6 +13,7 @@ import {
     Eraser,
 } from '@phosphor-icons/react/dist/ssr'
 import Swal from 'sweetalert2'
+import { useSse } from '@/src/app/components/sseProvider'
 
 export default function CanvasBox({ handleLoading }) {
     const router = useRouter()
@@ -22,6 +23,7 @@ export default function CanvasBox({ handleLoading }) {
     const [canvas, setCanvas] = useState(null)
     const [activeTool, setActiveTool] = useState('pen')
     const [activeColor, setActiveColor] = useState('black')
+    const { connect } = useSse()
     const Swal = require('sweetalert2')
 
     useEffect(() => {
@@ -161,6 +163,12 @@ export default function CanvasBox({ handleLoading }) {
         }).then((result) => {
             if (result.isConfirmed) {
                 makeBook()
+                //sse 걸기
+                const userId = localStorage.getItem('userId') // userId 가져오기
+                if (userId) {
+                    console.log(userId)
+                    connect(userId) // SSE 이벤트 연결 시작
+                }
                 Swal.fire({
                     title: '알겠어요!',
                     text: '동화를 만들어드릴게요!',
