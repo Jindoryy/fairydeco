@@ -259,9 +259,9 @@ function calculateAge(birthDate) {
 
     const payload = {
         key: process.env.API_KEY,
-        model_id: "sdxl",
-        prompt: prompt + ", best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, 4k, 8k, in-frame",
-        negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra leg",
+        model_id: "drood-disney-pixar",
+        prompt: prompt + ", best quality, very detailed, high resolution, sharp, sharp image, extremely detailed, (child-friendly:1.5)",
+        negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra leg, (3D:1.5), 3d render, building",
         width: "512",
         height: "512",
         samples: "1",
@@ -274,7 +274,8 @@ function calculateAge(birthDate) {
         panorama: "no",
         self_attention: "no",
         upscale: "no",
-        lora_model: "child-book,picture-book-illustration",
+        lora_model: "pepe-frog",
+        // lora_model: "child-book,picture-book-illustration",
         webhook: null,
         track_id: null
     };
