@@ -170,6 +170,7 @@ public class OpenAiService {
                     ObjectMapper objectMapper = new ObjectMapper();
                     // JSON 문자열을 JsonNode로 읽어오기
                     JsonNode jsonNode = objectMapper.readTree(story);
+                    System.out.println("jsonNode :"+jsonNode);
                     // "pages"에 해당하는 JsonNode 가져오기
                     pagesNode = jsonNode.get("pages");
                     // JsonNode를 배열로 변환
