@@ -82,6 +82,7 @@ router.post('/create-image', imageController.createImage);
  */
 router.post('/book/creation', imageController.bookCreation);
 
-router.post('/book-creation', storyController.bookStableCreation);
+// router.post('/book-creation', storyController.bookStableCreation);
+router.post('/book-creation', storyController.bookStableTestCreation);
 
 module.exports = router;

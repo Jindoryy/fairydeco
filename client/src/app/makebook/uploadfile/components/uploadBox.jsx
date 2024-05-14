@@ -8,7 +8,7 @@ import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
 import { useSse } from '../../../components/sseProvider'
 import Swal from 'sweetalert2'
 
-export default function UploadBox() {
+export default function UploadBox({ handleLoading }) {
     const router = useRouter()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const [childId, setChildId] = useState('')
@@ -55,6 +55,7 @@ export default function UploadBox() {
         bookFormData.append('bookPicture', kidImage)
 
         try {
+            handleLoading(true)
             const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -83,6 +84,8 @@ export default function UploadBox() {
             }
         } catch (error) {
             console.error('Error fetching data:', error)
+        } finally {
+            handleLoading(false)
         }
     }
 

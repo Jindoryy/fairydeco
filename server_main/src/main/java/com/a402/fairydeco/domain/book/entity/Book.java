@@ -18,8 +18,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +62,7 @@ public class Book extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "book_complete", nullable = false)
-    private final CompleteStatus complete = CompleteStatus.STORY; //default 'STORY'
+    private CompleteStatus complete; //default 'STORY'
 
     @Column(name = "book_cover_url", length = 1000)
     private String coverUrl;
@@ -75,8 +77,11 @@ public class Book extends BaseEntity {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Page> pageList = new ArrayList<>();
 
-    public void updateBookName(String name){
+    public void updateBookName(String name) {
         this.name = name;
     }
 
+    public void updateBookStatus(CompleteStatus status) {
+        this.complete = status;
+    }
 }
