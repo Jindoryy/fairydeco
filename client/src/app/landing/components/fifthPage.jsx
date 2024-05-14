@@ -61,7 +61,10 @@ export default function FifthPage() {
                     bookList
                         .filter((el) => el.bookCoverUrl)
                         .map((el, index) => (
-                            <div className="animate-autoPlay relative mx-4 flex w-[300px] rounded-md">
+                            <div
+                                className="animate-autoPlay relative mx-4 flex w-[300px] rounded-md"
+                                key={index}
+                            >
                                 <Image
                                     src={el.bookCoverUrl}
                                     alt="책 표지"
