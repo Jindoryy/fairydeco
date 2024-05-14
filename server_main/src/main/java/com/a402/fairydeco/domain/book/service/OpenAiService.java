@@ -112,7 +112,7 @@ public class OpenAiService {
                 "}\n" +
                 "```\n" +
 //                "인물 정보에 인물의 외관적 특징을 최대한 자세히 묘사해줘\n" +
-                "\"imagePrompt\"는 스토리로 stable diffusion이미지 생성 프롬포트를 만들거야. 페이지 별 스토리에 적합한 이미지를 만들기 위해서 필요한 각 등장인물의 생김새(사람이라면 피부색, 성별, 인종, 머리색, 성인 인지 청소년인지 / 동물이라면 어떤 동물인지, 어떤 색인지), 사물의 색, 배경 등 영어로 구체적으로 프롬포트를 적어줘. 등장인물의 이름은 stable diffusion이 인식을 못 하기 때문에 등장인물은 일반 명사로 적어줘야해(예시 child with red curly hair, gree monkey with black cap) 같은 등장인물이라면 모든 페이지에 일관된 모습으로 나와야 해 다른 페이지라고 피부색이 바뀌면 안되\n";
+                "\"imagePrompt\"는 스토리로 stable diffusion이미지 생성 프롬포트를 만들거야. 페이지 별 스토리에 적합한 이미지를 만들기 위해서 필요한 각 등장인물의 생김새(사람이라면 피부색, 성별, 인종, 머리색, 성인 인지 청소년인지 / 동물이라면 어떤 동물인지, 어떤 색인지), 사물의 색, 배경 등 영어로 구체적으로 프롬포트를 적어줘. 등장인물의 이름은 stable diffusion이 인식을 못 하기 때문에 등장인물은 일반 명사로 적어줘야해(예시 child with red curly hair, gree monkey with black cap) 같은 등장인물이라면 모든 페이지에 일관된 모습으로 나와야 해 다른 페이지여도 등장인물의 생김새는 동일해야해. 추가로 등장인물들이 프롬포트에 누락되는 경우가 있기 때문에 프롬포트에 등장하는 인물들은 문장뒤에 추가로, 추가해줘\n";
 
         Book book = Book.builder()
                 .child(childRepository.findById(child.getId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
@@ -162,6 +162,7 @@ public class OpenAiService {
                     StoryResponse storyResponse = restTemplate.postForObject(apiURL, request, StoryResponse.class);
                     String story = storyResponse.getChoices().get(0).getMessage().getContent();
                     // '''json과 ''' 사이의 부분의 인덱스 찾기
+                    System.out.println("생성완료");
                     if (!story.substring(0, 1).equals("{")) {
                         story = story.substring(8, story.length() - 4);
                     }
