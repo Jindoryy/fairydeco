@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import * as headbreaker from 'headbreaker'
+import { absolutePosition } from 'headbreaker/src/spatial-metadata'
 
 function DemoJigsaw(props) {
     const puzzleRef = useRef(null)
     const [canvas, setCanvas] = useState(null)
     const [resetTrigger, setResetTrigger] = useState(0)
+    const [shuffleTrigger, setShuffleTrigger] = useState(0)
 
     useEffect(() => {
         const img = new Image()
@@ -15,9 +17,10 @@ function DemoJigsaw(props) {
                 width: props.width,
                 height: props.height,
                 pieceSize: props.pieceSize,
-                proximity: props.pieceSize / 5,
-                borderFill: props.pieceSize / 10,
+                // proximity: props.pieceSize / 5,
+                // borderFill: props.pieceSize / 10,
                 strokeWidth: 2,
+                // strokeColor: 'white',
                 lineSoftness: 0.18,
                 outline: new headbreaker.outline.Rounded(),
                 image: img,
@@ -25,26 +28,28 @@ function DemoJigsaw(props) {
                 fixed: true,
             })
 
+            newCanvas.adjustImagesToPuzzleWidth();
             newCanvas.autogenerate({
-                horizontalPiecesCount: 4,
-                verticalPiecesCount: 4,
+                horizontalPiecesCount: 3,
+                verticalPiecesCount: 3,
                 insertsGenerator: headbreaker.generators.flipflop,
+                // insertsGenerator: headbreaker.generators.random,
             })
             
             if (resetTrigger === 0) {
-                newCanvas.shuffle(0.7)
+                newCanvas.shuffle(0.5)
+                // newCanvas.puzzle.pieces[1].translate(50, -50);
             }
             
             newCanvas.draw()
             setCanvas(newCanvas)
 
-            newCanvas.attachSolvedValidator()
-            newCanvas.onValid(() => {
-                setTimeout(() => {
-                    alert('정답입니다.')
-                }, 500)
-            })
-
+            // newCanvas.attachSolvedValidator()
+            // newCanvas.onValid(() => {
+            //     setTimeout(() => {
+            //         alert('정답입니다.')
+            //     }, 500)
+            // })
 
         }
         img.src = props.imageSrc
@@ -62,8 +67,20 @@ function DemoJigsaw(props) {
         resetTrigger,
     ])
 
+    useEffect(() => {
+        if (shuffleTrigger > 0 && canvas) {
+            canvas.shuffle(0.5)
+            canvas.redraw()
+        }
+    }, [shuffleTrigger, canvas])
+
     const resetPuzzle = () => {
+        setShuffleTrigger(0)
         setResetTrigger((prev) => prev + 1)
+    }
+
+    const shufflePuzzle = () => {
+        setShuffleTrigger((prev) => prev + 1)
     }
 
     return (
@@ -72,22 +89,33 @@ function DemoJigsaw(props) {
                 onClick={resetPuzzle}
                 style={{ fontSize: '16px', padding: '10px 20px' }}
             >
-                Reset Puzzle
+                정답
             </button>
-            <div style={{ textAlign: 'center', marginTop: '20px' }} className="bg-customPink">
+            <button
+                onClick={shufflePuzzle}
+                style={{ fontSize: '16px', padding: '10px 20px' }}
+            >
+                섞기
+            </button>
+            <div style={{ textAlign: 'center', margin: '20px 60px 0px' }}>
                 <div
                     ref={puzzleRef}
                     id={props.id}
-                    style={{ marginBottom: '20px' }}
-                ></div>
+                    style={{ marginBottom: '20px', position: 'absolute', border: '2px solid black' }}
+                >
+                </div>
+                <img 
+                    src="https://fairydecos3.s3.ap-northeast-2.amazonaws.com/storybook-images/198-title.png"
+                    style={{ float: 'right', opacity: '0.5', position: 'relative', zIndex: '-1', margin: '45px' }}
+                /> 
             </div>
         </>
     )
 }
 
 export default function Puzzle() {
-    const [pieceSize, setPieceSize] = useState(100)
-    const [width, setWidth] = useState(600)
+    const [pieceSize, setPieceSize] = useState(170)
+    const [width, setWidth] = useState(1300)
     const [height, setHeight] = useState(600)
 
     return (
