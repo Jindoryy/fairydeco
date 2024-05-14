@@ -57,7 +57,11 @@ const TurnPage = () => {
 
     // 버튼 토글 로직
     const toggleAudioPlayback = () => {
-        setIsAudioPlaying((prev) => !prev) // 음성 재생 상태 토글
+        if (isAudioPlaying) {
+            setIsAudioPlaying(false) // 음성 재생 상태를 정지 상태로 변경
+        } else {
+            setIsAudioPlaying(true) // 음성 재생 상태를 재생 상태로 변경
+        }
     }
 
     const toggleAutoPlay = () => {
@@ -115,7 +119,7 @@ const TurnPage = () => {
                                         <img src="${bookCoverUrl}" class="w-[100%] h-[85%] object-cover" alt="Book Cover" />
                                         <div class="h-[15%] w-[100%] flex justify-center items-center text-5xl text-black mt-2">${bookName}</div>
                                     </div>`
-                            } else if (p === 18) {
+                            } else if (p === numberOfPages) {
                                 const bookCoverUrl = data.data.bookCoverUrl
                                 const bookMaker = data.data.bookMaker
                                 const bookName = data.data.bookName
@@ -132,12 +136,23 @@ const TurnPage = () => {
                                               ?.pageimageUrl
                                         : data.data.pageList[pageIndex]
                                               ?.pageStory
-
-                                content = pageContent
-                                    ? p % 2 === 0
-                                        ? `<img src="${pageContent}" class="object-contain w-full h-full" alt="Page Image" />`
-                                        : `<div class="flex flex-col items-center justify-center text-center text-2xl text-black break-keep px-8 !font-storyFont">${pageContent}</div>`
-                                    : '<div class="flex items-center justify-center text-center text-3xl text-red-500">No Content Available</div>'
+                                const pageVoiceUrl =
+                                    data.data.pageList[pageIndex]?.pageVoiceUrl
+                                content = `
+                                    <div className="flex items-center justify-center">
+                                        ${
+                                            p % 2 === 0
+                                                ? `<img src="${pageContent}" class="object-contain w-full h-full" alt="Page Image" />`
+                                                : `<div class="flex flex-col items-center justify-center text-xl text-black break-keep px-16 font-storyFont text-left leading-10">${pageContent}</div>
+                                                <div class="flex flex-col items-center justify-center text-center absolute bottom-12 w-full">
+                                                    <audio controls className="ml-4">
+                                                        <source src="${pageVoiceUrl}" type="audio/mpeg">
+                                                        Your browser does not support the audio element.
+                                                    </audio>
+                                                </div>`
+                                        }
+                                    </div>
+                                `
                             }
 
                             addPage(p, content)
@@ -226,6 +241,7 @@ const TurnPage = () => {
                                         weight="fill"
                                         style={{ color: '#A0D468' }}
                                     />
+
                                     <div className="text-sm text-black">
                                         음성멈춤
                                     </div>
