@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import * as headbreaker from 'headbreaker'
-import { absolutePosition } from 'headbreaker/src/spatial-metadata'
 
 function DemoJigsaw(props) {
     const puzzleRef = useRef(null)
@@ -44,12 +43,16 @@ function DemoJigsaw(props) {
             newCanvas.draw()
             setCanvas(newCanvas)
 
-            // newCanvas.attachSolvedValidator()
-            // newCanvas.onValid(() => {
-            //     setTimeout(() => {
-            //         alert('정답입니다.')
-            //     }, 500)
-            // })
+            newCanvas.attachSolvedValidator()
+            newCanvas.onValid(() => {
+                setTimeout(() => {
+                    if (confirm('정답입니다! 다음 퍼즐도 풀어볼까요?')) {
+                        alert('다음으로')
+                    } else {
+                        alert('안할래')
+                    }
+                }, 500)
+            })
 
         }
         img.src = props.imageSrc
