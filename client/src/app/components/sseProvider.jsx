@@ -36,6 +36,7 @@ export function SseProvider({ children }) {
             const sse = new EventSource(
                 `https://fairydeco.site/api/book/sse/${userId}`
             )
+            clearEventSource()
             setEventSource(userId)
 
             console.log('check2')
