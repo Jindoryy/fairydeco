@@ -96,30 +96,23 @@ public class OpenAiService {
                 " \"pages\": [\n" +
                 "                  {\n" +
                 "                    \"pageNumber\": 1,\n" +
-                "                    \"sceneDescription\": \"장면묘사1\",\n" +
-                "                    \"characterDescription\": \"등장인물 들의 외관적 특징1\"\n" +
-                "                    \"backgroundDescription\": \"배경묘사1\"\n" +
+                "                    \"imagePrompt\": \"장면묘사1\",\n" +
                 "           \"pageStory\" : \"장면 별 스토리1\"\n" +
                 "                  },\n" +
                 "                   {\n" +
                 "                    \"pageNumber\": 2,\n" +
-                "                    \"sceneDescription\": \"장면묘사2\",\n" +
-                "                    \"characterDescription\": \"등장인물 들의 외관적 특징2\"\n" +
-                "                    \"backgroundDescription\": \"배경묘사2\"\n" +
+                "                    \"imagePrompt\": \"장면묘사2\",\n" +
                 "           \"pageStory\" : \"장면 별 스토리2\"\n" +
                 "                  },\n" +
                 "                  .....\n" +
                 "                \"pageNumber\": 8,\n" +
-                "                \"sceneDescription\": \"장면묘사8\",\n" +
-                "                \"characterDescription\": \"등장인물 들의 외관적 특징8\"\n" +
-                "                \"backgroundDescription\": \"배경묘사8\"\n" +
+                "                \"imagePrompt\": \"장면묘사8\",\n" +
                 "                \"pageStory\" : \"장면 별 스토리8\"\n "+
                 "                ]" +
                 "}\n" +
                 "```\n" +
-//                "키워드 중에 동물이나 사람을 등장인물로 해줘.\n" +
 //                "인물 정보에 인물의 외관적 특징을 최대한 자세히 묘사해줘\n" +
-                "characterDescription은 등장인물이 사람이라면 피부색, 성별, 나이 및 외관 정보를 구체적으로 적어줘, 그리고 동물이라면 어떤 동물인지 그리고 무슨 색인지 구체적으로 적어줘, 사물이라면 어떤 사물이고 무슨 색인지 구체적으로 적어줘\n";
+                "\"imagePrompt\"는 스토리로 이미지를 만들거야. 이미지를 만들기 위해서 필요한 각 등장인물의 생김새, 나이 그리고 각 동물이나 사물의 색, 배경 등 영어로 구체적으로 적어줘.\n";
 
         Book book = Book.builder()
                 .child(childRepository.findById(child.getId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
@@ -137,16 +130,16 @@ public class OpenAiService {
         "자신을 돌아보고 분석함으로 깨달음을 얻는"};
 
         if (age.equals("Y")) {
-            prompt += "pages의 크기는 8개로 각 page의 pageStory는 2~3줄 정도로 짧게 구성\n" +
+            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 2~3줄 정도로 짧게 구성\n" +
                     "3~5세 아이를 위한 동화라 내용은 흥미를 유발하지만 이해도는 크게 필요없는 내용으로 써줘\n" +
-                    "문맥이 어색하지 않도록, 내용이 전체적으로 이어지도록 구성해줘\n" +
+                    "문맥이 어색하지 않고 내용이 전체적으로 이어지도록 구성해줘\n" +
                     "그리고 단어는 3~5세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
                     "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         } else {
-            prompt += "pages의 크기는 8개로 각 page의 pageStory는 최소 5~7줄 정도로 구성\n" +
+            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 최소 150자 이상으로 구성\n" +
                     "6~7세 아이를 위한 동화라 "+content[(int)(Math.random()* content.length)]+" 내용으로 작성해줘\n" +
-                    "문맥이 어색하지 않도록, 내용이 전체적으로 이어지도록 구성해줘\n" +
+                    "문맥이 어색하지 않고 내용이 전체적으로 이어지도록 구성해줘\n" +
                     "그리고 단어는 6~7세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
                     "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
@@ -184,18 +177,20 @@ public class OpenAiService {
                     }
                     break;
                 }
-                String[] sceneDescriptions = new String[pagesNode.size()];
-                String[] characterDescriptions = new String[pagesNode.size()];
-                String[] backgroundDescriptions = new String[pagesNode.size()];
+//                String[] sceneDescriptions = new String[pagesNode.size()];
+//                String[] characterDescriptions = new String[pagesNode.size()];
+//                String[] backgroundDescriptions = new String[pagesNode.size()];
                 String[] pageStories = new String[pagesNode.size()];
+                String[] imagePrompt = new String[pagesNode.size()];
                 // pages의 배열에서 각각 인자 배열에 저장
                 for (int i = 0; i < pagesNode.size(); i++) {
                     JsonNode pageNode = pagesNode.get(i);
                     // 각각 인자에 넣음
-                    sceneDescriptions[i] = pageNode.get("sceneDescription").asText();
-                    characterDescriptions[i] = pageNode.get("characterDescription").asText();
-                    backgroundDescriptions[i] = pageNode.get("backgroundDescription").asText();
+//                    sceneDescriptions[i] = pageNode.get("sceneDescription").asText();
+//                    characterDescriptions[i] = pageNode.get("characterDescription").asText();
+//                    backgroundDescriptions[i] = pageNode.get("backgroundDescription").asText();
                     pageStories[i] = pageNode.get("pageStory").asText();
+                    imagePrompt[i] = pageNode.get("imagePrompt").asText();
                     System.out.println(pageStories[i]);
                 }
                 // 각 page 8개 db에 저장하는 작업
@@ -205,9 +200,10 @@ public class OpenAiService {
                     Page page = Page.builder()
                             .book(savedBook)
                             .story(pageStories[i])
-                            .sceneDescription(sceneDescriptions[i])
-                            .characterDescription(characterDescriptions[i])
-                            .backgroundDescription(backgroundDescriptions[i])
+                            .imagePrompt(imagePrompt[i])
+//                            .sceneDescription(sceneDescriptions[i])
+//                            .characterDescription(characterDescriptions[i])
+//                            .backgroundDescription(backgroundDescriptions[i])
 //                            .voiceUrl(fileUtil.uploadMP3(voice))
 //                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
                             .build();

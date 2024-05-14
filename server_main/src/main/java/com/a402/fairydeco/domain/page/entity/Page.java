@@ -49,6 +49,9 @@ public class Page extends BaseEntity {
     @Column(name = "page_background_description", length = 1000)
     private String backgroundDescription;
 
+    @Column(name = "page_image_prompt", length = 1000)
+    private String imagePrompt;
+
     @Column(name = "page_image_url", length = 1000)
     private String imageUrl;
 
