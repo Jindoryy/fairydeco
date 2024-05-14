@@ -8,6 +8,7 @@ import FifthPage from './components/fifthPage'
 
 export default function Landing() {
     const outerDivRef = useRef()
+    const touchStartY = useRef(0)
     const [currentPage, setCurrentPage] = useState(1)
     const DIVIDER_HEIGHT = 5
 
@@ -45,8 +46,6 @@ export default function Landing() {
         return () => {
             outerDivRefCurrent.removeEventListener('wheel', wheelHandler)
         }
-
-        const touchStartY = useRef(0)
 
         const touchMoveHandler = (e) => {
             const deltaY = e.touches[0].clientY - touchStartY.current
