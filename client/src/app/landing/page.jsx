@@ -45,6 +45,60 @@ export default function Landing() {
         return () => {
             outerDivRefCurrent.removeEventListener('wheel', wheelHandler)
         }
+
+        const touchStartY = useRef(0)
+
+        const touchMoveHandler = (e) => {
+            const deltaY = e.touches[0].clientY - touchStartY.current
+            const { scrollTop } = outerDivRef.current
+            const pageHeight = window.innerHeight
+
+            let nextPage = currentPage
+
+            if (deltaY > 0) {
+                nextPage = Math.min(currentPage + 1, 5)
+            } else {
+                nextPage = Math.max(currentPage - 1, 1)
+            }
+
+            setCurrentPage(nextPage)
+
+            outerDivRef.current.scrollTo({
+                top:
+                    (nextPage - 1) * pageHeight +
+                    (nextPage - 1) * DIVIDER_HEIGHT,
+                left: 0,
+                behavior: 'smooth',
+            })
+        }
+
+        const touchStartHandler = (e) => {
+            touchStartY.current = e.touches[0].clientY
+        }
+
+        const outerDivRefTouchCurrent = outerDivRef.current
+        outerDivRefTouchCurrent.addEventListener(
+            'touchstart',
+            touchStartHandler
+        )
+        outerDivRefTouchCurrent.addEventListener('touchmove', touchMoveHandler)
+        outerDivRefTouchCurrent.addEventListener('touchend', () => {
+            touchStartY.current = 0
+        })
+
+        return () => {
+            outerDivRefTouchCurrent.removeEventListener(
+                'touchstart',
+                touchStartHandler
+            )
+            outerDivRefTouchCurrent.removeEventListener(
+                'touchmove',
+                touchMoveHandler
+            )
+            outerDivRefTouchCurrent.removeEventListener('touchend', () => {
+                touchStartY.current = 0
+            })
+        }
     }, [currentPage])
 
     return (

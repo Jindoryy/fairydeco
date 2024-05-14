@@ -38,6 +38,9 @@ export default function FifthPage() {
         }
     }
 
+    const goLogin = () => {
+        router.push('/login')
+    }
     return (
         <div className="flex h-dvh w-dvw flex-col items-center bg-customYellow pt-20">
             <div className="flex h-auto w-[80%] items-center justify-between">
@@ -52,7 +55,10 @@ export default function FifthPage() {
                         다른 아이의 동화도 볼 수 있어요!
                     </div>
                 </div>
-                <button className="relative mt-4 h-52 w-52 rounded-full bg-customOrange text-6xl shadow-customDeepShadow">
+                <button
+                    onClick={goLogin}
+                    className="relative mt-4 h-52 w-52 rounded-full bg-customOrange text-6xl shadow-customDeepShadow"
+                >
                     시작!
                 </button>
             </div>
