@@ -112,7 +112,7 @@ public class OpenAiService {
                 "}\n" +
                 "```\n" +
 //                "인물 정보에 인물의 외관적 특징을 최대한 자세히 묘사해줘\n" +
-                "\"imagePrompt\"는 스토리로 이미지를 만들거야. 이미지를 만들기 위해서 필요한 각 등장인물의 생김새, 나이 그리고 각 동물이나 사물의 색, 배경 등 영어로 구체적으로 적어줘.\n";
+                "\"imagePrompt\"는 스토리로 stable diffusion이미지 생성 프롬포트를 만들거야. 페이지 별 스토리에 적합한 이미지를 만들기 위해서 필요한 각 등장인물의 생김새(사람이라면 피부색, 성별, 인종, 머리색, 성인 인지 청소년인지 / 동물이라면 어떤 동물인지, 어떤 색인지), 사물의 색, 배경 등 영어로 구체적으로 프롬포트를 적어줘.\n";
 
         Book book = Book.builder()
                 .child(childRepository.findById(child.getId()).orElseThrow((() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR))))
@@ -127,7 +127,7 @@ public class OpenAiService {
         // 프롬프트 나이대별 생성
         String[] content = {"친구를 배신한 것을 후회하는", "거짓말한 것을 후회하는", "포기하지 않고 열심히 노력해서 결국 성공하는","두려움을 이겨내고 극복하는","위험을 고려해서 현명한 결정을 내리는", "행동하기 전에 잘 생각해보라는",
         "자기 능력을 과신하다가 큰 실수를 저지르는", "나쁜 마음씨를 갖고 살면 벌을 받고, 착하게 살면 복을 받는다는", "형제간의 깊은 우애를 배울 수 있는", "다른 사람들의 이야기를 듣고 그들의 경험을 통해 배우는", "현상을 관찰하고 자연의 흐름을 이해함으로 깊은 이해를 얻는",
-        "자신을 돌아보고 분석함으로 깨달음을 얻는"};
+        "자신을 돌아보고 분석함으로 깨달음을 얻는", "어려운 상황에서"};
 
         if (age.equals("Y")) {
             prompt += "pages의 크기는 8개로 각 \"pageStory\"는 2~3줄 정도로 짧게 구성\n" +
@@ -267,7 +267,7 @@ public class OpenAiService {
     private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-                "이미지를 분석해서 옆의 예시처럼 키워드만 5개 뽑아줘  ex) 키워드1, 키워드2, 키워드3, 키워드4, 키워드5");
+                "이미지를 분석해서 옆의 예시처럼 키워드만 5개 뽑아줘  ex) 사과, 연필, 드로잉, 자연, 그림자");
         String requestBody = String.format("""
                 {
                     "model": "gpt-4-turbo",
