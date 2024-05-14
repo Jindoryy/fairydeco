@@ -293,9 +293,28 @@ const TurnPage = () => {
                 {data ? (
                     <div
                         id="book"
-                        className="relative flex h-[600px]  w-[1200px] items-center justify-center bg-white shadow-lg"
+                        className="book-container relative flex  h-[600px] w-[1200px] items-center justify-center bg-white shadow-lg"
                         style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)' }}
                     >
+                        <style jsx>
+                            {`
+                                .book-container {
+                                    position: relative;
+                                }
+
+                                .book-container::after {
+                                    content: '';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 50%;
+                                    width: 2px;
+                                    height: 100%;
+                                    background-color: #b9b9b9;
+                                    transform: translateX(-50%);
+                                    z-index: 999;
+                                }
+                            `}
+                        </style>
                         <div className="cover flex h-full flex-col justify-end bg-white">
                             <img
                                 src={data?.data?.bookCoverUrl}
