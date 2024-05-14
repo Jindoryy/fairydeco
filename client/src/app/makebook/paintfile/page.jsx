@@ -7,7 +7,7 @@ import { useState } from 'react'
 import Loading from '../../components/loading'
 
 export default function PaintFile() {
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
 
     const handleLoading = (status) => {
         setLoading(status)
