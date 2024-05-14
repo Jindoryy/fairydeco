@@ -56,6 +56,16 @@ export default function ButtonBox() {
     }
 
     const goBookList = () => {
+        if (!userId) {
+            Swal.fire({
+                title: '앗!',
+                text: '먼저 로그인을 해주세요!',
+                icon: 'error',
+                confirmButtonText: '네',
+            })
+            router.push('/login')
+            return
+        }
         setTimeout(() => {
             router.push('/bookList')
         }, 200)

@@ -14,7 +14,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import Swal from 'sweetalert2'
 
-export default function CanvasBox() {
+export default function CanvasBox({ handleLoading }) {
     const router = useRouter()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const canvasContainerRef = useRef(null)
@@ -171,7 +171,7 @@ export default function CanvasBox() {
     }
     const makeBook = async () => {
         try {
-            // 캔버스를 이미지로 변환
+            handleLoading(true)
             canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas))
             const imageData = canvas.toDataURL({ format: 'jpeg', quality: 0.8 })
 
@@ -210,8 +210,8 @@ export default function CanvasBox() {
             })
             if (data.status == 'success') {
                 Swal.fire({
-                    title: '우와아!',
-                    text: '이야기를 만들기 시작했어요! 3분정도 기다려주세요. 다른 아이의 그림을 보러갈까요?',
+                    title: '동화책을 만들고 있어요',
+                    text: '다 만들어지면 알려줄게요! 그동안 다른 동화책을 볼까요?',
                     icon: 'success',
                     confirmButtonText: '네',
                 })
@@ -226,6 +226,8 @@ export default function CanvasBox() {
             }
         } catch (error) {
             console.error('Error fetching data:', error)
+        } finally {
+            handleLoading(false)
         }
     }
     const goBack = () => {

@@ -11,6 +11,7 @@ export default function Login() {
                 objectFit="cover"
                 quality={100}
                 alt="Login Background"
+                priority
             />
             <LoginBox />
         </div>
