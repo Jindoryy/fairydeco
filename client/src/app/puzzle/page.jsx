@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import NewImage from 'next/image'
-import WallImage from '../../../public/image/wall.jpg'
 import NextImage from '../../../public/image/puzzle-next.png'
 import AnswerImage from '../../../public/image/puzzle-answer.png'
 import SketchImage from '../../../public/image/puzzle-sketch.png'
@@ -17,11 +16,9 @@ function DemoJigsaw(props) {
     const puzzleRef = useRef(null)
     const [canvas, setCanvas] = useState(null)
     const [resetTrigger, setResetTrigger] = useState(0)
-    const [shuffleTrigger, setShuffleTrigger] = useState(0)
+    // const [shuffleTrigger, setShuffleTrigger] = useState(0)
     const [sketchOpacity, setSketchOpacity] = useState(0.55)
     const router = useRouter()
-
-    //api
 
     useEffect(() => {
         const img = new Image()
@@ -30,15 +27,15 @@ function DemoJigsaw(props) {
                 width: props.width,
                 height: props.height,
                 pieceSize: props.pieceSize,
-                // proximity: props.pieceSize / 5,
-                // borderFill: props.pieceSize / 10,
                 strokeWidth: 2,
-                // strokeColor: 'white',
                 lineSoftness: 0.18,
-                outline: new headbreaker.outline.Rounded(),
                 image: img,
-                painter: new headbreaker.painters.Konva(),
                 fixed: true,
+                outline: new headbreaker.outline.Rounded(),
+                painter: new headbreaker.painters.Konva(),
+                // borderFill: props.pieceSize / 10,
+                // proximity: props.pieceSize / 5,
+                // strokeColor: 'white',
             })
 
             newCanvas.adjustImagesToPuzzleWidth();
@@ -68,9 +65,7 @@ function DemoJigsaw(props) {
                         denyButtonText: `아니오`
                     }).then((result) => {
                         if (result.isConfirmed) {
-                          Swal.fire("Saved!");
-                        } else if (result.isDenied) {
-                          Swal.fire("Changes are not saved");
+                            window.location.reload()
                         }
                     });
                 }, 500)
@@ -93,19 +88,19 @@ function DemoJigsaw(props) {
     ])
 
     //다시 섞고 싶을 때
-    useEffect(() => {
-        if (shuffleTrigger > 0 && canvas) {
-            canvas.shuffle(0.5)
-            canvas.redraw()
-        }
-    }, [shuffleTrigger, canvas])
+    // useEffect(() => {
+    //     if (shuffleTrigger > 0 && canvas) {
+    //         canvas.shuffle(0.5)
+    //         canvas.redraw()
+    //     }
+    // }, [shuffleTrigger, canvas])
 
-    const shufflePuzzle = () => {
-        setShuffleTrigger((prev) => prev + 1)
-    }
+    // const shufflePuzzle = () => {
+    //     setShuffleTrigger((prev) => prev + 1)
+    // }
 
     const resetPuzzle = () => {
-        setShuffleTrigger(0) 
+        // setShuffleTrigger(0) 
         setResetTrigger((prev) => prev + 1)
     }
     
@@ -113,6 +108,18 @@ function DemoJigsaw(props) {
         setSketchOpacity(prevOpacity => prevOpacity === 0.55 ? 0.01 : 0.55)
     }
 
+    const nextPuzzle = () => {
+        Swal.fire({
+            title: '다음 퍼즐로 넘어갑니다!',
+            icon: 'success',
+            confirmButtonText: '네!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload()
+            }
+        });
+    }
+    
     const goBack = () => {
         router.push('/')
     }
@@ -130,13 +137,13 @@ function DemoJigsaw(props) {
                         className="text-black"
                     />
                 </button>
-                <div style={{ fontSize: '2.6rem', marginLeft: '100px' }}>
+                <div style={{ fontSize: '3rem', marginLeft: '100px' }}>
                     퍼즐놀이
                 </div>
                 <div>
                     <button
                         onClick={resetPuzzle}
-                        style={{ width: '100px' }}
+                        style={{ width: '90px' }}
                     >
                         <NewImage
                             src={AnswerImage}
@@ -148,7 +155,7 @@ function DemoJigsaw(props) {
                     </button>
                     <button
                         onClick={sketchToggle}
-                        style={{ width: '100px' }}
+                        style={{ width: '90px' }}
                     >
                         <NewImage
                             src={SketchImage}
@@ -159,8 +166,8 @@ function DemoJigsaw(props) {
                         </span>
                     </button>
                     <button
-                        onClick={shufflePuzzle}
-                        style={{ width: '100px' }}
+                        onClick={nextPuzzle}
+                        style={{ width: '85px' }}
                     >
                         <NewImage
                             src={NextImage}
@@ -176,7 +183,7 @@ function DemoJigsaw(props) {
                 <div
                     ref={puzzleRef}
                     id={props.id}
-                    style={{ position: 'relative', border: '2px solid black' }}
+                    style={{ position: 'relative', border: '6px solid #020715', borderRadius: '8px' }}
                 >
                 </div>
                 <img 
@@ -192,6 +199,30 @@ export default function Puzzle() {
     const [pieceSize, setPieceSize] = useState(170)
     const [width, setWidth] = useState(1300)
     const [height, setHeight] = useState(600)
+    const [childAgeCheck, setChildAgeCheck] = useState('')
+    const [pagePictureUrl, setPagePictureUrl] = useState('')
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+
+    const getPageImage = async () => {
+        try {
+            const childId = localStorage.getItem('childId')
+            const response = await axios.get(`http://localhost:8080/page/puzzle-image/${childId}`)
+            
+            if (response.data.status == 'success') {
+                setChildAgeCheck(response.data.data.childAgeCheck)
+                setPagePictureUrl(response.data.data.pagePictureUrl)
+                console.log(response.data.data.pagePictureUrl)
+            } else {
+                console.error('Failed to get PageImage: ', error)
+            }
+        } catch (error) {
+            console.error('Failed to get PageImage: ', error)
+        }
+    }
+
+    useEffect(() => {
+        getPageImage()
+    }, [])
 
     return (
         <div 
@@ -203,7 +234,7 @@ export default function Puzzle() {
                 pieceSize={pieceSize}
                 width={width}
                 height={height}
-                imageSrc="https://fairydecos3.s3.ap-northeast-2.amazonaws.com/storybook-images/198-title.png"
+                imageSrc={pagePictureUrl}
             />
         </div>
     )
