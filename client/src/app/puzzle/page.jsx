@@ -40,8 +40,8 @@ function DemoJigsaw(props) {
 
             newCanvas.adjustImagesToPuzzleWidth();
             newCanvas.autogenerate({
-                horizontalPiecesCount: 3,
-                verticalPiecesCount: 3,
+                horizontalPiecesCount: props.horizontalPiecesCount,
+                verticalPiecesCount: props.verticalPiecesCount,
                 insertsGenerator: headbreaker.generators.flipflop,
                 // insertsGenerator: headbreaker.generators.random,
             })
@@ -84,6 +84,8 @@ function DemoJigsaw(props) {
         props.width,
         props.height,
         props.pieceSize,
+        props.horizontalPiecesCount,
+        props.verticalPiecesCount,
         resetTrigger,
     ])
 
@@ -105,7 +107,7 @@ function DemoJigsaw(props) {
     }
     
     const sketchToggle = () => {
-        setSketchOpacity(prevOpacity => prevOpacity === 0.55 ? 0.01 : 0.55)
+        setSketchOpacity(prevOpacity => prevOpacity === 0.55 ? 0 : 0.55)
     }
 
     const nextPuzzle = () => {
@@ -126,9 +128,9 @@ function DemoJigsaw(props) {
 
     return (
         <>  
-            <div style={{ width: '80%', display:'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ width: '90%', display:'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 auto' }}>
                 <button
-                    className="btn btn-ghost relative ml-2 h-auto pt-2 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
+                    className="btn btn-ghost relative h-auto align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                     onClick={goBack}
                 >
                     <ArrowCircleLeft
@@ -149,7 +151,7 @@ function DemoJigsaw(props) {
                             src={AnswerImage}
                             alt={'go to next puzzle'}
                         />
-                        <span >
+                        <span>
                             정답 보기
                         </span>
                     </button>
@@ -162,7 +164,7 @@ function DemoJigsaw(props) {
                             alt={'go to next puzzle'}
                         />
                         <span>
-                            힌트 보기
+                            힌트 없애기
                         </span>
                     </button>
                     <button
@@ -173,7 +175,7 @@ function DemoJigsaw(props) {
                             src={NextImage}
                             alt={'go to next puzzle'}
                         />
-                        <span >
+                        <span>
                             다음 퍼즐
                         </span>
                     </button>
@@ -188,7 +190,7 @@ function DemoJigsaw(props) {
                 </div>
                 <img 
                     src={props.imageSrc}
-                    style={{ position: 'absolute',opacity: sketchOpacity, zIndex: '-1', left: '55%', border: '15px solid #790000' }}
+                    style={{ position: 'absolute',opacity: sketchOpacity, zIndex: '-1', left: '55%', border: '15px solid #af00ad', width: '550px' }}
                 /> 
             </div>
         </>
@@ -196,22 +198,31 @@ function DemoJigsaw(props) {
 }
 
 export default function Puzzle() {
-    const [pieceSize, setPieceSize] = useState(170)
+    const [pieceSize, setPieceSize] = useState(175)
     const [width, setWidth] = useState(1300)
     const [height, setHeight] = useState(600)
     const [childAgeCheck, setChildAgeCheck] = useState('')
     const [pagePictureUrl, setPagePictureUrl] = useState('')
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const [horizontalPiecesCount, setHorizontalPiecesCount] = useState(3)
+    const [verticalPiecesCount, setVerticalPiecesCount] = useState(3)
 
     const getPageImage = async () => {
         try {
             const childId = localStorage.getItem('childId')
-            const response = await axios.get(`http://localhost:8080/page/puzzle-image/${childId}`)
+            const response = await axios.get(`${apiUrl}/page/puzzle-image/${childId}`)
             
             if (response.data.status == 'success') {
                 setChildAgeCheck(response.data.data.childAgeCheck)
                 setPagePictureUrl(response.data.data.pagePictureUrl)
                 console.log(response.data.data.pagePictureUrl)
+                console.log(response.data.data.childAgeCheck)
+
+                if (response.data.data.childAgeCheck === 'O') {
+                    setPieceSize(130)
+                    setHorizontalPiecesCount(4)
+                    setVerticalPiecesCount(4)
+                }
             } else {
                 console.error('Failed to get PageImage: ', error)
             }
@@ -224,18 +235,80 @@ export default function Puzzle() {
         getPageImage()
     }, [])
 
+    const handle2x2Puzzle = () => {
+        setPieceSize(260)
+        setWidth(1300)
+        setHeight(600)
+        setHorizontalPiecesCount(2)
+        setVerticalPiecesCount(2)
+    }
+
+    const handle3x3Puzzle = () => {
+        setPieceSize(175)
+        setWidth(1300)
+        setHeight(600)
+        setHorizontalPiecesCount(3)
+        setVerticalPiecesCount(3)
+    }
+
+    const handle4x4Puzzle = () => {
+        setPieceSize(130)
+        setWidth(1300)
+        setHeight(600)
+        setHorizontalPiecesCount(4)
+        setVerticalPiecesCount(4)
+    }
+
+    const handle5x5Puzzle = () => {
+        setPieceSize(105)
+        setWidth(1300)
+        setHeight(600)
+        setHorizontalPiecesCount(5)
+        setVerticalPiecesCount(5)
+    }
+
     return (
         <div 
             className="h-dvh w-dvw bg-customYellow"
-            style={{ zIndex: '-2', position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            style={{ zIndex: '-2', position: 'absolute', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
         >
-            <DemoJigsaw
-                id="puzzle"
-                pieceSize={pieceSize}
-                width={width}
-                height={height}
-                imageSrc={pagePictureUrl}
-            />
+            <div>
+                <button onClick={handle2x2Puzzle} 
+                    className='bg-customPurple'
+                    style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
+                >
+                    2x2
+                </button>
+                <button onClick={handle3x3Puzzle} 
+                    className='bg-customPurple'
+                    style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
+                >
+                    3x3
+                </button>
+                <button onClick={handle4x4Puzzle} 
+                    className='bg-customPurple'
+                    style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
+                >
+                    4x4
+                </button>
+                <button onClick={handle5x5Puzzle} 
+                    className='bg-customPurple'
+                    style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
+                >
+                    5x5
+                </button>
+            </div>
+            <div style={{ flexBasis: '88%' }}>
+                <DemoJigsaw
+                    id="puzzle"
+                    pieceSize={pieceSize}
+                    width={width}
+                    height={height}
+                    imageSrc={pagePictureUrl}
+                    horizontalPiecesCount={horizontalPiecesCount}
+                    verticalPiecesCount={verticalPiecesCount}
+                />
+            </div>
         </div>
     )
 }
