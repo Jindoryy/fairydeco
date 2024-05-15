@@ -33,7 +33,7 @@ module.exports = {
             },
             animation: {
                 wiggle: 'wiggle 1s ease-in-out infinite',
-                bounce: 'bounce 1s infinite',
+                bounce: 'bounce 0.8s infinite',
                 autoPlay: 'autoPlay 10s linear infinite',
             },
         },
@@ -44,7 +44,7 @@ module.exports = {
             },
             bounce: {
                 '0%, 100%': {
-                    transform: 'translateY(-5%)',
+                    transform: 'translateY(-10%)',
                     'animation-timing-function': 'cubic-bezier(0.8,0,1,1)',
                 },
                 '50%': {
