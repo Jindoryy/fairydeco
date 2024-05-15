@@ -19,6 +19,12 @@ export default function ButtonBox() {
     const Swal = require('sweetalert2')
 
     useEffect(() => {
+
+        if (!localStorage.getItem('userId') || localStorage.getItem('userId').length <= 0) {
+            router.push('/landing')
+            return
+        }
+
         if (localStorage.getItem('userId'))
             setUserId(localStorage.getItem('userId'))
     }, [])

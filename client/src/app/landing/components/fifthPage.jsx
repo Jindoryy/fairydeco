@@ -62,25 +62,47 @@ export default function FifthPage() {
                     시작!
                 </button>
             </div>
-            <div className="mt-10 flex overflow-hidden">
-                {bookList &&
+            <div className='bg-customBlue h-auto mt-12'>
+
+            <div className="mt-8 flex overflow-hidden">
+                {bookList && bookList.length > 0  &&
                     bookList
-                        .filter((el) => el.bookCoverUrl)
-                        .map((el, index) => (
-                            <div
-                                className="animate-autoPlay relative mx-4 flex w-[300px] rounded-md"
-                                key={index}
-                            >
+                    .filter((el) => el.bookCoverUrl)
+                    .map((el, index) => (
+                        <div
+                        className="animate-autoPlay relative ml-4 flex w-[200px] rounded-md"
+                        key={index}
+                        >
                                 <Image
                                     src={el.bookCoverUrl}
                                     alt="책 표지"
                                     width={300}
                                     height={300}
                                     style={{ borderRadius: '10px' }}
-                                />
+                                    />
                             </div>
-                        ))}
+                ))}
             </div>
+            <div className="mt-4 flex overflow-hidden mb-8">
+                {bookList && bookList.length > 0  &&
+                    bookList
+                    .filter((el) => el.bookCoverUrl)
+                    .map((el, index) => (
+                        <div
+                        className="animate-autoReversePlay relative ml-4 flex w-[200px] rounded-md"
+                        key={index}
+                        >
+                                <Image
+                                    src={el.bookCoverUrl}
+                                    alt="책 표지"
+                                    width={200}
+                                    height={200}
+                                    style={{ borderRadius: '10px' }}
+                                    />
+                            </div>
+                ))}
+            </div>
+                </div>
         </div>
     )
 }

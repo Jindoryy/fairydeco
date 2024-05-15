@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import LogoImage from '../../../../public/image/logo.png'
 import LandingImage from '../../../../public/image/landing.gif'
-import { CaretDown,ArrowFatDown,CaretDoubleDown   } from  '@phosphor-icons/react/dist/ssr'
+import { CaretDown } from  '@phosphor-icons/react/dist/ssr'
 
 export default function FirstPage() {
     return (
@@ -38,10 +38,8 @@ export default function FirstPage() {
                     </p>
                 </div>
             </div>
-            <div className=" animate-bounce text-white justify-center flex opacity-70" >
+            <div className=" animate-bounce text-white justify-center flex opacity-85" >
                 <CaretDown  size={150}  weight="fill" />
-                <ArrowFatDown   size={150}  weight="fill" />
-                <CaretDoubleDown    size={150}  weight="fill" />
             </div>
     </div>
     )
