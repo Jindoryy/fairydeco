@@ -10,6 +10,7 @@ import NextImage from '../../../public/image/puzzle-next.png'
 import AnswerImage from '../../../public/image/puzzle-answer.png'
 import SketchImage from '../../../public/image/puzzle-sketch.png'
 import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
+import { Question } from '@phosphor-icons/react/dist/ssr'
 
 function DemoJigsaw(props) {
     const Swal = require('sweetalert2')
@@ -140,7 +141,90 @@ function DemoJigsaw(props) {
                     />
                 </button>
                 <div style={{ fontSize: '3rem', marginLeft: '100px' }}>
-                    퍼즐놀이
+                    <span>퍼즐놀이</span>
+                    <button
+                        onClick={()=>document.getElementById('help_modal').showModal()}
+                        style={{ verticalAlign: 'text-bottom', marginLeft: '5px' }}
+                    >
+                        <Question
+                            size={50}
+                            weight="fill"
+                            style={{ color: '#9999998f' }}
+                        />
+                    </button>
+                    <dialog id="help_modal" className="modal">
+                        <div className="modal-box w-11/12 max-w-5xl">
+                            <h3 className="font-bold" style={{ fontSize: '1.8rem' }}>도움말</h3>
+                            <div className="py-4" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', flexBasis: '45%' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <NewImage
+                                            src={AnswerImage}
+                                            alt={'go to next puzzle'}
+                                            style={{ width: '100px' }}
+                                        />
+                                        <span style={{ fontSize: '1.2rem' }}>
+                                            정답 보기
+                                        </span>
+                                    </div>
+                                    <div style={{ fontSize: '1.7rem', marginLeft: '10px' }}>
+                                        퍼즐을 정답으로 맞춰줘요.
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', flexBasis: '45%' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <NewImage
+                                            src={SketchImage}
+                                            alt={'go to next puzzle'}
+                                            style={{ width: '100px' }}
+                                        />
+                                        <span style={{ fontSize: '1.2rem' }}>
+                                            힌트 없애기
+                                        </span>
+                                    </div>
+                                    <div style={{ fontSize: '1.7rem', marginLeft: '10px' }}>
+                                        정답 밑그림을 안보이게 해요.
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', flexBasis: '45%' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <NewImage
+                                            src={NextImage}
+                                            alt={'go to next puzzle'}
+                                            style={{ width: '100px' }}
+                                        />
+                                        <span style={{ fontSize: '1.2rem' }}>
+                                            다음 퍼즐
+                                        </span>
+                                    </div>
+                                    <div style={{ fontSize: '1.7rem', marginLeft: '10px' }}>
+                                        다음 퍼즐을 보여줘요.
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', flexBasis: '45%' }}>
+                                    <div style={{ display: 'table', margin: '20px 10px' }}>
+                                        <span
+                                            className='bg-customPurple'
+                                            style={{ width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }}
+                                        >
+                                            4x4
+                                        </span>
+                                    </div>
+                                    <div style={{ fontSize: '1.7rem', marginLeft: '10px' }}>
+                                        퍼즐 조각 개수가 바뀌어요.
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-action">
+                                <form method="dialog">
+                                    <button className="btn btn-lg">닫기</button>
+                                </form>
+                            </div>
+                        </div>
+                        <form method="dialog" className="modal-backdrop">
+                            <button>close</button>
+                        </form>
+                    </dialog>
                 </div>
                 <div>
                     <button
@@ -268,30 +352,30 @@ export default function Puzzle() {
     }
 
     return (
-        <div 
+        <div
             className="h-dvh w-dvw bg-customYellow"
             style={{ zIndex: '-2', position: 'absolute', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
         >
             <div>
-                <button onClick={handle2x2Puzzle} 
+                <button onClick={handle2x2Puzzle}
                     className='bg-customPurple'
                     style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
                 >
                     2x2
                 </button>
-                <button onClick={handle3x3Puzzle} 
+                <button onClick={handle3x3Puzzle}
                     className='bg-customPurple'
                     style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
                 >
                     3x3
                 </button>
-                <button onClick={handle4x4Puzzle} 
+                <button onClick={handle4x4Puzzle}
                     className='bg-customPurple'
                     style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
                 >
                     4x4
                 </button>
-                <button onClick={handle5x5Puzzle} 
+                <button onClick={handle5x5Puzzle}
                     className='bg-customPurple'
                     style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
                 >
