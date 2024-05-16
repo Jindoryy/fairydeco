@@ -138,7 +138,7 @@ public class OpenAiService {
                     "\n" +
                     "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         } else {
-            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 최소 150자 이상으로 구성해줘\n" +
+            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 5~7문장 정도로 구성해줘\n" +
                     "6~7세 아이를 위한 동화라 "+content[(int)(Math.random()* content.length)]+" 내용으로 작성해줘\n" +
                     "문맥이 어색하지 않고 내용이 전체적으로 이어지도록 구성해줘\n" +
                     "그리고 단어는 6~7세 아이들이 이해 할 수 있는 쉬운 단어를 사용하고 말투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
@@ -166,11 +166,9 @@ public class OpenAiService {
                     if (!story.substring(0, 1).equals("{")) {
                         story = story.substring(8, story.length() - 4);
                     }
-                    System.out.println(story);
                     ObjectMapper objectMapper = new ObjectMapper();
                     // JSON 문자열을 JsonNode로 읽어오기
                     JsonNode jsonNode = objectMapper.readTree(story);
-                    System.out.println("jsonNode :"+jsonNode);
                     // "pages"에 해당하는 JsonNode 가져오기
                     pagesNode = jsonNode.get("pages");
                     // JsonNode를 배열로 변환
