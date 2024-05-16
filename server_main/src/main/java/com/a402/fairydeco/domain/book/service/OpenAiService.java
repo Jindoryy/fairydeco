@@ -200,7 +200,7 @@ public class OpenAiService {
                 // 각 page 8개 db에 저장하는 작업
                 for (int i = 0; i < pageStories.length; i++) {
                     // 목소리 파일 생성 후 s3 저장
-//                    File voice = voiceUtil.createVoice(pageStories[i]);
+                    File voice = voiceUtil.createVoice(pageStories[i]);
                     Page page = Page.builder()
                             .book(savedBook)
                             .story(pageStories[i])
@@ -208,8 +208,8 @@ public class OpenAiService {
 //                            .sceneDescription(sceneDescriptions[i])
 //                            .characterDescription(characterDescriptions[i])
 //                            .backgroundDescription(backgroundDescriptions[i])
-//                            .voiceUrl(fileUtil.uploadMP3(voice))
-//                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
+                            .voiceUrl(fileUtil.uploadMP3(voice))
+                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
                             .build();
                     pageRepository.save(page);
                 }
