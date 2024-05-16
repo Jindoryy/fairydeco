@@ -28,10 +28,15 @@ export default function CanvasBox() {
 
     useEffect(() => {
         const canvasContainer = canvasContainerRef.current
+        const cursorUrl = 'https://ossrs.net/wiki/images/figma-cursor.png'
         // 캔버스 생성
         const newCanvas = new fabric.Canvas(canvasRef.current, {
             width: canvasContainer.offsetWidth,
             height: canvasContainer.offsetHeight,
+            backgroundColor: 'white',
+            defaultCursor: `url(" ${cursorUrl} "), auto`,
+            hoverCursor: `url(" ${cursorUrl} "), auto`,
+            moveCursor: `url(" ${cursorUrl} "), auto`,
         })
         setCanvas(newCanvas)
 
@@ -92,16 +97,17 @@ export default function CanvasBox() {
     const handleSelectTool = () => {
         canvas.isDrawingMode = false
         canvas.selection = true
-        canvas.defaultCursor = 'default'
+        canvas.defaultCursor = 'pointer'
     }
     const handlePenTool = () => {
         canvas.freeDrawingBrush.width = 5
         canvas.isDrawingMode = true
+        canvas.defaultCursor = 'pointer'
     }
     const handleHandTool = () => {
         canvas.isDrawingMode = false
         canvas.selection = false
-        canvas.defaultCursor = 'move'
+        canvas.defaultCursor = 'pointer'
 
         let panning = false
         const handleMouseDown = () => {
@@ -134,106 +140,40 @@ export default function CanvasBox() {
             canvas.freeDrawingBrush.width = 20
             canvas.freeDrawingBrush.color = `${color}`
             canvas.isDrawingMode = true
+            canvas.defaultCursor = 'pointer'
         } else {
             canvas.freeDrawingBrush.width = 5
             canvas.freeDrawingBrush.color = `${color}`
             canvas.isDrawingMode = true
+            canvas.defaultCursor = 'pointer'
         }
     }
 
-    const goBook = () => {
-        // if (canvas.getObjects().length === 0) {
-        //     Swal.fire({
-        //         title: '앗!',
-        //         text: '캔버스에 그림을 그려주세요.',
-        //         icon: 'error',
-        //         confirmButtonText: '네',
-        //     })
-        //     return
-        // }
-        // Swal.fire({
-        //     title: '다 그렸군요!',
-        //     text: '이 그림으로 동화를 만들까요?',
-        //     icon: 'question',
-        //     showCancelButton: true,
-        //     confirmButtonColor: '#3085d6',
-        //     cancelButtonColor: '#d33',
-        //     confirmButtonText: '네! 만들어주세요!',
-        //     cancelButtonText: '아니오 다시 그릴래요!',
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         makeBook()
-        //         //sse 걸기
-        //         const userId = localStorage.getItem('userId') // userId 가져오기
-        //         if (userId) {
-        //             console.log(userId)
-        //             connect(userId) // SSE 이벤트 연결 시작
-        //         }
-        //         Swal.fire({
-        //             title: '알겠어요!',
-        //             text: '동화를 만들어드릴게요!',
-        //             icon: 'success',
-        //         })
-        //     }
-        // })
+    const downloadImage = (e) => {
+        let nowCanvas = canvasRef.current
+        nowCanvas.toBlob(function (blob) {
+            let url = URL.createObjectURL(blob)
+            Swal.fire({
+                title: '다 그렸나요?',
+                text: '그림을 저장하면 동화로 만들 수 있어요!',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '저장할래요!',
+                cancelButtonText: '아니요. 더 그릴래요!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = '나의 그림.png'
+                    a.click()
+                    URL.revokeObjectURL(url)
+                }
+            })
+        })
     }
-    const makeBook = async () => {
-        // try {
-        //     handleLoading(true)
-        //     canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas))
-        //     const imageData = canvas.toDataURL({ format: 'jpeg', quality: 0.8 })
-        //     // Convert data URI to Blob
-        //     function dataURItoBlob(dataURI) {
-        //         const byteString = atob(dataURI.split(',')[1])
-        //         const mimeString = dataURI
-        //             .split(',')[0]
-        //             .split(':')[1]
-        //             .split(';')[0]
-        //         const ab = new ArrayBuffer(byteString.length)
-        //         const ia = new Uint8Array(ab)
-        //         for (let i = 0; i < byteString.length; i++) {
-        //             ia[i] = byteString.charCodeAt(i)
-        //         }
-        //         return new Blob([ab], { type: mimeString })
-        //     }
-        //     // Convert Blob to File
-        //     function blobToFile(theBlob, fileName) {
-        //         return new File([theBlob], fileName, { type: theBlob.type })
-        //     }
-        //     // Convert canvas image data to File
-        //     const blob = dataURItoBlob(imageData)
-        //     const file = blobToFile(blob, 'canvas_image.jpg')
-        //     console.log(file)
-        //     const bookFormData = new FormData()
-        //     bookFormData.append('childId', localStorage.getItem('childId'))
-        //     bookFormData.append('bookPicture', file)
-        //     const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
-        //         headers: {
-        //             'Content-Type': 'multipart/form-data',
-        //         },
-        //     })
-        //     if (data.status == 'success') {
-        //         Swal.fire({
-        //             title: '동화책을 만들고 있어요',
-        //             text: '다 만들어지면 알려줄게요! 그동안 다른 동화책을 볼까요?',
-        //             icon: 'success',
-        //             confirmButtonText: '네',
-        //         })
-        //         router.push('/bookList')
-        //     } else {
-        //         Swal.fire({
-        //             title: '앗!',
-        //             text: '이야기 만들기가 실패했어요 다시 한 번 해주세요!',
-        //             icon: 'error',
-        //             confirmButtonText: '네',
-        //         })
-        //     }
-        // } catch (error) {
-        //     console.error('Error fetching data:', error)
-        // } finally {
-        //     handleLoading(false)
-        // }
-    }
+
     const goBack = () => {
         Swal.fire({
             title: '잠시만요!',
@@ -339,19 +279,6 @@ export default function CanvasBox() {
                         />
                     </button>
                     <button
-                        onClick={() => setActiveColor('indigo')}
-                        disabled={
-                            setActiveColor === 'indigo' || activeTool != 'pen'
-                        }
-                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'indigo' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                    >
-                        <Circle
-                            size={30}
-                            weight="fill"
-                            className="text-indigo-900"
-                        />
-                    </button>
-                    <button
                         onClick={() => setActiveColor('purple')}
                         disabled={
                             setActiveColor === 'purple' || activeTool != 'pen'
@@ -392,12 +319,12 @@ export default function CanvasBox() {
                 </div>
             </div>
             <div className="absolute bottom-0 flex w-full">
-                <button
+                <a
                     className="btn w-full rounded-none border-none bg-customDarkYellow text-xl hover:bg-customDarkYellow"
-                    onClick={goBook}
+                    onClick={downloadImage}
                 >
                     그림 저장
-                </button>
+                </a>
             </div>
             <button
                 className="btn btn-ghost absolute left-0 h-auto w-1/12 pt-4 align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"

@@ -13,15 +13,16 @@ import {
     CaretCircleRight,
 } from '@phosphor-icons/react/dist/ssr'
 
-import Script from 'next/script'
 import Link from 'next/link'
 import TitleBox from './components/titleBox'
+import Loading from '../../components/loadingTest'
 
 const TurnPage = () => {
     const pathname = usePathname()
     const [jQueryLoaded, setJQueryLoaded] = useState(false)
     const [data, setData] = useState(null)
     const [turnLoaded, setTurnLoaded] = useState(false)
+    const [allLoaded, setAllLoaded] = useState(false)
 
     const [isAudioPlaying, setIsAudioPlaying] = useState(false)
     const [isMuted, setIsMuted] = useState(false)
@@ -31,27 +32,30 @@ const TurnPage = () => {
     const URL = `${apiUrl}/book/book-detail/${bookId}`
 
     useEffect(() => {
-        if (jQueryLoaded) {
-            const script = document.createElement('script')
-            script.src = '/turn.min.js'
-            script.onload = () => setTurnLoaded(true)
-            document.body.appendChild(script)
-        }
-    }, [jQueryLoaded])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(URL)
-                const jsonData = await response.json()
-                setData(jsonData)
-            } catch (error) {
-                console.error('Error fetching data:', error)
+        // Load jQuery
+        const scriptJQuery = document.createElement('script')
+        scriptJQuery.src = 'https://code.jquery.com/jquery-3.6.0.min.js'
+        scriptJQuery.onload = () => {
+            setJQueryLoaded(true)
+            // Load turn.js after jQuery is loaded
+            const scriptTurn = document.createElement('script')
+            scriptTurn.src = '/turn.min.js'
+            scriptTurn.onload = () => {
+                setTurnLoaded(true)
+                fetch(URL)
+                    .then((response) => response.json())
+                    .then((jsonData) => {
+                        setData(jsonData)
+                        setAllLoaded(true)
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching data:', error)
+                    })
             }
+            document.body.appendChild(scriptTurn)
         }
-
-        fetchData()
-    }, [])
+        document.body.appendChild(scriptJQuery)
+    }, [URL])
 
     const handlePageBackward = () => {
         if (turnLoaded) {
@@ -97,6 +101,7 @@ const TurnPage = () => {
                 gradients: true,
                 when: {
                     turning: (e, page) => {
+                        console.log('Turning to page ' + page) // 현재 페이지 번호를 콘솔에 출력
                         const range = book.turn('range', page)
                         console.log('Turning to page ' + page)
                         for (let p = range[0]; p <= range[1]; p++) {
@@ -145,7 +150,7 @@ const TurnPage = () => {
                         }
                     },
                     turned: (e, page) => {
-                        console.log('Turned to page ' + page)
+                        console.log('Turned to page ' + page) // 페이지 넘김 완료 후 페이지 번호 출력
                         $('#page-number').val(page)
                     },
                 },
@@ -171,14 +176,14 @@ const TurnPage = () => {
         }
     }, [jQueryLoaded, turnLoaded, data])
 
+    if (!allLoaded) {
+        return <Loading /> // 로딩 중에는 로딩 컴포넌트 표시
+    }
+
     return (
         <>
             <div className="flex min-h-screen flex-col items-center justify-center bg-[#FFFDEA] font-ourFont">
-                <Script
-                    src="https://code.jquery.com/jquery-3.7.1.min.js"
-                    onLoad={() => setJQueryLoaded(true)}
-                />
-
+                {/* Header Div */}
                 <div
                     id="headerDiv"
                     className="flex w-full items-center justify-between px-4 py-2"
