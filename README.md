@@ -26,9 +26,9 @@
 
 ### Back-end
 
-|<img src="https://camo.githubusercontent.com/ecd535b833a6520e8d8238ceffadb3b3dda6e854826193d419c305f3e52fee22/68747470733a2f2f70726f66696c696e61746f722e7269736861762e6465762f736b696c6c732d6173736574732f6a6176612d6f726967696e616c2d776f72646d61726b2e737667" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/9bf23036-21cf-4da6-9111-6efbcef767f0" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/0d404077-ef70-4c27-b388-a36c29071efe" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/f1b5b5c8-3d38-44b7-9bcf-de8ecf9a6df8" width="70" height="70">|
-|:---:|:---:|:---:|:---:|
-|Java|Spring Boot|SpringSecurity|Jpa|
+|<img src="https://camo.githubusercontent.com/ecd535b833a6520e8d8238ceffadb3b3dda6e854826193d419c305f3e52fee22/68747470733a2f2f70726f66696c696e61746f722e7269736861762e6465762f736b696c6c732d6173736574732f6a6176612d6f726967696e616c2d776f72646d61726b2e737667" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/9bf23036-21cf-4da6-9111-6efbcef767f0" width="70" height="70">| <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/0d404077-ef70-4c27-b388-a36c29071efe" width="70" height="70"></center> |<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/f1b5b5c8-3d38-44b7-9bcf-de8ecf9a6df8" width="70" height="70">|
+|:---:|:---:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:---:|
+|Java|Spring Boot|                                                                  SpringSecurity                                                                  |Jpa|
 
 ### Infra
 
@@ -38,9 +38,9 @@
 
 ### ETC
 
-|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/ccde63b3-aac9-421d-bab3-b4d025bfe45f" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/94b36549-0f11-49ce-a0c9-5102e16f6b65" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/2efd254f-fa07-4648-b649-0c51e905e0c9" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/52ceb0cb-38b8-4306-affe-22cf722c66ab" width="70" height="70">|
-|:---:|:---:|:---:|:---:|
-|OpenAi|StableDiffusion|MySQL|Gerrit|
+|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/ccde63b3-aac9-421d-bab3-b4d025bfe45f" width="70" height="70">| <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/94b36549-0f11-49ce-a0c9-5102e16f6b65" width="70" height="70"></center> |<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/2efd254f-fa07-4648-b649-0c51e905e0c9" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/52ceb0cb-38b8-4306-affe-22cf722c66ab" width="70" height="70">|
+|:---:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:---:|:---:|
+|OpenAi|                                                                 StableDiffusion                                                                  |MySQL|Gerrit|
 
 <a name="주요기능"></a>
 ## 주요 기능
