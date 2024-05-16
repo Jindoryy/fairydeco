@@ -125,6 +125,7 @@ public class OpenAiService {
                 .recommendAge(RecommendAge.valueOf(age))
                 .build();
         Book savedBook = bookRepository.save(book);
+        bookRepository.flush();
         // 프롬프트 나이대별 생성
         String[] content = {"친구를 배신한 것을 후회하는", "거짓말한 것을 후회하는", "포기하지 않고 열심히 노력해서 결국 성공하는","두려움을 이겨내고 극복하는","위험을 고려해서 현명한 결정을 내리는", "행동하기 전에 잘 생각해보라는",
         "자기 능력을 과신하다가 큰 실수를 저지르는", "나쁜 마음씨를 갖고 살면 벌을 받고, 착하게 살면 복을 받는다는", "형제간의 깊은 우애를 배울 수 있는", "다른 사람들의 이야기를 듣고 그들의 경험을 통해 배우는", "현상을 관찰하고 자연의 흐름을 이해함으로 깊은 이해를 얻는",
@@ -212,10 +213,6 @@ public class OpenAiService {
                             .build();
                     pageRepository.save(page);
                 }
-                // 책 상태 변경
-                System.out.println(savedBook.getComplete());
-                savedBook.updateBookStatus(CompleteStatus.IMAGE);
-                System.out.println(savedBook.getComplete()+" "+savedBook.getId());
 
                 BookCreateRequestDto bookCreateRequestDto = BookCreateRequestDto.builder()
                         .userId(child.getUser().getId())
@@ -228,6 +225,11 @@ public class OpenAiService {
                 return null;
             }
         });
+    }
+    public void updateStatus(int bookId){
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR));
+        book.updateBookStatus(CompleteStatus.IMAGE);
+        System.out.println(book.getComplete());
     }
 
     public ImgPromptDto createPromptKidImg(MultipartFile image) throws IOException {
