@@ -282,8 +282,8 @@ function DemoJigsaw(props) {
                 </div>
                 <img 
                     src={props.imageSrc}
-                    style={{ opacity: sketchOpacity, zIndex: '-1' }}
-                    className='w-[460px] absolute border-[15px] border-[#af00ad] left-[58%]'
+                    style={{ opacity: sketchOpacity }}
+                    className='w-[460px] absolute border-[15px] border-[#af00ad] left-[58%] -z-[1]'
                 /> 
             </div>
         </>
@@ -367,8 +367,7 @@ export default function PuzzleBox() {
 
     return (
         <div
-            style={{ zIndex: '-2'}}
-            className="h-dvh w-dvw bg-customYellow absolute flex flex-row justify-center"
+            className="puzzle-cursor h-dvh w-dvw bg-customYellow absolute flex flex-row justify-center -z-[2]"
         >
             <div 
                 className='flex flex-col items-center'    
