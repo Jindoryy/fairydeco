@@ -14,7 +14,6 @@
 }
 
 body {
-    cursor: url('./../../public/image/paint_hold.png'), auto;
 }
 
 @layer utilities {
