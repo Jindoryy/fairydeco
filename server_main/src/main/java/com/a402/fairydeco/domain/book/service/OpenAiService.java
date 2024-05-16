@@ -89,7 +89,7 @@ public class OpenAiService {
                 "내가 키워드를 주면 그것들과 관련된 동화를 만들어 주면 돼.\n" +
                 "양식은 다음과 같아.\n" +
                 "\n" +
-                "키워드 : " + imgPromptDto.getPrompt() + "\n" +
+                "키워드는" + imgPromptDto.getPrompt() + "\n" +
                 "양식은 JSON 포맷이야\n" +
                 "```\n\n" +
                 "{\n" +
@@ -215,7 +215,7 @@ public class OpenAiService {
                 // 책 상태 변경
                 System.out.println(savedBook.getComplete());
                 savedBook.updateBookStatus(CompleteStatus.IMAGE);
-                System.out.println(savedBook.getComplete());
+                System.out.println(savedBook.getComplete()+" "+savedBook.getId());
 
                 BookCreateRequestDto bookCreateRequestDto = BookCreateRequestDto.builder()
                         .userId(child.getUser().getId())
@@ -274,7 +274,8 @@ public class OpenAiService {
     private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-                "이미지를 분석해서 옆의 예시처럼 키워드만 5개 뽑아줘  ex) 사과, 연필, 드로잉, 자연, 그림자");
+                "이미지를 분석해서 양식처럼 키워드만 5개 뽑아줘. 그리고 사람, 동물, 사물만 인식하고 색이 있으면 키워드에 같이 붙여줘. 양식: 키워드1, 키워드2, 키워드3, 키워드4, 키워드5");
+
         String requestBody = String.format("""
                 {
                     "model": "gpt-4-turbo",
