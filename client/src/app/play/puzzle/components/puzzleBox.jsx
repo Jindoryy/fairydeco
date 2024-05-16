@@ -134,19 +134,7 @@ function DemoJigsaw(props) {
 
     return (
         <>  
-            <div
-                className="w-[90%] flex items-center justify-between mx-auto my-2"
-            >
-                {/* <button
-                    className="btn btn-ghost relative h-auto align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
-                    onClick={goBack}
-                >
-                    <ArrowCircleLeft
-                        size={80}
-                        weight="fill"
-                        className="text-black"
-                    />
-                </button> */}
+            <div className="w-[90%] flex items-center justify-between mx-auto my-2">
                 <div></div>
                 <div className='text-[3rem] ml-[100px]'>
                     <span>퍼즐놀이</span>
@@ -309,11 +297,9 @@ export default function PuzzleBox() {
             if (response.data.status == 'success') {
                 setChildAgeCheck(response.data.data.childAgeCheck)
                 setPagePictureUrl(response.data.data.pagePictureUrl)
-                console.log(response.data.data.pagePictureUrl)
-                console.log(response.data.data.childAgeCheck)
 
                 if (response.data.data.childAgeCheck === 'O') {
-                    setPieceSize(130)
+                    setPieceSize(108)
                     setHorizontalPiecesCount(4)
                     setVerticalPiecesCount(4)
                 }
