@@ -352,19 +352,6 @@ export default function CanvasBox({ handleLoading }) {
                         />
                     </button>
                     <button
-                        onClick={() => setActiveColor('indigo')}
-                        disabled={
-                            setActiveColor === 'indigo' || activeTool != 'pen'
-                        }
-                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'indigo' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                    >
-                        <Circle
-                            size={30}
-                            weight="fill"
-                            className="text-indigo-900"
-                        />
-                    </button>
-                    <button
                         onClick={() => setActiveColor('purple')}
                         disabled={
                             setActiveColor === 'purple' || activeTool != 'pen'
