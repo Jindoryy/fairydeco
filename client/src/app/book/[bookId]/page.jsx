@@ -15,12 +15,14 @@ import {
 import Script from 'next/script'
 import Link from 'next/link'
 import TitleBox from './components/titleBox'
+import Loading from '../../components/loadingTest'
 
 const TurnPage = () => {
     const pathname = usePathname()
     const [jQueryLoaded, setJQueryLoaded] = useState(false)
     const [data, setData] = useState(null)
     const [turnLoaded, setTurnLoaded] = useState(false)
+    const [allLoaded, setAllLoaded] = useState(false)
 
     // 버튼 토글 상태 관리
     const [isAudioPlaying, setIsAudioPlaying] = useState(false) // 음성 재생 상태
@@ -31,29 +33,43 @@ const TurnPage = () => {
     const URL = `${apiUrl}/book/book-detail/${bookId}`
 
     useEffect(() => {
-        if (jQueryLoaded) {
-            // Script를 사용하여 turn.js를 불러옵니다.
-            const script = document.createElement('script')
-            script.src = '/turn.min.js'
-            script.onload = () => setTurnLoaded(true) // 로드 완료 후 상태 변경
-            document.body.appendChild(script) // body에 스크립트 추가
-        }
-    }, [jQueryLoaded])
-
-    // 데이터를 가져와서 상태에 저장
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(URL)
-                const jsonData = await response.json()
-                setData(jsonData)
-            } catch (error) {
-                console.error('Error fetching data:', error)
+        // Load jQuery
+        const scriptJQuery = document.createElement('script')
+        scriptJQuery.src = 'https://code.jquery.com/jquery-3.6.0.min.js'
+        scriptJQuery.onload = () => {
+            setJQueryLoaded(true)
+            // Load turn.js after jQuery is loaded
+            const scriptTurn = document.createElement('script')
+            scriptTurn.src = '/turn.min.js'
+            scriptTurn.onload = () => {
+                setTurnLoaded(true)
+                fetch(URL)
+                    .then((response) => response.json())
+                    .then((jsonData) => {
+                        setData(jsonData)
+                        setAllLoaded(true)
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching data:', error)
+                    })
             }
+            document.body.appendChild(scriptTurn)
         }
+        document.body.appendChild(scriptJQuery)
+    }, [URL])
 
-        fetchData() // useEffect가 마운트될 때 데이터 가져오기
-    }, [])
+    useEffect(() => {
+        if (data && turnLoaded) {
+            const $ = window.jQuery
+            const book = $('#book')
+            book.turn({
+                width: 800,
+                height: 600,
+                autoCenter: true,
+                pages: data.data.pageList.length * 2 + 2,
+            })
+        }
+    }, [data, turnLoaded])
 
     // 버튼 토글 로직
     const toggleAudioPlayback = () => {
@@ -109,6 +125,7 @@ const TurnPage = () => {
                 gradients: true, // 그라디언트 활성화
                 when: {
                     turning: (e, page) => {
+                        console.log('Turning to page ' + page) // 현재 페이지 번호를 콘솔에 출력
                         const range = book.turn('range', page)
                         for (let p = range[0]; p <= range[1]; p++) {
                             let content
@@ -159,6 +176,7 @@ const TurnPage = () => {
                         }
                     },
                     turned: (e, page) => {
+                        console.log('Turned to page ' + page) // 페이지 넘김 완료 후 페이지 번호 출력
                         $('#page-number').val(page)
                     },
                 },
@@ -184,14 +202,13 @@ const TurnPage = () => {
         }
     }, [jQueryLoaded, turnLoaded, data]) // data도 의존성에 추가
 
+    if (!allLoaded) {
+        return <Loading /> // 로딩 중에는 로딩 컴포넌트 표시
+    }
+
     return (
         <>
             <div className="flex min-h-screen flex-col items-center justify-center bg-[#FFFDEA] font-ourFont">
-                <Script
-                    src="https://code.jquery.com/jquery-3.7.1.min.js"
-                    onLoad={() => setJQueryLoaded(true)}
-                />
-
                 {/* Header Div */}
                 <div
                     id="headerDiv"
