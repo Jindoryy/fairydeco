@@ -67,11 +67,13 @@ export default function Landing() {
         let pageHeight = window.innerHeight
         let heightSum = pageHeight + DIVIDER_HEIGHT
 
-        outerDivRef.current.scrollTo({
-            top: heightSum * (page),
-            left: 0,
-            behavior: 'smooth',
-        })
+        if (outerDivRef) {
+            outerDivRef.current.scrollTo({
+                top: heightSum * (page),
+                left: 0,
+                behavior: 'smooth',
+            })
+        }
     }
     return (
         <div

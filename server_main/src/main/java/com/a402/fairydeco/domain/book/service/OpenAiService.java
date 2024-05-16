@@ -131,14 +131,14 @@ public class OpenAiService {
         "자신을 돌아보고 분석함으로 깨달음을 얻는", "어려운 상황에서"};
 
         if (age.equals("Y")) {
-            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 2~3줄 정도로 짧게 구성\n" +
+            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 2~3줄 정도로 짧게 구성\n" +
                     "3~5세 아이를 위한 동화라 내용은 흥미를 유발하지만 이해도는 크게 필요없는 내용으로 써줘\n" +
                     "문맥이 어색하지 않고 내용이 전체적으로 이어지도록 구성해줘\n" +
                     "그리고 단어는 3~5세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
                     "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         } else {
-            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 최소 150자 이상으로 구성\n" +
+            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 최소 150자 이상으로 구성\n" +
                     "6~7세 아이를 위한 동화라 "+content[(int)(Math.random()* content.length)]+" 내용으로 작성해줘\n" +
                     "문맥이 어색하지 않고 내용이 전체적으로 이어지도록 구성해줘\n" +
                     "그리고 단어는 6~7세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
@@ -213,7 +213,9 @@ public class OpenAiService {
                     pageRepository.save(page);
                 }
                 // 책 상태 변경
+                System.out.println(savedBook.getComplete());
                 savedBook.updateBookStatus(CompleteStatus.IMAGE);
+                System.out.println(savedBook.getComplete());
 
                 BookCreateRequestDto bookCreateRequestDto = BookCreateRequestDto.builder()
                         .userId(child.getUser().getId())
