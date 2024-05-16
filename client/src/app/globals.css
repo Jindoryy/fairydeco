@@ -50,8 +50,8 @@ body {
     cursor: url('./../../public/image/paint_hold.cur'), auto;
 }
 
-.paint_cursor {
-    cursor: url('./../../public/image/paint_cursor.cur'), auto;
+.paint_hover {
+    cursor: url('./../../public/image/paint_hover.cur'), auto;
 }
 
 .puzzle-cursor {
