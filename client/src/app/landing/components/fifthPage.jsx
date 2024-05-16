@@ -22,7 +22,8 @@ export default function FifthPage() {
             const response = await axios.get(`${apiUrl}/book/landing-list`)
 
             if (response.data.status == 'success') {
-                setBookList(response.data.data)
+                const arr = response.data.data
+                setBookList(arr)
             } else {
                 Swal.fire({
                     title: '앗!',
@@ -42,14 +43,14 @@ export default function FifthPage() {
         router.push('/login')
     }
     return (
-        <div className="flex h-dvh w-dvw flex-col items-center bg-customYellow pt-20">
+        <div className="flex h-dvh w-dvw flex-col items-center bg-customYellow pt-16">
             <div className="flex h-auto w-[80%] items-center justify-between">
-                <div className="flex h-[90%] flex-col justify-between">
-                    <div className="mb-4 text-6xl">
-                        <BookOpenText size={70} />
+                <div className="flex h-auto flex-col justify-between">
+                    <div className="mb-2 text-5xl font-semibold">
+                        <BookOpenText size={50} />
                         이제 AI 동화를 꾸며볼까요?
                     </div>
-                    <div className="text-3xl">
+                    <div className="text-2xl font-thin">
                         아이의 그림을 분석하여 <br />
                         동화책을 만들어봐요! <br />
                         다른 아이의 동화도 볼 수 있어요!
@@ -57,52 +58,53 @@ export default function FifthPage() {
                 </div>
                 <button
                     onClick={goLogin}
-                    className="relative mt-4 h-52 w-52 rounded-full bg-customOrange text-6xl shadow-customDeepShadow"
+                    className="relative mt-4 h-44 w-44 rounded-full bg-customOrange text-6xl shadow-customDeepShadow"
                 >
                     시작!
                 </button>
             </div>
-            <div className='bg-customBlue h-auto mt-12'>
-
-            <div className="mt-8 flex overflow-hidden">
-                {bookList && bookList.length > 0  &&
-                    bookList
-                    .filter((el) => el.bookCoverUrl)
-                    .map((el, index) => (
-                        <div
-                        className="animate-autoPlay relative ml-4 flex w-[200px] rounded-md"
-                        key={index}
-                        >
-                                <Image
-                                    src={el.bookCoverUrl}
-                                    alt="책 표지"
-                                    width={300}
-                                    height={300}
-                                    style={{ borderRadius: '10px' }}
+            <div className="mt-4 h-auto bg-customBlue">
+                <div className="mt-4 flex overflow-hidden">
+                    {bookList &&
+                        bookList.length > 0 &&
+                        bookList
+                            .filter((el) => el.bookCoverUrl)
+                            .map((el, index) => (
+                                <div
+                                    className="relative ml-2 flex w-[200px] animate-autoPlay rounded-md"
+                                    key={index}
+                                >
+                                    <Image
+                                        src={el.bookCoverUrl}
+                                        alt="책 표지"
+                                        width={180}
+                                        height={180}
+                                        style={{ borderRadius: '10px' }}
                                     />
-                            </div>
-                ))}
-            </div>
-            <div className="mt-4 flex overflow-hidden mb-8">
-                {bookList && bookList.length > 0  &&
-                    bookList
-                    .filter((el) => el.bookCoverUrl)
-                    .map((el, index) => (
-                        <div
-                        className="animate-autoReversePlay relative ml-4 flex w-[200px] rounded-md"
-                        key={index}
-                        >
-                                <Image
-                                    src={el.bookCoverUrl}
-                                    alt="책 표지"
-                                    width={200}
-                                    height={200}
-                                    style={{ borderRadius: '10px' }}
-                                    />
-                            </div>
-                ))}
-            </div>
+                                </div>
+                            ))}
                 </div>
+                <div className="mb-4 mt-2 flex overflow-hidden">
+                    {bookList &&
+                        bookList.length > 0 &&
+                        bookList
+                            .filter((el) => el.bookCoverUrl)
+                            .map((el, index) => (
+                                <div
+                                    className="relative ml-2 flex w-[200px] animate-autoReversePlay rounded-md"
+                                    key={index}
+                                >
+                                    <Image
+                                        src={el.bookCoverUrl}
+                                        alt="책 표지"
+                                        width={180}
+                                        height={180}
+                                        style={{ borderRadius: '10px' }}
+                                    />
+                                </div>
+                            ))}
+                </div>
+            </div>
         </div>
     )
 }

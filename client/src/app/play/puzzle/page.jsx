@@ -6,9 +6,9 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import NewImage from 'next/image'
-import NextImage from '../../../public/image/puzzle-next.png'
-import AnswerImage from '../../../public/image/puzzle-answer.png'
-import SketchImage from '../../../public/image/puzzle-sketch.png'
+import NextImage from '../../../../public/image/puzzle-next.png'
+import AnswerImage from '../../../../public/image/puzzle-answer.png'
+import SketchImage from '../../../../public/image/puzzle-sketch.png'
 import { ArrowCircleLeft } from '@phosphor-icons/react/dist/ssr'
 import { Question } from '@phosphor-icons/react/dist/ssr'
 
@@ -39,7 +39,7 @@ function DemoJigsaw(props) {
                 // strokeColor: 'white',
             })
 
-            newCanvas.adjustImagesToPuzzleWidth();
+            newCanvas.adjustImagesToPuzzleWidth()
             newCanvas.autogenerate({
                 horizontalPiecesCount: props.horizontalPiecesCount,
                 verticalPiecesCount: props.verticalPiecesCount,
@@ -49,7 +49,7 @@ function DemoJigsaw(props) {
             
             if (resetTrigger === 0) {
                 newCanvas.shuffle(0.5)
-                // newCanvas.puzzle.pieces[1].translate(50, -50);
+                // newCanvas.puzzle.pieces[1].translate(50, -50)
             }
             
             newCanvas.draw()
@@ -68,7 +68,7 @@ function DemoJigsaw(props) {
                         if (result.isConfirmed) {
                             window.location.reload()
                         }
-                    });
+                    })
                 }, 500)
             })
 
@@ -120,7 +120,7 @@ function DemoJigsaw(props) {
             if (result.isConfirmed) {
                 window.location.reload()
             }
-        });
+        })
     }
     
     const goBack = () => {
@@ -278,7 +278,7 @@ function DemoJigsaw(props) {
                 <img 
                     src={props.imageSrc}
                     style={{ opacity: sketchOpacity, zIndex: '-1' }}
-                    className='w-[550px] absolute border-[15px] border-[#af00ad] left-[55%]'
+                    className='w-[460px] absolute border-[15px] border-[#af00ad] left-[57%]'
                 /> 
             </div>
         </>
@@ -286,9 +286,9 @@ function DemoJigsaw(props) {
 }
 
 export default function Puzzle() {
-    const [pieceSize, setPieceSize] = useState(175)
-    const [width, setWidth] = useState(1300)
-    const [height, setHeight] = useState(600)
+    const [pieceSize, setPieceSize] = useState(145)
+    const [width, setWidth] = useState(1100)
+    const [height, setHeight] = useState(500)
     const [childAgeCheck, setChildAgeCheck] = useState('')
     const [pagePictureUrl, setPagePictureUrl] = useState('')
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
@@ -324,33 +324,33 @@ export default function Puzzle() {
     }, [])
 
     const handle2x2Puzzle = () => {
-        setPieceSize(260)
-        setWidth(1300)
-        setHeight(600)
+        setPieceSize(215)
+        setWidth(1100)
+        setHeight(500)
         setHorizontalPiecesCount(2)
         setVerticalPiecesCount(2)
     }
 
     const handle3x3Puzzle = () => {
-        setPieceSize(175)
-        setWidth(1300)
-        setHeight(600)
+        setPieceSize(145)
+        setWidth(1100)
+        setHeight(500)
         setHorizontalPiecesCount(3)
         setVerticalPiecesCount(3)
     }
 
     const handle4x4Puzzle = () => {
-        setPieceSize(130)
-        setWidth(1300)
-        setHeight(600)
+        setPieceSize(108)
+        setWidth(1100)
+        setHeight(500)
         setHorizontalPiecesCount(4)
         setVerticalPiecesCount(4)
     }
 
     const handle5x5Puzzle = () => {
-        setPieceSize(105)
-        setWidth(1300)
-        setHeight(600)
+        setPieceSize(86)
+        setWidth(1100)
+        setHeight(500)
         setHorizontalPiecesCount(5)
         setVerticalPiecesCount(5)
     }
@@ -361,8 +361,17 @@ export default function Puzzle() {
             className="h-dvh w-dvw bg-customYellow absolute flex flex-row items-center justify-center"
         >
             <div>
+                <button
+                    className="btn btn-ghost relative h-auto align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
+                >
+                    <ArrowCircleLeft
+                        size={80}
+                        weight="fill"
+                        className="text-black"
+                    />
+                </button>
                 <button onClick={handle2x2Puzzle}
-                    className='bg-customPurple block w-20 h-20 text-2xl rounded-lg text-white my-5'
+                    className='bg-customGreen block w-20 h-20 text-2xl rounded-lg text-white my-5'
                 >
                     2x2
                 </button>
@@ -372,17 +381,17 @@ export default function Puzzle() {
                     3x3
                 </button>
                 <button onClick={handle4x4Puzzle}
-                    className='bg-customPurple block w-20 h-20 text-2xl rounded-lg text-white my-5'
+                    className='bg-customOrange block w-20 h-20 text-2xl rounded-lg text-white my-5'
                 >
                     4x4
                 </button>
                 <button onClick={handle5x5Puzzle}
-                    className='bg-customPurple block w-20 h-20 text-2xl rounded-lg text-white my-5'
+                    className='bg-customRed block w-20 h-20 text-2xl rounded-lg text-white my-5'
                 >
                     5x5
                 </button>
             </div>
-            <div className='basis-[88%]'>
+            <div className='basis-[74%]'>
                 <DemoJigsaw
                     id="puzzle"
                     pieceSize={pieceSize}
