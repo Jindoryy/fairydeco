@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import {
     HouseLine,
-    Baby,
+    Books,
     SpeakerHigh,
     SpeakerSimpleX,
     Play,
@@ -23,9 +23,8 @@ const TurnPage = () => {
     const [data, setData] = useState(null)
     const [turnLoaded, setTurnLoaded] = useState(false)
 
-    // 버튼 토글 상태 관리
-    const [isAudioPlaying, setIsAudioPlaying] = useState(false) // 음성 재생 상태
-    const [isAutoPlay, setIsAutoPlay] = useState(false) // 자동 재생 상태
+    const [isAudioPlaying, setIsAudioPlaying] = useState(false)
+    const [isMuted, setIsMuted] = useState(false)
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const bookId = pathname.split('/').pop()
@@ -33,15 +32,13 @@ const TurnPage = () => {
 
     useEffect(() => {
         if (jQueryLoaded) {
-            // Script를 사용하여 turn.js를 불러옵니다.
             const script = document.createElement('script')
             script.src = '/turn.min.js'
-            script.onload = () => setTurnLoaded(true) // 로드 완료 후 상태 변경
-            document.body.appendChild(script) // body에 스크립트 추가
+            script.onload = () => setTurnLoaded(true)
+            document.body.appendChild(script)
         }
     }, [jQueryLoaded])
 
-    // 데이터를 가져와서 상태에 저장
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -53,42 +50,32 @@ const TurnPage = () => {
             }
         }
 
-        fetchData() // useEffect가 마운트될 때 데이터 가져오기
+        fetchData()
     }, [])
 
-    // 버튼 토글 로직
-    const toggleAudioPlayback = () => {
-        if (isAudioPlaying) {
-            setIsAudioPlaying(false) // 음성 재생 상태를 정지 상태로 변경
-        } else {
-            setIsAudioPlaying(true) // 음성 재생 상태를 재생 상태로 변경
-        }
-    }
-
-    const toggleAutoPlay = () => {
-        setIsAutoPlay((prev) => !prev) // 자동 재생 상태 토글
-    }
-
-    // Event handlers to turn the pages
     const handlePageBackward = () => {
         if (turnLoaded) {
             const book = window.jQuery('#book')
-            book.turn('previous') // Turn to the previous page
+            book.turn('previous')
         }
     }
 
     const handlePageForward = () => {
         if (turnLoaded) {
             const book = window.jQuery('#book')
-            book.turn('next') // Turn to the next page
+            book.turn('next')
         }
+    }
+
+    const handleToggleMute = () => {
+        setIsMuted((prevState) => !prevState)
     }
 
     useEffect(() => {
         if (jQueryLoaded && data) {
             const $ = window.jQuery
-            const book = $('#book') // book 요소 선택
-            const numberOfPages = data?.data?.pageList?.length * 2 + 2 // 총 페이지 수
+            const book = $('#book')
+            const numberOfPages = data?.data?.pageList?.length * 2 + 2
 
             const addPage = (page, content) => {
                 const element = $('<div />', {
@@ -106,60 +93,59 @@ const TurnPage = () => {
             book.turn({
                 acceleration: true,
                 pages: numberOfPages,
-                elevation: 150, // 그림자 높이 증가
-                gradients: true, // 그라디언트 활성화
+                elevation: 150,
+                gradients: true,
                 when: {
                     turning: (e, page) => {
                         const range = book.turn('range', page)
+                        console.log('Turning to page ' + page)
                         for (let p = range[0]; p <= range[1]; p++) {
                             let content
-                            if (p === 1) {
-                                const bookCoverUrl = data.data.bookCoverUrl
-                                const bookName = data.data.bookName
+                            let pageVoiceUrl
+                            if (page === 1) {
+                                // Cover Page
+                                // Cover 페이지에는 음성이 없을 수 있으므로 체크
                                 content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
-                                        <img src="${bookCoverUrl}" class="w-[100%] h-[85%] object-cover" alt="Book Cover" />
-                                        <div class="h-[15%] w-[100%] flex justify-center items-center text-5xl text-black mt-2">${bookName}</div>
-                                    </div>`
-                            } else if (p === numberOfPages) {
-                                const bookCoverUrl = data.data.bookCoverUrl
-                                const bookMaker = data.data.bookMaker
-                                const bookName = data.data.bookName
+                                                <img src="${data.data.bookCoverUrl}" class="w-[100%] h-[85%] object-cover" alt="Book Cover" />
+                                                <div class="h-[15%] w-[100%] flex justify-center items-center text-5xl text-black mt-2">${data.data.bookName}</div>
+                                            </div>`
+                            } else if (page === numberOfPages) {
+                                // Back Cover Page
+                                // Back Cover 페이지에는 음성이 없을 수 있으므로 체크
                                 content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
-                                        <img src="${bookCoverUrl}" class="w-1/3 h-1/3 object-contain" alt="Book Cover" />
-                                        <div class="text-base text-gray-600 mt-2">${bookName}</div>
-                                        <div class="text-sm text-gray-600 mt-2">지은이: ${bookMaker}</div>
-                                    </div>`
+                                                <img src="${data.data.bookCoverUrl}" class="w-1/3 h-1/3 object-contain" alt="Book Cover" />
+                                                <div class="text-base text-gray-600 mt-2">${data.data.bookName}</div>
+                                                <div class="text-sm text-gray-600 mt-2">지은이: ${data.data.bookMaker}</div>
+                                            </div>`
                             } else {
-                                const pageIndex = Math.floor((p - 2) / 2)
-                                const pageContent =
-                                    p % 2 === 0
-                                        ? data.data.pageList[pageIndex]
-                                              ?.pageimageUrl
-                                        : data.data.pageList[pageIndex]
-                                              ?.pageStory
-                                const pageVoiceUrl =
+                                // 내용 페이지
+                                const pageIndex = Math.floor((page - 2) / 2)
+                                console.log(
                                     data.data.pageList[pageIndex]?.pageVoiceUrl
+                                )
                                 content = `
                                     <div className="flex items-center justify-center">
                                         ${
                                             p % 2 === 0
-                                                ? `<img src="${pageContent}" class="object-contain w-full h-full" alt="Page Image" />`
-                                                : `<div class="flex flex-col items-center justify-center text-xl text-black break-keep px-16 font-storyFont text-left leading-10">${pageContent}</div>
-                                                <div class="flex flex-col items-center justify-center text-center absolute bottom-12 w-full">
-                                                    <audio controls className="ml-4">
-                                                        <source src="${pageVoiceUrl}" type="audio/mpeg">
-                                                        Your browser does not support the audio element.
-                                                    </audio>
-                                                </div>`
+                                                ? `<img src="${data.data.pageList[pageIndex]?.pageimageUrl}" class="object-contain w-full h-full" alt="Page Image" />`
+                                                : `<div class="flex flex-col items-center justify-center text-xl text-black break-keep px-16 font-storyFont text-left leading-10">${data.data.pageList[pageIndex]?.pageStory}</div>
+                                               <div class="flex flex-col items-center justify-center text-center absolute bottom-12 w-full">
+                                                   <audio autoplay id="audio" className="ml-4"
+                                                        src="${data.data.pageList[pageIndex]?.pageVoiceUrl}" type="audio/mpeg">
+                                                       Your browser does not support the audio element.
+                                                   </audio>
+                                               </div>`
                                         }
-                                    </div>
-                                `
+                                    </div>`
+                                pageVoiceUrl =
+                                    data.data.pageList[pageIndex]?.pageVoiceUrl
                             }
 
                             addPage(p, content)
                         }
                     },
                     turned: (e, page) => {
+                        console.log('Turned to page ' + page)
                         $('#page-number').val(page)
                     },
                 },
@@ -183,7 +169,7 @@ const TurnPage = () => {
                 }
             })
         }
-    }, [jQueryLoaded, turnLoaded, data]) // data도 의존성에 추가
+    }, [jQueryLoaded, turnLoaded, data])
 
     return (
         <>
@@ -193,12 +179,10 @@ const TurnPage = () => {
                     onLoad={() => setJQueryLoaded(true)}
                 />
 
-                {/* Header Div */}
                 <div
                     id="headerDiv"
                     className="flex w-full items-center justify-between px-4 py-2"
                 >
-                    {/* Left Section */}
                     <Link
                         href="/"
                         className="ml-8 flex flex-grow justify-start"
@@ -206,11 +190,10 @@ const TurnPage = () => {
                         <HouseLine
                             size={45}
                             weight="fill"
-                            style={{ color: '#A0D468' }}
+                            style={{ color: '#A0D468', cursor: 'pointer' }}
                         />
                     </Link>
 
-                    {/* Central Section */}
                     <div className="ml-32 flex flex-grow items-center justify-center text-center">
                         <TitleBox
                             title={data?.data?.bookName}
@@ -219,78 +202,91 @@ const TurnPage = () => {
                         />
                     </div>
 
-                    {/* Right Section */}
                     <div
                         id="right"
                         className="flex flex-grow justify-end space-x-4 text-center"
                     >
-                        <Link href="/">
+                        <Link href="/bookList">
                             <div className="flex flex-col items-center">
-                                <Baby size={32} style={{ color: '#A0D468' }} />
-                                <div className="text-sm text-black">지은이</div>
+                                <Books
+                                    size={32}
+                                    style={{
+                                        color: '#A0D468',
+                                        cursor: 'pointer',
+                                    }}
+                                />
+                                <div className="text-sm text-black">더보기</div>
                             </div>
                         </Link>
-                        {/* 음성 재생 및 멈춤 토글 */}
                         <div
                             className="flex w-[55px] flex-col items-center"
-                            onClick={toggleAudioPlayback} // 클릭 이벤트로 토글
+                            onClick={handleToggleMute}
                         >
-                            {isAudioPlaying ? (
-                                <>
-                                    <SpeakerSimpleX
-                                        size={32}
-                                        weight="fill"
-                                        style={{ color: '#A0D468' }}
-                                    />
-
-                                    <div className="text-sm text-black">
-                                        음성멈춤
-                                    </div>
-                                </>
-                            ) : (
+                            {isMuted ? (
                                 <>
                                     <SpeakerHigh
                                         size={32}
                                         weight="fill"
-                                        style={{ color: '#A0D468' }}
+                                        style={{
+                                            color: '#A0D468',
+                                            cursor: 'pointer',
+                                        }}
                                     />
                                     <div className="text-sm text-black">
-                                        음성재생
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                        {/* 자동 재생 및 멈춤 토글 */}
-                        <div
-                            className="flex w-[55px] flex-col items-center"
-                            onClick={toggleAutoPlay} // 클릭 이벤트로 토글
-                        >
-                            {isAutoPlay ? (
-                                <>
-                                    <Pause
-                                        size={32}
-                                        weight="fill"
-                                        style={{ color: '#A0D468' }}
-                                    />
-                                    <div className=" text-sm text-black">
-                                        멈춤
+                                        소리켜기
                                     </div>
                                 </>
                             ) : (
                                 <>
+                                    <SpeakerSimpleX
+                                        size={32}
+                                        weight="fill"
+                                        style={{
+                                            color: '#A0D468',
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+
+                                    <div className="text-sm text-black">
+                                        소리끄기
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        <div className="flex w-[55px] flex-col items-center">
+                            {isAudioPlaying ? (
+                                <>
                                     <Play
                                         size={32}
                                         weight="fill"
-                                        style={{ color: '#A0D468' }}
+                                        style={{
+                                            color: '#A0D468',
+                                            cursor: 'pointer',
+                                        }}
                                     />
                                     <div className=" text-sm text-black">
                                         자동재생
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <Pause
+                                        size={32}
+                                        weight="fill"
+                                        style={{
+                                            color: '#A0D468',
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+                                    <div className=" text-sm text-black">
+                                        일시정지
                                     </div>
                                 </>
                             )}
                         </div>
                     </div>
                 </div>
+
                 {data ? (
                     <div
                         id="book"
@@ -324,7 +320,6 @@ const TurnPage = () => {
                         </div>
                     </div>
                 ) : null}
-                {/* Page Controls */}
                 <div
                     id="controls"
                     className="my-5 flex w-[800px] items-center  justify-center text-2xl font-bold"
@@ -337,7 +332,7 @@ const TurnPage = () => {
                             marginRight: '10px',
                             cursor: 'pointer',
                         }}
-                        onClick={handlePageBackward} // Event handler for backward navigation
+                        onClick={handlePageBackward}
                     />
                     <input
                         type="text"
@@ -355,7 +350,7 @@ const TurnPage = () => {
                             marginLeft: '10px',
                             cursor: 'pointer',
                         }}
-                        onClick={handlePageForward} // Event handler for forward navigation
+                        onClick={handlePageForward}
                     />
                 </div>
             </div>
