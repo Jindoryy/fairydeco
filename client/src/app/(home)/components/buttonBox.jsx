@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import MakeBookImage from '../../../../public/image/makebook.png'
-import PaintingImage from '../../../../public/image/painting.png'
+import PlayImage from '../../../../public/image/play.png'
 import Shelf from '../../../../public/image/shelf.png'
 import House from '../../../../public/image/house.png'
 import Horse from '../../../../public/image/horse.png'
@@ -19,6 +19,14 @@ export default function ButtonBox() {
     const Swal = require('sweetalert2')
 
     useEffect(() => {
+        if (
+            !localStorage.getItem('userId') ||
+            localStorage.getItem('userId').length <= 0
+        ) {
+            router.push('/landing')
+            return
+        }
+
         if (localStorage.getItem('userId'))
             setUserId(localStorage.getItem('userId'))
     }, [])
@@ -82,9 +90,9 @@ export default function ButtonBox() {
             router.push('/mypage')
         }, 200)
     }
-    const goPainting = () => {
+    const goPlay = () => {
         setTimeout(() => {
-            router.push('/book/165')
+            router.push('/play')
         }, 200)
     }
 
@@ -172,7 +180,7 @@ export default function ButtonBox() {
                         </span>
                     </button>
                 </div>
-                <div className="relative flex flex-col items-center justify-center">
+                <div className="relative flex flex-col items-center justify-center pr-12">
                     <button
                         className="btn btn-ghost flex h-auto w-8/12 rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent focus:bg-transparent"
                         onClick={goBookList}
@@ -216,11 +224,11 @@ export default function ButtonBox() {
                 </div>
                 <div className="relative flex flex-col items-center justify-center">
                     <button
-                        className="btn btn-ghost flex h-auto w-10/12 -rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent focus:bg-transparent"
-                        onClick={goPainting}
+                        className="btn btn-ghost flex h-auto w-7/12 -rotate-12 transform flex-col items-center justify-center text-5xl font-thin text-white hover:rotate-0 hover:bg-transparent focus:bg-transparent"
+                        onClick={goPlay}
                     >
                         <Image
-                            src={PaintingImage}
+                            src={PlayImage}
                             alt={'make book logo'}
                             style={{
                                 zIndex: 100,
@@ -230,7 +238,7 @@ export default function ButtonBox() {
                             }}
                         />{' '}
                         <span className="sm:text-sm md:text-lg lg:text-5xl">
-                            동화 샘플보기
+                            놀이터
                         </span>
                     </button>
                 </div>

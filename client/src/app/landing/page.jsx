@@ -8,98 +8,73 @@ import FifthPage from './components/fifthPage'
 
 export default function Landing() {
     const outerDivRef = useRef()
-    const touchStartY = useRef(0)
-    const [currentPage, setCurrentPage] = useState(1)
     const DIVIDER_HEIGHT = 5
+    let currentPage = 0;
+    let isScrolling = false;
+    let isTouching = false;
+    let scrollTimeout;
 
     useEffect(() => {
-        const wheelHandler = (e) => {
-            e.preventDefault()
-            const { deltaY } = e
-            const { scrollTop } = outerDivRef.current
-            const pageHeight = window.innerHeight
 
-            let nextPage = currentPage
-
-            if (deltaY > 0) {
-                nextPage = Math.min(currentPage + 1, 5)
-            } else {
-                nextPage = Math.max(currentPage - 1, 1)
+        window.addEventListener('wheel', function(event) {
+            if (!isScrolling) {
+                isScrolling = true;
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(function() {
+                    // 타임아웃 후 페이지 이동
+                    if (event.deltaY > 0) {
+                        // 아래로 스크롤할 때
+                        currentPage++;
+                    } else if (event.deltaY < 0) {
+                        // 위로 스크롤할 때
+                        currentPage--;
+                    }
+                    changePage(currentPage);
+                    isScrolling = false;
+                }, 200)
             }
+        });
+        let startY;
 
-            setCurrentPage(nextPage)
+        window.addEventListener('touchstart', function(event) {
+            startY = event.touches[0].clientY;
+        });
+        
+        window.addEventListener('touchend', function(event) {
+            const endY = event.changedTouches[0].clientY; 
+            const deltaY = startY - endY;
+            console.log("touching")
+            if (!isTouching) {
+                console.log("here")
+                isTouching  = true;
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(function() {
+                    // 타임아웃 후 페이지 이동
+                    if (deltaY > 0) {
+                        // 아래로 스크롤할 때
+                        currentPage++;
+                    } else if (deltaY < 0) {
+                        // 위로 스크롤할 때
+                        currentPage--;
+                    }
+                    changePage(currentPage);
+                    isTouching = false;
+                }, 200)
+            }
+        })
+    })
+    const changePage = (page) => {
+        let pageHeight = window.innerHeight
+        let heightSum = pageHeight + DIVIDER_HEIGHT
 
+        if (outerDivRef) {
             outerDivRef.current.scrollTo({
-                top:
-                    (nextPage - 1) * pageHeight +
-                    (nextPage - 1) * DIVIDER_HEIGHT,
+                top: heightSum * (page),
                 left: 0,
                 behavior: 'smooth',
             })
         }
-
-        const outerDivRefCurrent = outerDivRef.current
-        outerDivRefCurrent.addEventListener('wheel', wheelHandler, {
-            passive: false,
-        })
-
-        return () => {
-            outerDivRefCurrent.removeEventListener('wheel', wheelHandler)
-        }
-
-        const touchMoveHandler = (e) => {
-            const deltaY = e.touches[0].clientY - touchStartY.current
-            const { scrollTop } = outerDivRef.current
-            const pageHeight = window.innerHeight
-
-            let nextPage = currentPage
-
-            if (deltaY > 0) {
-                nextPage = Math.min(currentPage + 1, 5)
-            } else {
-                nextPage = Math.max(currentPage - 1, 1)
-            }
-
-            setCurrentPage(nextPage)
-
-            outerDivRef.current.scrollTo({
-                top:
-                    (nextPage - 1) * pageHeight +
-                    (nextPage - 1) * DIVIDER_HEIGHT,
-                left: 0,
-                behavior: 'smooth',
-            })
-        }
-
-        const touchStartHandler = (e) => {
-            touchStartY.current = e.touches[0].clientY
-        }
-
-        const outerDivRefTouchCurrent = outerDivRef.current
-        outerDivRefTouchCurrent.addEventListener(
-            'touchstart',
-            touchStartHandler
-        )
-        outerDivRefTouchCurrent.addEventListener('touchmove', touchMoveHandler)
-        outerDivRefTouchCurrent.addEventListener('touchend', () => {
-            touchStartY.current = 0
-        })
-
-        return () => {
-            outerDivRefTouchCurrent.removeEventListener(
-                'touchstart',
-                touchStartHandler
-            )
-            outerDivRefTouchCurrent.removeEventListener(
-                'touchmove',
-                touchMoveHandler
-            )
-            outerDivRefTouchCurrent.removeEventListener('touchend', () => {
-                touchStartY.current = 0
-            })
-        }
-    }, [currentPage])
-
+    }
     return (
         <div
             ref={outerDivRef}

@@ -1,5 +1,4 @@
 const daisyui = require('daisyui')
-const plugin = require('tailwindcss/plugin')
 
 module.exports = {
     content: [
@@ -33,8 +32,9 @@ module.exports = {
             },
             animation: {
                 wiggle: 'wiggle 1s ease-in-out infinite',
-                bounce: 'bounce 1s infinite',
-                autoPlay: 'autoPlay 10s linear infinite',
+                bounce: 'bounce 0.8s infinite',
+                autoPlay: 'autoPlay 25s linear infinite',
+                autoReversePlay: 'autoReversePlay 25s linear infinite',
             },
         },
         keyframes: {
@@ -44,7 +44,7 @@ module.exports = {
             },
             bounce: {
                 '0%, 100%': {
-                    transform: 'translateY(-5%)',
+                    transform: 'translateY(-10%)',
                     'animation-timing-function': 'cubic-bezier(0.8,0,1,1)',
                 },
                 '50%': {
@@ -57,7 +57,15 @@ module.exports = {
                     transition: 'translateX(0)',
                 },
                 '100%': {
-                    transform: 'translateX(calc(-250px * 7))',
+                    transform: 'translateX(calc(-150px * 8))',
+                },
+            },
+            autoReversePlay: {
+                '0%': {
+                    transition: 'translateX(0)',
+                },
+                '100%': {
+                    transform: 'translateX(calc(150px * 8))',
                 },
             },
         },

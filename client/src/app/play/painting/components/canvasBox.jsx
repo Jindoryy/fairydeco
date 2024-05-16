@@ -15,7 +15,7 @@ import {
 import Swal from 'sweetalert2'
 import { useSse } from '@/src/app/components/sseProvider'
 
-export default function CanvasBox({ handleLoading }) {
+export default function CanvasBox() {
     const router = useRouter()
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const canvasContainerRef = useRef(null)
@@ -142,110 +142,97 @@ export default function CanvasBox({ handleLoading }) {
     }
 
     const goBook = () => {
-        if (canvas.getObjects().length === 0) {
-            Swal.fire({
-                title: '앗!',
-                text: '캔버스에 그림을 그려주세요.',
-                icon: 'error',
-                confirmButtonText: '네',
-            })
-            return
-        }
-        Swal.fire({
-            title: '다 그렸군요!',
-            text: '이 그림으로 동화를 만들까요?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '네! 만들어주세요!',
-            cancelButtonText: '아니오 다시 그릴래요!',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                makeBook()
-                //sse 걸기
-                const userId = localStorage.getItem('userId') // userId 가져오기
-                if (userId) {
-                    console.log(userId)
-                    connect(userId) // SSE 이벤트 연결 시작
-                }
-                Swal.fire({
-                    title: '알겠어요!',
-                    text: '동화를 만들어드릴게요!',
-                    icon: 'success',
-                })
-            }
-        })
+        // if (canvas.getObjects().length === 0) {
+        //     Swal.fire({
+        //         title: '앗!',
+        //         text: '캔버스에 그림을 그려주세요.',
+        //         icon: 'error',
+        //         confirmButtonText: '네',
+        //     })
+        //     return
+        // }
+        // Swal.fire({
+        //     title: '다 그렸군요!',
+        //     text: '이 그림으로 동화를 만들까요?',
+        //     icon: 'question',
+        //     showCancelButton: true,
+        //     confirmButtonColor: '#3085d6',
+        //     cancelButtonColor: '#d33',
+        //     confirmButtonText: '네! 만들어주세요!',
+        //     cancelButtonText: '아니오 다시 그릴래요!',
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        //         makeBook()
+        //         //sse 걸기
+        //         const userId = localStorage.getItem('userId') // userId 가져오기
+        //         if (userId) {
+        //             console.log(userId)
+        //             connect(userId) // SSE 이벤트 연결 시작
+        //         }
+        //         Swal.fire({
+        //             title: '알겠어요!',
+        //             text: '동화를 만들어드릴게요!',
+        //             icon: 'success',
+        //         })
+        //     }
+        // })
     }
     const makeBook = async () => {
-        try {
-            handleLoading(true)
-            canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas))
-            const imageData = canvas.toDataURL({ format: 'jpeg', quality: 0.8 })
-
-            // Convert data URI to Blob
-            function dataURItoBlob(dataURI) {
-                const byteString = atob(dataURI.split(',')[1])
-                const mimeString = dataURI
-                    .split(',')[0]
-                    .split(':')[1]
-                    .split(';')[0]
-                const ab = new ArrayBuffer(byteString.length)
-                const ia = new Uint8Array(ab)
-                for (let i = 0; i < byteString.length; i++) {
-                    ia[i] = byteString.charCodeAt(i)
-                }
-                return new Blob([ab], { type: mimeString })
-            }
-
-            // Convert Blob to File
-            function blobToFile(theBlob, fileName) {
-                return new File([theBlob], fileName, { type: theBlob.type })
-            }
-
-            // Convert canvas image data to File
-            const blob = dataURItoBlob(imageData)
-            const file = blobToFile(blob, 'canvas_image.jpg')
-            console.log(file)
-
-            const bookFormData = new FormData()
-            bookFormData.append('childId', localStorage.getItem('childId'))
-            bookFormData.append('bookPicture', file)
-            const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-            if (data.status == 'success') {
-                Swal.fire({
-                    title: '동화책을 만들고 있어요',
-                    text: '다 만들어지면 알려줄게요! 그동안 어떤 것을 할까요?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '다른 동화 볼래요!',
-                    cancelButtonText: '놀이터로 갈래요!',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        router.push('/bookList')
-                    } else {
-                        router.push('/play')
-                    }
-                })
-            } else {
-                Swal.fire({
-                    title: '앗!',
-                    text: '이야기 만들기가 실패했어요 다시 한 번 해주세요!',
-                    icon: 'error',
-                    confirmButtonText: '네',
-                })
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error)
-        } finally {
-            handleLoading(false)
-        }
+        // try {
+        //     handleLoading(true)
+        //     canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas))
+        //     const imageData = canvas.toDataURL({ format: 'jpeg', quality: 0.8 })
+        //     // Convert data URI to Blob
+        //     function dataURItoBlob(dataURI) {
+        //         const byteString = atob(dataURI.split(',')[1])
+        //         const mimeString = dataURI
+        //             .split(',')[0]
+        //             .split(':')[1]
+        //             .split(';')[0]
+        //         const ab = new ArrayBuffer(byteString.length)
+        //         const ia = new Uint8Array(ab)
+        //         for (let i = 0; i < byteString.length; i++) {
+        //             ia[i] = byteString.charCodeAt(i)
+        //         }
+        //         return new Blob([ab], { type: mimeString })
+        //     }
+        //     // Convert Blob to File
+        //     function blobToFile(theBlob, fileName) {
+        //         return new File([theBlob], fileName, { type: theBlob.type })
+        //     }
+        //     // Convert canvas image data to File
+        //     const blob = dataURItoBlob(imageData)
+        //     const file = blobToFile(blob, 'canvas_image.jpg')
+        //     console.log(file)
+        //     const bookFormData = new FormData()
+        //     bookFormData.append('childId', localStorage.getItem('childId'))
+        //     bookFormData.append('bookPicture', file)
+        //     const { data } = await axios.post(`${apiUrl}/book`, bookFormData, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data',
+        //         },
+        //     })
+        //     if (data.status == 'success') {
+        //         Swal.fire({
+        //             title: '동화책을 만들고 있어요',
+        //             text: '다 만들어지면 알려줄게요! 그동안 다른 동화책을 볼까요?',
+        //             icon: 'success',
+        //             confirmButtonText: '네',
+        //         })
+        //         router.push('/bookList')
+        //     } else {
+        //         Swal.fire({
+        //             title: '앗!',
+        //             text: '이야기 만들기가 실패했어요 다시 한 번 해주세요!',
+        //             icon: 'error',
+        //             confirmButtonText: '네',
+        //         })
+        //     }
+        // } catch (error) {
+        //     console.error('Error fetching data:', error)
+        // } finally {
+        //     handleLoading(false)
+        // }
     }
     const goBack = () => {
         Swal.fire({
@@ -259,7 +246,7 @@ export default function CanvasBox({ handleLoading }) {
             cancelButtonText: '아니오',
         }).then((result) => {
             if (result.isConfirmed) {
-                router.push('/makebook')
+                router.push('/play')
             }
         })
     }
@@ -409,7 +396,7 @@ export default function CanvasBox({ handleLoading }) {
                     className="btn w-full rounded-none border-none bg-customDarkYellow text-xl hover:bg-customDarkYellow"
                     onClick={goBook}
                 >
-                    동화 만들기
+                    그림 저장
                 </button>
             </div>
             <button

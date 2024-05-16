@@ -13,7 +13,8 @@ export default function Signup() {
                 alt="Login Background"
                 priority
             />
-            <InputBox />
+            <div className='relative top-48 left-40 text-6xl'>현재는 회원가입이 불가능합니다. 다음에 시도해주세요.</div>
+            {/* <InputBox /> */}
         </div>
     )
 }

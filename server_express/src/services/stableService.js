@@ -274,7 +274,7 @@ function calculateAge(birthDate) {
         panorama: "no",
         self_attention: "no",
         upscale: "no",
-        //lora_model: "pepe-frog",
+        // lora_model: "child-book,picture-book-illustration,kids-illustration",
         lora_model: "child-book,picture-book-illustration",
         webhook: null,
         track_id: null

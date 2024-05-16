@@ -46,51 +46,58 @@ export function SseProvider({ children }) {
                 const { bookName, bookCoverUrl, bookId } = JSON.parse(
                     event.data
                 )
-                toast((t) => (
-                    <div
-                        className={`${
-                            t.visible ? 'animate-enter' : 'animate-leave'
-                        } pointer-events-auto flex w-full max-w-xl rounded-lg bg-white bg-opacity-80 shadow-lg ring-1 ring-black ring-opacity-5`}
-                    >
+                toast(
+                    (t) => (
                         <div
-                            className="flex-1 cursor-pointer p-4"
-                            onClick={() => {
-                                toast.dismiss(t.id)
-                                router.push(`/book/${bookId}`)
-                            }}
+                            className={`${
+                                t.visible ? 'animate-enter' : 'animate-leave'
+                            } pointer-events-auto flex w-full max-w-3xl rounded-lg`}
                         >
-                            <div className="flex items-start">
-                                <div className="flex-shrink-0 pt-0.5">
-                                    <img
-                                        className="h-10 w-10 rounded-full"
-                                        src={bookCoverUrl}
-                                        alt=""
-                                    />
-                                </div>
-                                <div className="ml-3 flex-1">
-                                    <p className="text-sm font-medium text-gray-900">
-                                        동화책 제작 완료!!
-                                    </p>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        {bookName}의 제작이 완료되었습니다.
-                                    </p>
+                            <div
+                                className="flex-1 cursor-pointer p-4"
+                                onClick={() => {
+                                    toast.dismiss(t.id)
+                                    router.push(`/book/${bookId}`)
+                                }}
+                            >
+                                <div className="flex items-start">
+                                    <div className="flex-shrink-0 pt-0.5">
+                                        <img
+                                            className="h-12 w-12 rounded-full"
+                                            src={bookCoverUrl}
+                                            alt=""
+                                        />
+                                    </div>
+                                    <div className="ml-3 flex-1">
+                                        <p className="text-lg font-medium text-gray-900">
+                                            나만의 동화책 만들기 성공!!
+                                        </p>
+                                        <p className="mt-1 text-sm text-gray-500">
+                                            {bookName}가 완성 되었어요.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
+                            <button
+                                onClick={() => toast.dismiss(t.id)}
+                                className="w-auto flex-none border-l border-gray-200 pl-4 pr-2 text-lg font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            >
+                                닫기
+                            </button>
                         </div>
-                        <button
-                            onClick={() => toast.dismiss(t.id)}
-                            className="w-auto flex-none border-l border-gray-200 pl-4 pr-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        >
-                            Close
-                        </button>
-                    </div>
-                ))
+                    ),
+                    { duration: Infinity }
+                )
 
                 if (Notification.permission === 'granted') {
                     new Notification('동화책 제작 완료!', {
                         body: `${bookName}의 제작이 완료되었습니다.`,
                         icon: bookCoverUrl,
                     })
+
+                    notification.onclick = () => {
+                        window.location.href = `https://fairydeco.site/book/${bookId}`
+                    }
                 }
 
                 sse.close()
@@ -128,7 +135,15 @@ export function SseProvider({ children }) {
 
     return (
         <SseContext.Provider value={{ connect, disconnect: clearEventSource }}>
-            <Toaster position="top-left" reverseOrder={false} />
+            <Toaster
+                position="top-left"
+                reverseOrder={false}
+                toastOptions={{
+                    style: {
+                        maxWidth: 500,
+                    },
+                }}
+            />
             {children}
         </SseContext.Provider>
     )
