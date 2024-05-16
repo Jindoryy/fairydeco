@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 
 export default function TitleBox({ title, bookId, childId }) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
-    const [newTitle, setNewTitle] = useState('')
+    const [newTitle, setNewTitle] = useState(title || '')
     const [localStorageChildId, setLocalStorageChildId] = useState(null)
     const Swal = require('sweetalert2')
     useEffect(() => {
