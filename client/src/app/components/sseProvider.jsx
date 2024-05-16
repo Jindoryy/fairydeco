@@ -96,7 +96,7 @@ export function SseProvider({ children }) {
                     })
 
                     notification.onclick = () => {
-                        router.push(`/book/${bookId}`)
+                        window.location.href = `https://fairydeco.site/book/${bookId}`
                     }
                 }
 

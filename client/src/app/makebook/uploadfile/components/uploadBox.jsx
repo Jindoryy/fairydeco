@@ -48,6 +48,7 @@ export default function UploadBox({ handleLoading }) {
         }
         getStory()
     }
+
     const getStory = async () => {
         const bookFormData = new FormData()
 
@@ -63,17 +64,26 @@ export default function UploadBox({ handleLoading }) {
             })
             if (data.status == 'success') {
                 Swal.fire({
-                    title: '와우!',
-                    text: '이야기를 만들기 시작했어요! 3분정도 기다려주세요. 다른 아이의 그림을 보러갈까요?',
-                    icon: 'success',
-                    confirmButtonText: '네',
+                    title: '동화책을 만들고 있어요',
+                    text: '다 만들어지면 알려줄게요! 그동안 어떤 것을 할까요?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '다른 동화 볼래요!',
+                    cancelButtonText: '놀이터로 갈래요!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        router.push('/bookList')
+                    } else {
+                        router.push('/play')
+                    }
                 })
                 const userId = localStorage.getItem('userId') // userId 가져오기
                 if (userId) {
                     console.log(userId)
                     connect(userId) // SSE 이벤트 연결 시작
                 }
-                router.push('/bookList')
             } else {
                 Swal.fire({
                     title: '앗!',
@@ -92,6 +102,7 @@ export default function UploadBox({ handleLoading }) {
     const goBack = () => {
         router.push('/makebook')
     }
+
     return (
         <>
             <button
