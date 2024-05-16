@@ -58,19 +58,6 @@ const TurnPage = () => {
         document.body.appendChild(scriptJQuery)
     }, [URL])
 
-    useEffect(() => {
-        if (data && turnLoaded) {
-            const $ = window.jQuery
-            const book = $('#book')
-            book.turn({
-                width: 800,
-                height: 600,
-                autoCenter: true,
-                pages: data.data.pageList.length * 2 + 2,
-            })
-        }
-    }, [data, turnLoaded])
-
     // 버튼 토글 로직
     const toggleAudioPlayback = () => {
         if (isAudioPlaying) {
