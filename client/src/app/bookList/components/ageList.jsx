@@ -16,7 +16,7 @@ const availableColors = [
     '#CDA0CA',
     '#FDC3A2',
     '#FFE480',
-    '#87EF6D',
+    '#A0D468',
 ]
 
 export default function Bookshelf() {
