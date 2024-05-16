@@ -37,11 +37,11 @@ function DemoJigsaw(props) {
                 lineSoftness: 0.18,
                 image: img,
                 fixed: true,
+                proximity: 30,
+                strokeColor: 'white',
                 outline: new headbreaker.outline.Rounded(),
                 painter: new headbreaker.painters.Konva(),
                 // borderFill: props.pieceSize / 10,
-                // proximity: props.pieceSize / 5,
-                // strokeColor: 'white',
             })
 
             newCanvas.adjustImagesToPuzzleWidth()
