@@ -28,11 +28,15 @@ export default function CanvasBox() {
 
     useEffect(() => {
         const canvasContainer = canvasContainerRef.current
+        const cursorUrl = 'https://ossrs.net/wiki/images/figma-cursor.png'
         // 캔버스 생성
         const newCanvas = new fabric.Canvas(canvasRef.current, {
             width: canvasContainer.offsetWidth,
             height: canvasContainer.offsetHeight,
             backgroundColor: 'white',
+            defaultCursor: `url(" ${cursorUrl} "), auto`,
+            hoverCursor: `url(" ${cursorUrl} "), auto`,
+            moveCursor: `url(" ${cursorUrl} "), auto`,
         })
         setCanvas(newCanvas)
 
@@ -93,16 +97,17 @@ export default function CanvasBox() {
     const handleSelectTool = () => {
         canvas.isDrawingMode = false
         canvas.selection = true
-        canvas.defaultCursor = 'default'
+        canvas.defaultCursor = 'pointer'
     }
     const handlePenTool = () => {
         canvas.freeDrawingBrush.width = 5
         canvas.isDrawingMode = true
+        canvas.defaultCursor = 'pointer'
     }
     const handleHandTool = () => {
         canvas.isDrawingMode = false
         canvas.selection = false
-        canvas.defaultCursor = 'move'
+        canvas.defaultCursor = 'pointer'
 
         let panning = false
         const handleMouseDown = () => {
@@ -135,10 +140,12 @@ export default function CanvasBox() {
             canvas.freeDrawingBrush.width = 20
             canvas.freeDrawingBrush.color = `${color}`
             canvas.isDrawingMode = true
+            canvas.defaultCursor = 'pointer'
         } else {
             canvas.freeDrawingBrush.width = 5
             canvas.freeDrawingBrush.color = `${color}`
             canvas.isDrawingMode = true
+            canvas.defaultCursor = 'pointer'
         }
     }
 
@@ -269,19 +276,6 @@ export default function CanvasBox() {
                             size={30}
                             weight="fill"
                             className="text-blue-700"
-                        />
-                    </button>
-                    <button
-                        onClick={() => setActiveColor('indigo')}
-                        disabled={
-                            setActiveColor === 'indigo' || activeTool != 'pen'
-                        }
-                        className={`btn btn-md rounded-lg p-2 ${activeColor === 'indigo' ? 'bg-customGreen text-white' : 'bg-gray-200 text-black'} ${activeTool !== 'pen' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                    >
-                        <Circle
-                            size={30}
-                            weight="fill"
-                            className="text-indigo-900"
                         />
                     </button>
                     <button
