@@ -219,11 +219,20 @@ export default function CanvasBox({ handleLoading }) {
             if (data.status == 'success') {
                 Swal.fire({
                     title: '동화책을 만들고 있어요',
-                    text: '다 만들어지면 알려줄게요! 그동안 다른 동화책을 볼까요?',
-                    icon: 'success',
-                    confirmButtonText: '네',
+                    text: '다 만들어지면 알려줄게요! 그동안 어떤 것을 할까요?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '다른 동화 볼래요!',
+                    cancelButtonText: '놀이터로 갈래요!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        router.push('/bookList')
+                    } else {
+                        router.push('/play')
+                    }
                 })
-                router.push('/bookList')
             } else {
                 Swal.fire({
                     title: '앗!',

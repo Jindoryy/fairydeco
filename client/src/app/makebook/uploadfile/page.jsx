@@ -29,7 +29,7 @@ export default function UploadFile() {
                             alt={'메인 페이지 사진'}
                             className="brightness-[60%]"
                         />
-                        <UploadBox />
+                        <UploadBox handleLoading={handleLoading} />
                     </div>
                 </>
             )}

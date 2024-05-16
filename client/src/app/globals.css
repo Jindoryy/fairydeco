@@ -45,3 +45,15 @@ body {
     font-weight: 800;
     font-style: normal;
 }
+
+.paint_hold {
+    cursor: url('./../../public/image/paint_hold.cur'), auto;
+}
+
+.paint_hover {
+    cursor: url('./../../public/image/paint_hover.cur'), auto;
+}
+
+.puzzle-cursor {
+    cursor: url('./../../public/image/puzzle.cur'), auto;
+}

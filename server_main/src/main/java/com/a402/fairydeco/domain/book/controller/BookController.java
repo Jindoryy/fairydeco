@@ -60,6 +60,7 @@ public class BookController {
         future.thenRun(() -> {
             try {
                 BookCreateRequestDto result = future.get(); // 비동기 작업의 결과 가져오기
+                openAiService.updateStatus(result.getBookId());
                 bookService.createBookImage(result);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
