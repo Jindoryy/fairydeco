@@ -37,7 +37,7 @@ function DemoJigsaw(props) {
                 lineSoftness: 0.18,
                 image: img,
                 fixed: true,
-                proximity: 30,
+                proximity: calculateProximity(props.horizontalPiecesCount),
                 strokeColor: 'white',
                 outline: new headbreaker.outline.Rounded(),
                 painter: new headbreaker.painters.Konva(),
@@ -94,6 +94,21 @@ function DemoJigsaw(props) {
         props.verticalPiecesCount,
         resetTrigger,
     ])
+
+    function calculateProximity(horizontalPiecesCount) {
+      switch (horizontalPiecesCount) {
+          case 2:
+              return 28;
+          case 3:
+              return 22;
+          case 4:
+              return 18;
+          case 5:
+              return 14;
+          default:
+              return 18;
+      }
+  }
 
     //다시 섞고 싶을 때
     // useEffect(() => {
