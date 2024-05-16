@@ -124,12 +124,15 @@ function DemoJigsaw(props) {
     }
     
     const goBack = () => {
-        router.push('/')
+        // router.push('/')
+        router.push('/play')
     }
 
     return (
         <>  
-            <div style={{ width: '90%', display:'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 auto' }}>
+            <div
+                className="w-[90%] flex items-center justify-between mx-auto"
+            >
                 <button
                     className="btn btn-ghost relative h-auto align-middle text-lg font-thin text-white hover:bg-transparent focus:bg-transparent"
                     onClick={goBack}
@@ -140,80 +143,80 @@ function DemoJigsaw(props) {
                         className="text-black"
                     />
                 </button>
-                <div style={{ fontSize: '3rem', marginLeft: '100px' }}>
+                <div className='text-[3rem] ml-[100px]'>
                     <span>퍼즐놀이</span>
                     <button
                         onClick={()=>document.getElementById('help_modal').showModal()}
-                        style={{ verticalAlign: 'text-bottom', marginLeft: '5px' }}
+                        className='ml-[5px] align-text-bottom'
                     >
                         <Question
                             size={50}
                             weight="fill"
-                            style={{ color: '#9999998f' }}
+                            className='text-[#9999998f]'
                         />
                     </button>
                     <dialog id="help_modal" className="modal">
                         <div className="modal-box w-11/12 max-w-5xl">
-                            <h3 className="font-bold" style={{ fontSize: '1.8rem' }}>도움말</h3>
-                            <div className="py-4" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', flexBasis: '45%' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <h3 className="font-bold text-[1.8rem]">도움말</h3>
+                            <div className="py-4 flex flex-wrap justify-around">
+                                <div className='flex items-center basis-[45%]'>
+                                    <div className='flex flex-col items-center'>
                                         <NewImage
                                             src={AnswerImage}
                                             alt={'go to next puzzle'}
-                                            style={{ width: '100px' }}
+                                            className='w-[100px]'
                                         />
-                                        <span style={{ fontSize: '1.2rem' }}>
+                                        <span className='text-[1.2rem]'>
                                             정답 보기
                                         </span>
                                     </div>
-                                    <div style={{ fontSize: '1.7rem', marginLeft: '10px' }}>
+                                    <div className='text-[1.7rem] ml-[10px]'>
                                         퍼즐을 정답으로 맞춰줘요.
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', flexBasis: '45%' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div className='flex items-center basis-[45%]'>
+                                    <div className='flex flex-col items-center'>
                                         <NewImage
                                             src={SketchImage}
                                             alt={'go to next puzzle'}
-                                            style={{ width: '100px' }}
+                                            className='w-[100px]'
                                         />
-                                        <span style={{ fontSize: '1.2rem' }}>
+                                        <span className='text-[1.2rem]'>
                                             힌트 없애기
                                         </span>
                                     </div>
-                                    <div style={{ fontSize: '1.7rem', marginLeft: '10px' }}>
+                                    <div className='text-[1.7rem] ml-[10px]'>
                                         정답 밑그림을 안보이게 해요.
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', flexBasis: '45%' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div className='flex items-center basis-[45%]'>
+                                    <div className='flex flex-col items-center'>
                                         <NewImage
                                             src={NextImage}
                                             alt={'go to next puzzle'}
-                                            style={{ width: '100px' }}
+                                            className='w-[100px]'
                                         />
-                                        <span style={{ fontSize: '1.2rem' }}>
+                                        <span className='text-[1.2rem]'>
                                             다음 퍼즐
                                         </span>
                                     </div>
-                                    <div style={{ fontSize: '1.7rem', marginLeft: '10px' }}>
+                                    <div className='text-[1.7rem] ml-[10px]'>
                                         다음 퍼즐을 보여줘요.
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', flexBasis: '45%' }}>
-                                    <div style={{ display: 'table', margin: '20px 10px' }}>
+                                <div className='flex items-center basis-[45%]'>
+                                    <div style={{ display: 'table' }} className='my-5 mx-2.5'>
                                         <span
-                                            className='bg-customPurple'
-                                            style={{ width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }}
+                                            className='bg-customPurple w-20 h-20 text-2xl rounded-lg text-white table-cell align-middle text-center'
                                         >
                                             4x4
                                         </span>
                                     </div>
-                                    <div style={{ fontSize: '1.7rem', marginLeft: '10px' }}>
+                                    <div className='text-[1.7rem] ml-[10px]'>
                                         퍼즐 조각 개수가 바뀌어요.
                                     </div>
                                 </div>
+
                             </div>
                             <div className="modal-action">
                                 <form method="dialog">
@@ -229,7 +232,7 @@ function DemoJigsaw(props) {
                 <div>
                     <button
                         onClick={resetPuzzle}
-                        style={{ width: '90px' }}
+                        className='w-[90px]'
                     >
                         <NewImage
                             src={AnswerImage}
@@ -241,7 +244,7 @@ function DemoJigsaw(props) {
                     </button>
                     <button
                         onClick={sketchToggle}
-                        style={{ width: '90px' }}
+                        className='w-[90px]'
                     >
                         <NewImage
                             src={SketchImage}
@@ -253,7 +256,7 @@ function DemoJigsaw(props) {
                     </button>
                     <button
                         onClick={nextPuzzle}
-                        style={{ width: '85px' }}
+                        className='w-[85px]'
                     >
                         <NewImage
                             src={NextImage}
@@ -265,16 +268,17 @@ function DemoJigsaw(props) {
                     </button>
                 </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div className='flex flex-col items-center justify-center'>
                 <div
                     ref={puzzleRef}
                     id={props.id}
-                    style={{ position: 'relative', border: '6px solid #020715', borderRadius: '8px' }}
+                    className='relative border-[6px] border-[#020715] rounded-lg'
                 >
                 </div>
                 <img 
                     src={props.imageSrc}
-                    style={{ position: 'absolute',opacity: sketchOpacity, zIndex: '-1', left: '55%', border: '15px solid #af00ad', width: '550px' }}
+                    style={{ opacity: sketchOpacity, zIndex: '-1' }}
+                    className='w-[550px] absolute border-[15px] border-[#af00ad] left-[55%]'
                 /> 
             </div>
         </>
@@ -353,36 +357,32 @@ export default function Puzzle() {
 
     return (
         <div
-            className="h-dvh w-dvw bg-customYellow"
-            style={{ zIndex: '-2', position: 'absolute', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+            style={{ zIndex: '-2'}}
+            className="h-dvh w-dvw bg-customYellow absolute flex flex-row items-center justify-center"
         >
             <div>
                 <button onClick={handle2x2Puzzle}
-                    className='bg-customPurple'
-                    style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
+                    className='bg-customPurple block w-20 h-20 text-2xl rounded-lg text-white my-5'
                 >
                     2x2
                 </button>
                 <button onClick={handle3x3Puzzle}
-                    className='bg-customPurple'
-                    style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
+                    className='bg-customPurple block w-20 h-20 text-2xl rounded-lg text-white my-5'
                 >
                     3x3
                 </button>
                 <button onClick={handle4x4Puzzle}
-                    className='bg-customPurple'
-                    style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
+                    className='bg-customPurple block w-20 h-20 text-2xl rounded-lg text-white my-5'
                 >
                     4x4
                 </button>
                 <button onClick={handle5x5Puzzle}
-                    className='bg-customPurple'
-                    style={{ display: 'block', width: '80px', height: '80px', fontSize: '1.5rem', borderRadius: '8px', color: 'white', margin: '20px 0px' }}
+                    className='bg-customPurple block w-20 h-20 text-2xl rounded-lg text-white my-5'
                 >
                     5x5
                 </button>
             </div>
-            <div style={{ flexBasis: '88%' }}>
+            <div className='basis-[88%]'>
                 <DemoJigsaw
                     id="puzzle"
                     pieceSize={pieceSize}
