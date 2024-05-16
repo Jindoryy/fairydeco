@@ -14,6 +14,7 @@
 }
 
 body {
+    cursor: url('./../../public/image/paint_hold.png'), auto;
 }
 
 @layer utilities {
@@ -44,4 +45,16 @@ body {
     font-family: 'Nanum Myeongjo', serif;
     font-weight: 800;
     font-style: normal;
+}
+
+.paint_hold {
+    cursor: url('./../../public/image/paint_hold.cur'), auto;
+}
+
+.paint_cursor {
+    cursor: url('./../../public/image/paint_cursor.cur'), auto;
+}
+
+.puzzle-cursor {
+    cursor: url('./../../public/image/puzzle.cur'), auto;
 }

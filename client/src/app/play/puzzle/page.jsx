@@ -448,7 +448,7 @@ export default function Puzzle() {
 
     return (
         <div
-            className="h-dvh w-dvw bg-customYellow"
+            className="puzzle-cursor h-dvh w-dvw bg-customYellow"
             style={{
                 zIndex: '-2',
                 position: 'absolute',
