@@ -81,12 +81,12 @@ public class OpenAiService {
         // image to text 메서드
         ImgPromptDto imgPromptDto = createPromptKidImg(bookRegister.getBookPicture());
         String[] promptTmp = imgPromptDto.getPrompt().split(",");
-        if (promptTmp.length != 5) {
+        if (promptTmp.length < 5) {
             System.out.println("키워드 분석 실패");
             return null;
         }
         String prompt = "너는 동화 작가야. 너가 동화를 잘 써주면 내가 1억달러를 줄게. \n" +
-                "내가 키워드를 주면 그것들과 관련된 동화를 만들어 주면 돼.\n" +
+                "내가 키워드를 주면 키워드로 재미있는 동화를 만들어 주면 돼.\n" +
                 "양식은 다음과 같아.\n" +
                 "\n" +
                 "키워드는" + imgPromptDto.getPrompt() + "\n" +
@@ -132,17 +132,16 @@ public class OpenAiService {
         "자신을 돌아보고 분석함으로 깨달음을 얻는", "어려운 상황에서"};
 
         if (age.equals("Y")) {
-            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 2~3줄 정도로 짧게 구성\n" +
-                    "3~5세 아이를 위한 동화라 내용은 흥미를 유발하지만 이해도는 크게 필요없는 내용으로 써줘\n" +
-                    "문맥이 어색하지 않고 내용이 전체적으로 이어지도록 구성해줘\n" +
-                    "그리고 단어는 3~5세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
+            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 2~3문장 정도로 짧게 구성해줘.\n" +
+                    "3~5세 아이를 위한 동화라 내용이 전체적으로 어색하지 않고 흥미를 유발하며 창의적인 내용으로 구성해줘.\n" +
+                    "그리고 단어는 3~5세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 말투는 다정하게 ~했지요 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
                     "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         } else {
-            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 최소 150자 이상으로 구성\n" +
+            prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 최소 150자 이상으로 구성해줘\n" +
                     "6~7세 아이를 위한 동화라 "+content[(int)(Math.random()* content.length)]+" 내용으로 작성해줘\n" +
                     "문맥이 어색하지 않고 내용이 전체적으로 이어지도록 구성해줘\n" +
-                    "그리고 단어는 6~7세 아동들이 이해 할 수 있는 쉬운 단어를 사용하고 어투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
+                    "그리고 단어는 6~7세 아이들이 이해 할 수 있는 쉬운 단어를 사용하고 말투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
                     "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         }
@@ -200,7 +199,7 @@ public class OpenAiService {
                 // 각 page 8개 db에 저장하는 작업
                 for (int i = 0; i < pageStories.length; i++) {
                     // 목소리 파일 생성 후 s3 저장
-                    File voice = voiceUtil.createVoice(pageStories[i]);
+//                    File voice = voiceUtil.createVoice(pageStories[i]);
                     Page page = Page.builder()
                             .book(savedBook)
                             .story(pageStories[i])
@@ -208,8 +207,8 @@ public class OpenAiService {
 //                            .sceneDescription(sceneDescriptions[i])
 //                            .characterDescription(characterDescriptions[i])
 //                            .backgroundDescription(backgroundDescriptions[i])
-                            .voiceUrl(fileUtil.uploadMP3(voice))
-                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
+//                            .voiceUrl(fileUtil.uploadMP3(voice))
+//                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
                             .build();
                     pageRepository.save(page);
                 }
@@ -276,7 +275,7 @@ public class OpenAiService {
     private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-                "이미지를 분석해서 양식처럼 키워드만 5개 뽑아줘. 그리고 사람, 동물, 사물만 인식하고 색이 있으면 키워드에 같이 붙여줘. 양식: 키워드1, 키워드2, 키워드3, 키워드4, 키워드5");
+                "이미지를 분석해서 양식처럼 한글로 키워드만 5개 뽑아줘. 키워드 사이에 ,가 들어가는 양식은 무조건 지켜야해. 우선적으로 사람이나 동물을 인식해서 각자의 이름을 지어줘. 그리고 색이 있으면 키워드에 같이 붙여줘. 양식: 키워드1, 키워드2, 키워드3, 키워드4, 키워드5");
 
         String requestBody = String.format("""
                 {
