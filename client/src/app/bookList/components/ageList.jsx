@@ -230,7 +230,7 @@ export default function Bookshelf() {
                                 >
                                     <div className="absolute h-[100%] rounded-md  text-center font-bold ">
                                         <div
-                                            className="absolute top-0 m-1 pt-1 text-sm font-thin text-gray-700 "
+                                            className="absolute top-0 m-1 h-[130px] pt-1 text-sm font-thin text-gray-700"
                                             style={{
                                                 writingMode: 'vertical-lr',
                                                 wordBreak: 'keep-all',
