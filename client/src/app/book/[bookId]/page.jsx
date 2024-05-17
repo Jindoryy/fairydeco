@@ -14,8 +14,10 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import TitleBox from './components/titleBox'
 import Loading from '../../components/loadingTest'
+import BookFrame from '../../../../public/image/bookFrame.png'
 
 const TurnPage = () => {
     const pathname = usePathname()
@@ -57,22 +59,53 @@ const TurnPage = () => {
         document.body.appendChild(scriptJQuery)
     }, [URL])
 
+    // 음소거 토글
+    const toggleAudioPlayback = () => {
+        const audioElement = document.getElementById('audio')
+        if (audioElement) {
+            audioElement.muted = !audioElement.muted
+            setIsMuted((prev) => !prev)
+        }
+    }
+    // 자동재생 & 일시정지 토글
+    const toggleAutoPlay = () => {
+        const audioElement = document.getElementById('audio')
+        if (audioElement) {
+            if (isAudioPlaying) {
+                audioElement.pause() // 일시정지
+            } else {
+                audioElement.play() // 재생
+            }
+        }
+        setIsAudioPlaying((prev) => !prev) // 오디오 상태 토글
+    }
+
+    // 앞장으로
     const handlePageBackward = () => {
         if (turnLoaded) {
             const book = window.jQuery('#book')
             book.turn('previous')
+            playAudioForCurrentPage()
         }
     }
-
+    // 뒷장으로
     const handlePageForward = () => {
         if (turnLoaded) {
             const book = window.jQuery('#book')
             book.turn('next')
+            playAudioForCurrentPage()
         }
     }
 
-    const handleToggleMute = () => {
-        setIsMuted((prevState) => !prevState)
+    const playAudioForCurrentPage = () => {
+        setTimeout(() => {
+            const audioElement = document.querySelector('audio')
+            if (audioElement) {
+                audioElement.play()
+                setIsMuted(false)
+                setIsAudioPlaying(true)
+            }
+        }, 500) // Delay to ensure the page has fully turned
     }
 
     useEffect(() => {
@@ -106,7 +139,7 @@ const TurnPage = () => {
                         console.log('Turning to page ' + page)
                         for (let p = range[0]; p <= range[1]; p++) {
                             let content
-                            let pageVoiceUrl
+
                             if (page === 1) {
                                 // Cover Page
                                 // Cover 페이지에는 음성이 없을 수 있으므로 체크
@@ -132,18 +165,22 @@ const TurnPage = () => {
                                     <div className="flex items-center justify-center">
                                         ${
                                             p % 2 === 0
-                                                ? `<img src="${data.data.pageList[pageIndex]?.pageimageUrl}" class="object-contain w-full h-full" alt="Page Image" />`
-                                                : `<div class="flex flex-col items-center justify-center text-xl text-black break-keep px-16 font-storyFont text-left leading-10">${data.data.pageList[pageIndex]?.pageStory}</div>
-                                               <div class="flex flex-col items-center justify-center text-center absolute bottom-12 w-full">
-                                                   <audio autoplay id="audio" className="ml-4"
+                                                ? `<img src="${data.data.pageList[pageIndex]?.pageimageUrl}" class="object-contain w-full h-full" alt="Page Image" />
+                                               
+                                                <audio id="audio" className="ml-4"
+                                                     src="${data.data.pageList[pageIndex]?.pageVoiceUrl}" type="audio/mpeg">
+                                                    Your browser does not support the audio element.
+                                                </audio>
+                                        `
+                                                : `<div class="flex flex-col items-center justify-center text-2xl text-black break-keep px-16 font-storyFont font-bold text-left leading-10">${data.data.pageList[pageIndex]?.pageStory}</div>
+                                              
+                                                   <audio id="audio" className="ml-4"
                                                         src="${data.data.pageList[pageIndex]?.pageVoiceUrl}" type="audio/mpeg">
                                                        Your browser does not support the audio element.
                                                    </audio>
-                                               </div>`
+                                               `
                                         }
                                     </div>`
-                                pageVoiceUrl =
-                                    data.data.pageList[pageIndex]?.pageVoiceUrl
                             }
 
                             addPage(p, content)
@@ -152,6 +189,7 @@ const TurnPage = () => {
                     turned: (e, page) => {
                         console.log('Turned to page ' + page) // 페이지 넘김 완료 후 페이지 번호 출력
                         $('#page-number').val(page)
+                        playAudioForCurrentPage()
                     },
                 },
             })
@@ -186,7 +224,7 @@ const TurnPage = () => {
                 {/* Header Div */}
                 <div
                     id="headerDiv"
-                    className="flex w-full items-center justify-between px-4 py-2"
+                    className="z-10 flex w-full items-center justify-between px-4 pt-2"
                 >
                     <Link
                         href="/"
@@ -225,7 +263,7 @@ const TurnPage = () => {
                         </Link>
                         <div
                             className="flex w-[55px] flex-col items-center"
-                            onClick={handleToggleMute}
+                            onClick={toggleAudioPlayback}
                         >
                             {isMuted ? (
                                 <>
@@ -258,7 +296,10 @@ const TurnPage = () => {
                                 </>
                             )}
                         </div>
-                        <div className="flex w-[55px] flex-col items-center">
+                        <div
+                            className="flex w-[55px] flex-col items-center"
+                            onClick={toggleAutoPlay}
+                        >
                             {isAudioPlaying ? (
                                 <>
                                     <Play
@@ -270,7 +311,7 @@ const TurnPage = () => {
                                         }}
                                     />
                                     <div className=" text-sm text-black">
-                                        자동재생
+                                        재생
                                     </div>
                                 </>
                             ) : (
@@ -291,12 +332,16 @@ const TurnPage = () => {
                         </div>
                     </div>
                 </div>
-
+                <div className="z-0">
+                    <Image src={BookFrame} layout="fill" objectFit="fill" />{' '}
+                </div>
                 {data ? (
                     <div
                         id="book"
-                        className="book-container relative flex  h-[600px] w-[1200px] items-center justify-center bg-white shadow-lg"
-                        style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)' }}
+                        className="book-container relative z-20 flex h-[550px] w-[1100px] items-center justify-center bg-white shadow-lg"
+                        style={{
+                            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+                        }}
                     >
                         <div className="cover flex h-full flex-col justify-end bg-white">
                             <img
@@ -327,7 +372,7 @@ const TurnPage = () => {
                 ) : null}
                 <div
                     id="controls"
-                    className="my-5 flex w-[800px] items-center  justify-center text-2xl font-bold"
+                    className="z-10 my-5 flex w-[800px] items-center  justify-center text-2xl font-bold"
                 >
                     <CaretCircleLeft
                         size={32}
