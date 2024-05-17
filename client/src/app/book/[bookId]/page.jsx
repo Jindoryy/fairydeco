@@ -189,7 +189,7 @@ const TurnPage = () => {
                     turned: (e, page) => {
                         console.log('Turned to page ' + page) // 페이지 넘김 완료 후 페이지 번호 출력
                         $('#page-number').val(page)
-                        playAudioForCurrentPage()
+                        // playAudioForCurrentPage()
                     },
                 },
             })
@@ -224,7 +224,7 @@ const TurnPage = () => {
                 {/* Header Div */}
                 <div
                     id="headerDiv"
-                    className="z-10 flex w-full items-center justify-between px-4 pt-2"
+                    className=" flex w-full items-center justify-between px-4 pt-2"
                 >
                     <Link
                         href="/"
@@ -332,13 +332,11 @@ const TurnPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="z-0">
-                    <Image src={BookFrame} layout="fill" objectFit="fill" />{' '}
-                </div>
+
                 {data ? (
                     <div
                         id="book"
-                        className="book-container relative z-20 flex h-[550px] w-[1100px] items-center justify-center bg-white shadow-lg"
+                        className="book-container relative  flex h-[550px] w-[1100px] items-center justify-center bg-white shadow-lg"
                         style={{
                             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
                         }}
