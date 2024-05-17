@@ -129,7 +129,7 @@ public class OpenAiService {
         // 프롬프트 나이대별 생성
         String[] content = {"자신의 실수를 인정하고 사과하는", "거짓말한 것을 후회하는", "포기하지 않고 열심히 노력해서 결국 성공하는","두려움을 이겨내고 극복하는","위험을 고려해서 현명한 결정을 내리는", "행동하기 전에 신중하게 고민해보는",
         "자기 능력을 과신하다가 큰 실수를 저지르는", "나쁜 마음씨를 갖고 살면 벌을 받고, 착하게 살면 복을 받는다는", "다른 사람들의 이야기를 듣고 그들의 경험을 통해 배우는", "현상을 관찰하고 자연의 흐름을 이해함으로 깊은 이해를 얻는",
-        "자신을 돌아보고 분석함으로 깨달음을 얻는","용기를 내어 꿈을 향해 나아가는"};
+        "자신을 돌아보고 분석함으로 깨달음을    얻는","용기를 내어 꿈을 향해 나아가는"};
 
         if (age.equals("Y")) {
             prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 2~3문장 정도로 짧게 구성해줘.\n" +
@@ -197,7 +197,7 @@ public class OpenAiService {
                 // 각 page 8개 db에 저장하는 작업
                 for (int i = 0; i < pageStories.length; i++) {
                     // 목소리 파일 생성 후 s3 저장
-//                    File voice = voiceUtil.createVoice(pageStories[i]);
+                    File voice = voiceUtil.createVoice(pageStories[i]);
                     Page page = Page.builder()
                             .book(savedBook)
                             .story(pageStories[i])
@@ -205,8 +205,8 @@ public class OpenAiService {
 //                            .sceneDescription(sceneDescriptions[i])
 //                            .characterDescription(characterDescriptions[i])
 //                            .backgroundDescription(backgroundDescriptions[i])
-//                            .voiceUrl(fileUtil.uploadMP3(voice))
-//                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
+                            .voiceUrl(fileUtil.uploadMP3(voice))
+                            .voiceDuration(voiceUtil.getVoiceDuration(voice))
                             .build();
                     pageRepository.save(page);
                 }
@@ -273,7 +273,7 @@ public class OpenAiService {
     private String buildRequestBody(String imageUrl) {
         // 프롬프트를 이미지 분석과 스토리 창작을 위한 구체적인 지시로 개선
         String detailedPrompt = String.format(
-                "이미지를 분석해서 양식처럼 한글로 키워드만 5개 뽑아줘. 키워드 사이에 ,가 들어가는 양식은 무조건 지켜야해. 우선적으로 사람이나 동물을 인식해서 각자의 이름을 지어줘. 그리고 색이 있으면 키워드에 같이 붙여줘. 양식: 키워드1, 키워드2, 키워드3, 키워드4, 키워드5");
+                "이미지를 분석해서 양식처럼 한글로 키워드만 5개 뽑아줘. 키워드 사이에 ,가 들어가는 양식은 무조건 지켜야해. 사람, 동물, 사물을 인식하고 사람은 이름을 지어줘. 그리고 색이 있으면 키워드에 같이 붙여줘. 양식: 키워드1, 키워드2, 키워드3, 키워드4, 키워드5");
 
         String requestBody = String.format("""
                 {
