@@ -119,13 +119,13 @@ async function bookStableTestCreation(req, res) {
     const childAge = stableService.calculateAge(childBirth);
 
     // 페이지 정보 쿼리
-    const [results] = await connection.query('SELECT page_id, page_image_prompt FROM page WHERE book_id = ?', [bookId]);
+    const [results] = await connection.query('SELECT page_id, page_story, page_image_prompt FROM page WHERE book_id = ?', [bookId]);
     if (results.length === 0) {
         await connection.end();  // 결과가 없으면 연결 종료
         res.status(404).send(`No pages found for the given BOOK ID : ${bookId}, PAGE ID : ${pageId}`);
         return;
     }
-    const storyJoin = results.map((page, index) => `${index + 1}. ${page.page_image_prompt}`).join('\n');
+    const storyJoin = results.map((page, index) => `${index + 1}. ${page.page_story}`).join('\n');
     console.log("FULL STORY : "+ storyJoin)
     res.status(200).send({ success: true, message: "동화 제작 중..." });
     console.log("PHASE 3 : DB RETRIEVAL SUCCESS, RETURN SUCCESS RESPONSE");
