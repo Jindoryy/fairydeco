@@ -35,7 +35,6 @@ export default function Bookshelf() {
             const response = await axios.get(
                 `${apiUrl}/book/main-list/${localStorage.getItem('childId')}`
             )
-            console.log(response.data.data)
             setSampleList(response.data.data.sampleBookList)
             setRecentList(response.data.data.recentBookList)
         } catch (error) {
@@ -69,7 +68,6 @@ export default function Bookshelf() {
             })
         }
         setSpines(s)
-        console.log(s)
     }, [])
 
     const goBook = (bookId) => {

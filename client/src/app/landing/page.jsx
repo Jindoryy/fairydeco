@@ -43,9 +43,7 @@ export default function Landing() {
         window.addEventListener('touchend', function(event) {
             const endY = event.changedTouches[0].clientY; 
             const deltaY = startY - endY;
-            console.log("touching")
             if (!isTouching) {
-                console.log("here")
                 isTouching  = true;
                 clearTimeout(scrollTimeout);
                 scrollTimeout = setTimeout(function() {

@@ -39,7 +39,6 @@ export default function AddChildModal({ onClose, onSubmit }) {
             })
 
             if (response.ok) {
-                console.log('Child added successfully')
                 onSubmit(newChild) // Call onSubmit callback
             } else {
                 console.error('Error adding child')

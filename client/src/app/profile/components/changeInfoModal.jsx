@@ -65,7 +65,6 @@ export default function ChangeInfoModal({
             })
 
             if (response.ok) {
-                console.log('Child info updated successfully')
             } else {
                 console.error('Error updating child info')
             }

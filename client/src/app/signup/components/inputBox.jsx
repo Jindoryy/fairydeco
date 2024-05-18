@@ -129,7 +129,6 @@ export default function InputBox() {
                 password: password,
                 name: userName,
             })
-            console.log(response.data)
             if (response.data.status == 'success') {
                 Swal.fire({
                     title: '우와!',
