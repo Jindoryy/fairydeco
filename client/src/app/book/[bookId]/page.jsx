@@ -12,12 +12,9 @@ import {
     CaretCircleLeft,
     CaretCircleRight,
 } from '@phosphor-icons/react/dist/ssr'
-
 import Link from 'next/link'
-import Image from 'next/image'
 import TitleBox from './components/titleBox'
 import Loading from '../../components/loadingTest'
-import BookFrame from '../../../../public/image/bookFrame.png'
 
 const TurnPage = () => {
     const pathname = usePathname()
@@ -25,9 +22,9 @@ const TurnPage = () => {
     const [data, setData] = useState(null)
     const [turnLoaded, setTurnLoaded] = useState(false)
     const [allLoaded, setAllLoaded] = useState(false)
-
-    const [isAudioPlaying, setIsAudioPlaying] = useState(false)
+    const [isAutoPlaying, setIsAutoPlaying] = useState(false)
     const [isMuted, setIsMuted] = useState(false)
+    const [currentAudio, setCurrentAudio] = useState(null)
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const bookId = pathname.split('/').pop()
@@ -67,17 +64,10 @@ const TurnPage = () => {
             setIsMuted((prev) => !prev)
         }
     }
+
     // 자동재생 & 일시정지 토글
     const toggleAutoPlay = () => {
-        const audioElement = document.getElementById('audio')
-        if (audioElement) {
-            if (isAudioPlaying) {
-                audioElement.pause() // 일시정지
-            } else {
-                audioElement.play() // 재생
-            }
-        }
-        setIsAudioPlaying((prev) => !prev) // 오디오 상태 토글
+        setIsAutoPlaying((prev) => !prev)
     }
 
     // 앞장으로
@@ -85,27 +75,31 @@ const TurnPage = () => {
         if (turnLoaded) {
             const book = window.jQuery('#book')
             book.turn('previous')
-            playAudioForCurrentPage()
         }
     }
+
     // 뒷장으로
     const handlePageForward = () => {
         if (turnLoaded) {
             const book = window.jQuery('#book')
             book.turn('next')
-            playAudioForCurrentPage()
         }
     }
 
+    // 현재 페이지에 맞는 오디오 재생 및 페이지 넘김
     const playAudioForCurrentPage = () => {
-        setTimeout(() => {
-            const audioElement = document.querySelector('audio')
-            if (audioElement) {
+        const audioElement = document.querySelector('audio')
+        if (audioElement) {
+            if (isAutoPlaying) {
                 audioElement.play()
-                setIsMuted(false)
-                setIsAudioPlaying(true)
+                setCurrentAudio(audioElement)
+                audioElement.onended = () => {
+                    handlePageForward()
+                }
+            } else {
+                audioElement.pause()
             }
-        }, 500) // Delay to ensure the page has fully turned
+        }
     }
 
     useEffect(() => {
@@ -134,9 +128,7 @@ const TurnPage = () => {
                 gradients: true,
                 when: {
                     turning: (e, page) => {
-                        console.log('Turning to page ' + page) // 현재 페이지 번호를 콘솔에 출력
                         const range = book.turn('range', page)
-                        console.log('Turning to page ' + page)
                         for (let p = range[0]; p <= range[1]; p++) {
                             let content
 
@@ -158,9 +150,6 @@ const TurnPage = () => {
                             } else {
                                 // 내용 페이지
                                 const pageIndex = Math.floor((page - 2) / 2)
-                                console.log(
-                                    data.data.pageList[pageIndex]?.pageVoiceUrl
-                                )
                                 content = `
                                     <div className="flex items-center justify-center">
                                         ${
@@ -187,9 +176,11 @@ const TurnPage = () => {
                         }
                     },
                     turned: (e, page) => {
-                        console.log('Turned to page ' + page) // 페이지 넘김 완료 후 페이지 번호 출력
                         $('#page-number').val(page)
-                        // playAudioForCurrentPage()
+
+                        if (isAutoPlaying) {
+                            playAudioForCurrentPage()
+                        }
                     },
                 },
             })
@@ -214,17 +205,25 @@ const TurnPage = () => {
         }
     }, [jQueryLoaded, turnLoaded, data])
 
+    useEffect(() => {
+        // Trigger audio playback when isAutoPlaying changes to true
+        if (isAutoPlaying) {
+            playAudioForCurrentPage()
+        } else if (currentAudio) {
+            currentAudio.pause()
+        }
+    }, [isAutoPlaying, currentAudio])
+
     if (!allLoaded) {
         return <Loading /> // 로딩 중에는 로딩 컴포넌트 표시
     }
-
     return (
         <>
             <div className="flex min-h-screen flex-col items-center justify-center bg-[#FFFDEA] font-ourFont">
                 {/* Header Div */}
                 <div
                     id="headerDiv"
-                    className=" flex w-full items-center justify-between px-4 pt-2"
+                    className=" flex w-full items-center justify-between px-4"
                 >
                     <Link
                         href="/"
@@ -300,21 +299,7 @@ const TurnPage = () => {
                             className="flex w-[55px] flex-col items-center"
                             onClick={toggleAutoPlay}
                         >
-                            {isAudioPlaying ? (
-                                <>
-                                    <Play
-                                        size={32}
-                                        weight="fill"
-                                        style={{
-                                            color: '#A0D468',
-                                            cursor: 'pointer',
-                                        }}
-                                    />
-                                    <div className=" text-sm text-black">
-                                        재생
-                                    </div>
-                                </>
-                            ) : (
+                            {isAutoPlaying ? (
                                 <>
                                     <Pause
                                         size={32}
@@ -325,7 +310,21 @@ const TurnPage = () => {
                                         }}
                                     />
                                     <div className=" text-sm text-black">
-                                        일시정지
+                                        정지
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <Play
+                                        size={32}
+                                        weight="fill"
+                                        style={{
+                                            color: '#A0D468',
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+                                    <div className=" text-sm text-black">
+                                        자동재생
                                     </div>
                                 </>
                             )}
@@ -338,7 +337,8 @@ const TurnPage = () => {
                         id="book"
                         className="book-container relative  flex h-[550px] w-[1100px] items-center justify-center bg-white shadow-lg"
                         style={{
-                            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+                            boxShadow:
+                                'rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px 3px, rgba(0, 0, 0, 0.2) 0px 3px 0px inset',
                         }}
                     >
                         <div className="cover flex h-full flex-col justify-end bg-white">
