@@ -90,6 +90,7 @@ const TurnPage = () => {
     const playAudioForCurrentPage = () => {
         const audioElement = document.querySelector('audio')
         if (audioElement) {
+            audioElement.currentTime = 0 // Reset audio to start
             if (isAutoPlaying) {
                 audioElement.play()
                 setCurrentAudio(audioElement)
@@ -177,7 +178,6 @@ const TurnPage = () => {
                     },
                     turned: (e, page) => {
                         $('#page-number').val(page)
-
                         if (isAutoPlaying) {
                             playAudioForCurrentPage()
                         }
