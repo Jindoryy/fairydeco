@@ -12,6 +12,8 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<Book> findTop15ByCompleteAndRecommendAgeAndChildNotAndCoverUrlIsNotNullOrderByIdDesc(CompleteStatus complete,
         RecommendAge recommendAge, Child child);
 
+    List<Book> findTop15ByCompleteAndChildNotAndCoverUrlIsNotNullOrderByIdDesc(CompleteStatus complete, Child child);
+
     List<Book> findByCompleteAndRecommendAgeAndChildOrderByIdDesc(CompleteStatus complete,
         RecommendAge recommendAge, Child child);
 
