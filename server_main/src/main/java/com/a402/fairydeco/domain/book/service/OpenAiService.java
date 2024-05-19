@@ -293,14 +293,4 @@ public class OpenAiService {
         return requestBody;
     }
 
-    public void generateVoice(int startId, int endId) {
-        for(int i = startId;i<=endId;i++){
-            Page page = pageRepository.findById(i).orElseThrow(() -> new CustomException(ErrorCode.PAGE_NOT_FOUND_ERROR));
-            File voice = voiceUtil.createVoice(page.getStory());
-            page.setVoiceUrl(fileUtil.uploadMP3(voice));
-            page.setVoiceDuration(voiceUtil.getVoiceDuration(voice));
-
-        }
-
-    }
 }

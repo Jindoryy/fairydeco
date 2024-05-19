@@ -149,9 +149,4 @@ public class BookController {
 
         return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(sseEmitter);
     }
-
-    @PostMapping("tmpVoice")
-    public void generateVoice(int startId, int endId){
-        openAiService.generateVoice(startId,endId);
-    }
 }
