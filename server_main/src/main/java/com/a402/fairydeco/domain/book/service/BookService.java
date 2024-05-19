@@ -46,7 +46,7 @@ public class BookService {
         RecommendAge recommendAge = (age <= 5) ? RecommendAge.Y : RecommendAge.O;
 
         List<mainBookListDTO> sampleBookList = getMainBookList(recommendAge, adminChild);
-        List<mainBookListDTO> recentBookList = getRecentBookList(recommendAge, adminChild);
+        List<mainBookListDTO> recentBookList = getRecentBookList(adminChild);
 
         return BookMainListResponse.builder()
             .sampleBookList(sampleBookList)
@@ -67,9 +67,9 @@ public class BookService {
             .toList();
     }
 
-    private List<mainBookListDTO> getRecentBookList(RecommendAge recommendAge, Child adminChild) {
-        return bookRepository.findTop15ByCompleteAndRecommendAgeAndChildNotAndCoverUrlIsNotNullOrderByIdDesc(
-                CompleteStatus.COMPLETE, recommendAge, adminChild)
+    private List<mainBookListDTO> getRecentBookList(Child adminChild) {
+        return bookRepository.findTop15ByCompleteAndChildNotAndCoverUrlIsNotNullOrderByIdDesc(
+                CompleteStatus.COMPLETE, adminChild)
             .stream()
             .map(book -> mainBookListDTO.builder()
                 .bookId(book.getId())
