@@ -344,7 +344,7 @@ const TurnPage = () => {
                                 style={{
                                     width: '100%',
                                     height: '85%',
-                                    objectFit: 'fill',
+                                    objectFit: 'cover',
                                 }}
                             />
                             <div

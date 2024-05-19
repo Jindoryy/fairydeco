@@ -8,7 +8,6 @@ import KidsPainting from './components/kidsPainting'
 
 export default function Mypage() {
     const [userInfo, setUserInfo] = useState(null)
-    const [showKidsPaint, setShowKidsPaint] = useState(false) // KidsPaint 표시 여부를 위한 상태 추가
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
@@ -29,13 +28,6 @@ export default function Mypage() {
 
         fetchData() // useEffect가 마운트될 때 데이터 가져오기
     }, [])
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         setShowKidsPaint(true)
-    //     }, 1000)
-
-    //     return () => clearTimeout(timer)
-    // }, [])
 
     const childName = userInfo?.data.childName
     const childGender = userInfo?.data.childGender === 'MAN' ? '남' : '여'
