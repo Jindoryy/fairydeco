@@ -70,6 +70,42 @@ const nextConfig = {
           port: '',
           pathname: '/**'
         },
+        {
+          protocol: 'https',
+          hostname: 'i.pinimg.com',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'moonji.com',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'rafaellopez.com',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'thumb.ac-illust.com',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'moonji.com',
+          port: '',
+          pathname: '/**'
+        },
+        {
+          protocol: 'https',
+          hostname: 'img.freepik.com',
+          port: '',
+          pathname: '/**'
+        },
         
       ],
     }

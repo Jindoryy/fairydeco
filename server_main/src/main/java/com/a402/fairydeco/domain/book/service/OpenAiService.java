@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -107,7 +108,7 @@ public class OpenAiService {
                 "                  .....\n" +
                 "                \"pageNumber\": 8,\n" +
                 "                \"imagePrompt\": \"장면묘사8\",\n" +
-                "                \"pageStory\" : \"장면 별 스토리8\"\n "+
+                "                \"pageStory\" : \"장면 별 스토리8\"\n " +
                 "                ]" +
                 "}\n" +
                 "```\n" +
@@ -127,9 +128,9 @@ public class OpenAiService {
         Book savedBook = bookRepository.save(book);
         bookRepository.flush();
         // 프롬프트 나이대별 생성
-        String[] content = {"자신의 실수를 인정하고 사과하는", "거짓말한 것을 후회하는", "포기하지 않고 열심히 노력해서 결국 성공하는","두려움을 이겨내고 극복하는","위험을 고려해서 현명한 결정을 내리는", "행동하기 전에 신중하게 고민해보는",
-        "자기 능력을 과신하다가 큰 실수를 저지르는", "나쁜 마음씨를 갖고 살면 벌을 받고, 착하게 살면 복을 받는다는", "다른 사람들의 이야기를 듣고 그들의 경험을 통해 배우는", "현상을 관찰하고 자연의 흐름을 이해함으로 깊은 이해를 얻는",
-        "자신을 돌아보고 분석함으로 깨달음을    얻는","용기를 내어 꿈을 향해 나아가는"};
+        String[] content = {"자신의 실수를 인정하고 사과하는", "거짓말한 것을 후회하는", "포기하지 않고 열심히 노력해서 결국 성공하는", "두려움을 이겨내고 극복하는", "위험을 고려해서 현명한 결정을 내리는", "행동하기 전에 신중하게 고민해보는",
+                "자기 능력을 과신하다가 큰 실수를 저지르는", "나쁜 마음씨를 갖고 살면 벌을 받고, 착하게 살면 복을 받는다는", "다른 사람들의 이야기를 듣고 그들의 경험을 통해 배우는", "현상을 관찰하고 자연의 흐름을 이해함으로 깊은 이해를 얻는",
+                "자신을 돌아보고 분석함으로 깨달음을    얻는", "용기를 내어 꿈을 향해 나아가는"};
 
         if (age.equals("Y")) {
             prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 2~3문장 정도로 짧게 구성해줘.\n" +
@@ -139,7 +140,7 @@ public class OpenAiService {
                     "충분히 시뮬레이션 하고 결과물만 출력해줘 다른 멘트는 하지마";
         } else {
             prompt += "pages의 크기는 8개로 각 \"pageStory\"는 한글로 5~7문장 정도로 구성해줘\n" +
-                    "6~7세 아이를 위한 동화라 "+content[(int)(Math.random()* content.length)]+" 내용으로 작성해줘\n" +
+                    "6~7세 아이를 위한 동화라 " + content[(int) (Math.random() * content.length)] + " 내용으로 작성해줘\n" +
                     "문맥이 어색하지 않고 내용이 전체적으로 이어지도록 구성해줘\n" +
                     "그리고 단어는 6~7세 아이들이 이해 할 수 있는 쉬운 단어를 사용하고 말투는 다정한 ~했답니다 등의 부드러운 말투를 사용해줘 말투가 고정적일 필요는 없어\n" +
                     "\n" +
@@ -178,18 +179,12 @@ public class OpenAiService {
                     }
                     break;
                 }
-//                String[] sceneDescriptions = new String[pagesNode.size()];
-//                String[] characterDescriptions = new String[pagesNode.size()];
-//                String[] backgroundDescriptions = new String[pagesNode.size()];
                 String[] pageStories = new String[pagesNode.size()];
                 String[] imagePrompt = new String[pagesNode.size()];
                 // pages의 배열에서 각각 인자 배열에 저장
                 for (int i = 0; i < pagesNode.size(); i++) {
                     JsonNode pageNode = pagesNode.get(i);
                     // 각각 인자에 넣음
-//                    sceneDescriptions[i] = pageNode.get("sceneDescription").asText();
-//                    characterDescriptions[i] = pageNode.get("characterDescription").asText();
-//                    backgroundDescriptions[i] = pageNode.get("backgroundDescription").asText();
                     pageStories[i] = pageNode.get("pageStory").asText();
                     imagePrompt[i] = pageNode.get("imagePrompt").asText();
                     System.out.println(pageStories[i]);
@@ -202,9 +197,6 @@ public class OpenAiService {
                             .book(savedBook)
                             .story(pageStories[i])
                             .imagePrompt(imagePrompt[i])
-//                            .sceneDescription(sceneDescriptions[i])
-//                            .characterDescription(characterDescriptions[i])
-//                            .backgroundDescription(backgroundDescriptions[i])
                             .voiceUrl(fileUtil.uploadMP3(voice))
                             .voiceDuration(voiceUtil.getVoiceDuration(voice))
                             .build();
@@ -223,7 +215,8 @@ public class OpenAiService {
             }
         });
     }
-    public void updateStatus(int bookId){
+
+    public void updateStatus(int bookId) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND_ERROR));
         book.updateBookStatus(CompleteStatus.IMAGE);
         System.out.println(book.getComplete());
@@ -299,4 +292,5 @@ public class OpenAiService {
                 }""", detailedPrompt, imageUrl);
         return requestBody;
     }
+
 }
