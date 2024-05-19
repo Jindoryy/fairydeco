@@ -9,7 +9,6 @@ export default function TitleBox({ title, bookId, childId }) {
     const [localStorageChildId, setLocalStorageChildId] = useState(null)
     const Swal = require('sweetalert2')
     useEffect(() => {
-        console.log(childId)
         const storedChildId = localStorage.getItem('childId')
         if (storedChildId) {
             setLocalStorageChildId(storedChildId)

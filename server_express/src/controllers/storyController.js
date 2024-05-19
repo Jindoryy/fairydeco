@@ -115,9 +115,16 @@ async function bookStableTestCreation(req, res) {
     console.log("PHASE 2 : DB CONNECTION SUCCESS");
 
     // 아이 나이 정보 조회
-    const childBirth = await connection.query('SELECT child_birth FROM child WHERE child_id = ?', [childId]);
-    const childAge = stableService.calculateAge(childBirth);
-
+    const queryResult = await connection.query('SELECT child_birth FROM child WHERE child_id = ?', [childId]);
+    const rows = queryResult[0];
+    let childAge;
+    if (rows.length > 0 && rows[0].child_birth) {
+    const childBirth = rows[0].child_birth; // child_birth 값 추출
+    childAge = stableService.calculateAge(childBirth); // 나이 계산 함수 호출
+    } else {
+    childAge = 1; // 데이터가 유효하지 않은 경우 기본값으로 1 반환
+    }
+    console.log("childAge: " + childAge);
     // 페이지 정보 쿼리
     const [results] = await connection.query('SELECT page_id, page_story, page_image_prompt FROM page WHERE book_id = ?', [bookId]);
     if (results.length === 0) {

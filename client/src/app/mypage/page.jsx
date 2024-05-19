@@ -14,7 +14,6 @@ export default function Mypage() {
 
     useEffect(() => {
         const childId = localStorage.getItem('childId')
-        console.log(childId)
         const URL = `${apiUrl}/user/mypage/${childId}`
 
         // 데이터를 가져와서 상태에 저장

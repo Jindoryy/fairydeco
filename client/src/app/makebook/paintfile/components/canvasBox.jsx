@@ -166,14 +166,8 @@ export default function CanvasBox({ handleLoading }) {
                 //sse 걸기
                 const userId = localStorage.getItem('userId') // userId 가져오기
                 if (userId) {
-                    console.log(userId)
                     connect(userId) // SSE 이벤트 연결 시작
                 }
-                Swal.fire({
-                    title: '알겠어요!',
-                    text: '동화를 만들어드릴게요!',
-                    icon: 'success',
-                })
             }
         })
     }
@@ -183,7 +177,6 @@ export default function CanvasBox({ handleLoading }) {
             canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas))
             const imageData = canvas.toDataURL({ format: 'jpeg', quality: 0.8 })
 
-            // Convert data URI to Blob
             function dataURItoBlob(dataURI) {
                 const byteString = atob(dataURI.split(',')[1])
                 const mimeString = dataURI
@@ -197,16 +190,12 @@ export default function CanvasBox({ handleLoading }) {
                 }
                 return new Blob([ab], { type: mimeString })
             }
-
-            // Convert Blob to File
             function blobToFile(theBlob, fileName) {
                 return new File([theBlob], fileName, { type: theBlob.type })
             }
 
-            // Convert canvas image data to File
             const blob = dataURItoBlob(imageData)
             const file = blobToFile(blob, 'canvas_image.jpg')
-            console.log(file)
 
             const bookFormData = new FormData()
             bookFormData.append('childId', localStorage.getItem('childId'))
@@ -217,22 +206,33 @@ export default function CanvasBox({ handleLoading }) {
                 },
             })
             if (data.status == 'success') {
-                Swal.fire({
-                    title: '동화책을 만들고 있어요',
-                    text: '다 만들어지면 알려줄게요! 그동안 어떤 것을 할까요?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '다른 동화 볼래요!',
-                    cancelButtonText: '놀이터로 갈래요!',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        router.push('/bookList')
-                    } else {
-                        router.push('/play')
-                    }
-                })
+                if (data.data == 200) {
+                    Swal.fire({
+                        title: '동화책을 만들고 있어요',
+                        text: '다 만들어지면 알림이 떠요! 그동안 어떤 것을 할까요?',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '다른 동화 볼래요!',
+                        cancelButtonText: '놀이터로 갈래요!',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            router.push('/bookList')
+                        } else {
+                            router.push('/play')
+                        }
+                    })
+                } else if (data.data == 400) {
+                    Swal.fire({
+                        title: '이미지 분석 실패!',
+                        text: '그림을 조금 더 그려주세요!',
+                        icon: 'error',
+                        confirmButtonText: '네',
+                    })
+                    router.push('/makebook/paintfile')
+                    return;
+                }
             } else {
                 Swal.fire({
                     title: '앗!',

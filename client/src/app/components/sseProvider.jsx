@@ -16,7 +16,6 @@ const useStore = create(
         {
             name: 'sse-storage',
             onRehydrateStorage: () => (state) => {
-                console.log('상태 복원 완료:', state)
             },
         }
     )
@@ -30,19 +29,15 @@ export function SseProvider({ children }) {
 
     const connect = useCallback(
         (userId) => {
-            console.log('Connecting with userID:', userId)
 
-            console.log('check1')
             const sse = new EventSource(
                 `https://fairydeco.site/api/book/sse/${userId}`
             )
             clearEventSource()
             setEventSource(userId)
 
-            console.log('check2')
 
             sse.addEventListener('book-complete', (event) => {
-                console.log(event.data)
                 const { bookName, bookCoverUrl, bookId } = JSON.parse(
                     event.data
                 )
@@ -121,14 +116,8 @@ export function SseProvider({ children }) {
     useEffect(() => {
         if ('Notification' in window) {
             Notification.requestPermission().then((permission) => {
-                if (permission === 'granted') {
-                    console.log('Notification permission granted.')
-                } else {
-                    console.log('Notification permission denied.')
-                }
             })
         } else {
-            console.log('This browser does not support notifications.')
             return
         }
     }, [])

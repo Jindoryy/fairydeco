@@ -105,14 +105,13 @@ async function storyToImage(childAge, prompt, bookId, pageId, attempt = 2) {
     const url = "https://stablediffusionapi.com/api/v4/dreambooth";
     console.log(prompt);
 
-    console.log()
     let modelId, loraModel;
-    if (childAge > 5) {
-        modelId = "sdxl"; // 5세 초과일 경우 모델
-        loraModel = null; // LoRA 설정을 사용하지 않음
+    if (childAge < 6) {
+        modelId = "sdxl"; // 5세 이하일 경우 모델
+        loraModel = "child-book,picture-book-illustration"; // LoRA 설정을 사용하지 않음
     } else {
-        modelId = "disney-pixal-cartoon"; // 5세 이하일 경우 모델
-        loraModel = "test"; // LoRA 설정
+       modelId = "huanxiang"; // 6세 이상일 경우 모델
+       loraModel = "picture-book-illustration"; // LoRA 설정
     }
 
     const headers = {
@@ -121,7 +120,7 @@ async function storyToImage(childAge, prompt, bookId, pageId, attempt = 2) {
 
     const payload = {
         key: process.env.API_KEY,
-        model_id: "sdxl",
+        model_id: modelId,
         prompt: "watercolor, storybook, "+prompt + ", best quality, very detailed, high resolution, sharp, sharp image",
         negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, deformed, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra leg, (3D:1.5), 3d render, building, anime",
         width: "512",
@@ -136,7 +135,7 @@ async function storyToImage(childAge, prompt, bookId, pageId, attempt = 2) {
         panorama: "no",
         self_attention: "no",
         upscale: "no",
-        lora_model: "child-book,picture-book-illustration",
+        lora_model: loraModel,
         webhook: null,
         track_id: null
     };
@@ -225,19 +224,19 @@ async function downloadAndUploadImage(imageUrl, key, value) {
 }
 
 function calculateAge(birthDate) {
-    const birth = new Date(birthDate);
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const m = today.getMonth() - birth.getMonth();
+  if (!birthDate) return 1; // birthDate 값이 없거나 유효하지 않을 경우 1 반환
   
-    // 오늘 날짜가 생일 이전의 달에 있거나, 같은 달이지만 일자가 이전인 경우에 나이에서 1을 빼줍니다.
-    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+  const birth = new Date(birthDate);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  
+  // 오늘 날짜가 생일 이전의 달에 있거나, 같은 달이지만 일자가 이전인 경우에 나이에서 1을 빼줍니다.
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
       age--;
-    }
-  
-    return age;
   }
-
+  return age;
+}
 
   async function createImageByPrompt(childAge, prompt, bookId, pageId, attempt = 2) {
     const url = "https://stablediffusionapi.com/api/v4/dreambooth";
@@ -245,13 +244,13 @@ function calculateAge(birthDate) {
 
     console.log()
     let modelId, loraModel;
-    if (childAge > 5) {
-        modelId = "sdxl"; // 5세 초과일 경우 모델
-        loraModel = null; // LoRA 설정을 사용하지 않음
-    } else {
-        modelId = "disney-pixal-cartoon"; // 5세 이하일 경우 모델
-        loraModel = "test"; // LoRA 설정
-    }
+    if (childAge < 6) {
+      modelId = "sdxl"; // 5세 이하일 경우 모델
+      loraModel = "child-book,picture-book-illustration"; // LoRA 설정을 사용하지 않음
+  } else {
+      modelId = "huanxiang"; // 6세 이상일 경우 모델
+      loraModel = "picture-book-illustration"; // LoRA 설정
+  }
 
     const headers = {
         'Content-Type': 'application/json'
@@ -259,9 +258,8 @@ function calculateAge(birthDate) {
 
     const payload = {
         key: process.env.API_KEY,
-        // model_id: "aipaint",
-        model_id: "sdxl",
-        prompt: "watercolor, storybook, "+prompt + ", best quality, very detailed, high resolution, sharp, sharp image",
+        model_id: modelId,
+        prompt: "watercolor, storybook, child-book, "+prompt + ", best quality, very detailed, high resolution, sharp, sharp image",
         negative_prompt: "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, deformed, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra leg, (3D:1.5), 3d render, building, anime",
         width: "512",
         height: "512",
@@ -275,8 +273,7 @@ function calculateAge(birthDate) {
         panorama: "no",
         self_attention: "no",
         upscale: "no",
-        //lora_model: "storybookredmond-unbound",
-        lora_model: "child-book,picture-book-illustration",
+        lora_model: loraModel,
         webhook: null,
         track_id: null
     };
