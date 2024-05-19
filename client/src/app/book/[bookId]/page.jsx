@@ -25,6 +25,7 @@ const TurnPage = () => {
     const [isAutoPlaying, setIsAutoPlaying] = useState(false)
     const [isMuted, setIsMuted] = useState(false)
     const [currentAudio, setCurrentAudio] = useState(null)
+    const [nowPage, setNowPage] = useState(0)
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const bookId = pathname.split('/').pop()
@@ -168,10 +169,8 @@ const TurnPage = () => {
                         }
                     },
                     turned: (e, page) => {
+                        setNowPage(page)
                         $('#page-number').val(page)
-                        if (isAutoPlaying) {
-                            playAudioForCurrentPage()
-                        }
                     },
                 },
             })
@@ -195,6 +194,13 @@ const TurnPage = () => {
             })
         }
     }, [jQueryLoaded, turnLoaded, data])
+
+    useEffect(() => {
+        if (isAutoPlaying) {
+            setIsAutoPlaying(true)
+            playAudioForCurrentPage()
+        }
+    }, [nowPage])
 
     useEffect(() => {
         if (isAutoPlaying) {
