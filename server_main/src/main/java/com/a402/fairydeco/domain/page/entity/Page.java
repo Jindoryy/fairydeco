@@ -26,6 +26,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @Builder
 @DynamicUpdate
+@Setter
 public class Page extends BaseEntity {
 
     @Id
