@@ -1,4 +1,3 @@
-
 <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/df369c86-190d-4e23-ae7f-db0e64094435" width="1000" height="600"></center>
 
 
@@ -15,7 +14,7 @@
 ### 팀원 소개
 |이건희|박지원|김연화|이진규|김선혁|최영진|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-|사진|사진|사진|사진|사진|사진|
+|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/baebca60-5144-4f2c-88df-8654ecdb0630" width="80" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/4c9f5efd-cffc-42ab-8946-9a33c30b2751" width="85" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/7f39161b-ba1e-441e-8b45-a79600b1028f" width="85" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/7a3594f9-91aa-4131-8f5c-59bf755788d2" width="85" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/7ce97644-5a46-44ec-820f-e1b6e492c66b" width="85" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/c2066cd2-4a89-4fa1-90db-4ed5427dd8a6" width="85" height="100">|
 |팀장, Infra, AI|Frontend|Frontend|Backend, AI|Backend, AI|Backend, Frontend|
 
 ### 기획 배경
@@ -77,62 +76,65 @@
 
 |랜딩 페이지|
 |:---:|
-||{: width="250" height="450"}|
+|![2024_05_19 23_41_1 (3)](https://github.com/sunhyeok99/Baekjoon/assets/132821972/4b8df413-9b9c-44fa-a1a4-d2e353513400)|
 
 - 처음 사이트를 방문하게 되면 저희 서비스를 전체적으로 이해할 수 있는 랜딩 페이지가 나오게 됩니다.
 - 이후 로그인이 된 상태이면 재방문해도 뜨지 않습니다.
 
 |아이 선택 페이지|
 |:---:|
-||{: width="250" height="450"}|
+|![아이선택](https://github.com/sunhyeok99/Baekjoon/assets/132821972/24041dfa-9922-4f10-a38c-aa49b16277b2)|
 
 - 로그인을 진행하게 되면 해당 유저의 아이를 선택할 수 있습니다.
 
 |그림 드로잉 서비스|
 |:---:|
-||{: width="250" height="450"}|
+|![그림](https://github.com/sunhyeok99/Baekjoon/assets/132821972/adfaead3-e70e-4d5d-a6dc-e0b13cf4febf)|
 
 - 동화를 만들기 전, 동화의 스토리를 만들기 위한 그림을 아이가 직접 그립니다.
 
 |동화 생성|
 |:---:|
-||{: width="250" height="450"}|
+|![동화생성](https://github.com/sunhyeok99/Baekjoon/assets/132821972/64d78d8d-c6af-431a-b10f-9fee83229501)|
 
 - 그림을 업로드 또는 그린 이후 동화 생성 버튼을 누르게 되면 동화 생성이 시작됩니다.
 - 동화 생성 과정은 그림의 키워드 분석 -> 동화 스토리 생성 -> 이미지 생성의 과정으로 이루어집니다.
 - 키워드를 정상적으로 분석하게 되면 성공 메세지가 뜨게 되고 분석하지 못하면 실패 메세지가 뜨게 됩니다.
 
+|동화 보기|
+|:---:|
+|![동화보기](https://github.com/sunhyeok99/Baekjoon/assets/132821972/ae25f0b9-d387-46da-b1fa-8c61e65598b5)|
+
+- 동화를 클릭하게 되면 동화를 감상할 수 있는 페이지로 넘어올 수 있습니다.
+- 동화 보기 페이지에서는 텍스트를 읽어주는 TTS 기능과, 자동재생 기능을 제공하고 있습니다.
+
 |다른 동화 감상|
 |:---:|
-||{: width="250" height="450"}|
+|![동화추천](https://github.com/sunhyeok99/Baekjoon/assets/132821972/aacfc9a3-f2bf-4476-a959-7158a5ceece8)|
 
 - 메인메뉴의 동화 보기 버튼을 누르게 되면 다른 아이들이 만든 동화를 감상할 수 있습니다.
 - 현재 로그인 되어 있는 아이의 나이를 고려하여 비슷한 나이대의 아이들이 생성한 추천 동화의 리스트를 확인할 수 있습니다.
 
 |퍼즐 게임|
 |:---:|
-||{: width="250" height="450"}|
+|![퍼즐](https://github.com/sunhyeok99/Baekjoon/assets/132821972/165a2c18-d777-4953-ad5f-02cf3d039d71)|
 
 - 메인메뉴의 놀이터를 클릭하게 되면 퍼즐 게임을 플레이할 수 있습니다.
 - 2X2 크기부터 4X4크기의 퍼즐을 제공하며 적절한 크기를 선택하여 즐길 수 있습니다.
 
 |푸쉬 알람|
 |:---:|
-||{: width="250" height="450"}|
+|![알림](https://github.com/sunhyeok99/Baekjoon/assets/132821972/a9c83031-f5cd-45dd-9d88-cfa15c3522e3)|
 
 - 아이가 생성한 동화가 이미지 과정까지 완성되게 되면 좌측 상단에 푸쉬 알람이 뜨게 됩니다.
 - 알람이 뜨지 않더라도 새로 생성된 동화는 마이페이지에서 확인할 수 있습니다.
 
-|마이 페이지|
-|:---:|
-||{: width="250" height="450"}|
-
-- 메인페이지에서 '나의 그림' 버튼을 통해 마이페이지에 접속할 수 있습니다.
-- 마이페이지에서는 아이의 정보, 생성한 동화, 저장한 그림 등을 확인할 수 있습니다.
 
 ***
 
 ## 4. 아키텍쳐
+
+![image](https://github.com/sunhyeok99/Baekjoon/assets/132821972/2fb81b05-13fd-499a-8873-f2bbb0c738d8)
 
 ***
 
