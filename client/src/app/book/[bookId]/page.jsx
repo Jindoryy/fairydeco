@@ -11,7 +11,7 @@ import {
     Pause,
     CaretCircleLeft,
     CaretCircleRight,
-} from '@phosphor-icons/react/dist/ssr'
+} from '@phosphor-icons/react'
 import Link from 'next/link'
 import TitleBox from './components/titleBox'
 import Loading from '../../components/loadingTest'
@@ -31,46 +31,46 @@ const TurnPage = () => {
     const URL = `${apiUrl}/book/book-detail/${bookId}`
 
     useEffect(() => {
-        // Load jQuery
-        const scriptJQuery = document.createElement('script')
-        scriptJQuery.src = 'https://code.jquery.com/jquery-3.6.0.min.js'
-        scriptJQuery.onload = () => {
-            setJQueryLoaded(true)
-            // Load turn.js after jQuery is loaded
-            const scriptTurn = document.createElement('script')
-            scriptTurn.src = '/turn.min.js'
-            scriptTurn.onload = () => {
+        // Load jQuery and turn.js
+        const loadScripts = async () => {
+            try {
+                await loadScript('https://code.jquery.com/jquery-3.6.0.min.js')
+                setJQueryLoaded(true)
+                await loadScript('/turn.min.js')
                 setTurnLoaded(true)
-                fetch(URL)
-                    .then((response) => response.json())
-                    .then((jsonData) => {
-                        setData(jsonData)
-                        setAllLoaded(true)
-                    })
-                    .catch((error) => {
-                        console.error('Error fetching data:', error)
-                    })
+                const response = await fetch(URL)
+                const jsonData = await response.json()
+                setData(jsonData)
+                setAllLoaded(true)
+            } catch (error) {
+                console.error('Error loading scripts or fetching data:', error)
             }
-            document.body.appendChild(scriptTurn)
         }
-        document.body.appendChild(scriptJQuery)
+        loadScripts()
     }, [URL])
 
-    // 음소거 토글
+    const loadScript = (src) => {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script')
+            script.src = src
+            script.onload = resolve
+            script.onerror = reject
+            document.body.appendChild(script)
+        })
+    }
+
     const toggleAudioPlayback = () => {
         const audioElement = document.getElementById('audio')
         if (audioElement) {
             audioElement.muted = !audioElement.muted
-            setIsMuted((prev) => !prev)
+            setIsMuted(!isMuted)
         }
     }
 
-    // 자동재생 & 일시정지 토글
     const toggleAutoPlay = () => {
-        setIsAutoPlaying((prev) => !prev)
+        setIsAutoPlaying(!isAutoPlaying)
     }
 
-    // 앞장으로
     const handlePageBackward = () => {
         if (turnLoaded) {
             const book = window.jQuery('#book')
@@ -78,7 +78,6 @@ const TurnPage = () => {
         }
     }
 
-    // 뒷장으로
     const handlePageForward = () => {
         if (turnLoaded) {
             const book = window.jQuery('#book')
@@ -86,17 +85,14 @@ const TurnPage = () => {
         }
     }
 
-    // 현재 페이지에 맞는 오디오 재생 및 페이지 넘김
     const playAudioForCurrentPage = () => {
         const audioElement = document.querySelector('audio')
         if (audioElement) {
-            audioElement.currentTime = 0 // Reset audio to start
+            audioElement.currentTime = 0
             if (isAutoPlaying) {
                 audioElement.play()
                 setCurrentAudio(audioElement)
-                audioElement.onended = () => {
-                    handlePageForward()
-                }
+                audioElement.onended = handlePageForward
             } else {
                 audioElement.pause()
             }
@@ -134,37 +130,32 @@ const TurnPage = () => {
                             let content
 
                             if (page === 1) {
-                                // Cover Page
-                                // Cover 페이지에는 음성이 없을 수 있으므로 체크
                                 content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
                                                 <img src="${data.data.bookCoverUrl}" class="w-[100%] h-[85%] object-cover" alt="Book Cover" />
                                                 <div class="h-[15%] w-[100%] flex justify-center items-center text-5xl text-black mt-2">${data.data.bookName}</div>
                                             </div>`
                             } else if (page === numberOfPages) {
-                                // Back Cover Page
-                                // Back Cover 페이지에는 음성이 없을 수 있으므로 체크
                                 content = `<div class="flex flex-col items-center justify-center w-[100%] h-[100%] bg-white">
                                                 <img src="${data.data.bookCoverUrl}" class="w-1/3 h-1/3 object-contain" alt="Book Cover" />
                                                 <div class="text-base text-gray-600 mt-2">${data.data.bookName}</div>
                                                 <div class="text-sm text-gray-600 mt-2">지은이: ${data.data.bookMaker}</div>
                                             </div>`
                             } else {
-                                // 내용 페이지
                                 const pageIndex = Math.floor((page - 2) / 2)
                                 content = `
-                                    <div className="flex items-center justify-center">
+                                    <div class="flex items-center justify-center">
                                         ${
                                             p % 2 === 0
                                                 ? `<img src="${data.data.pageList[pageIndex]?.pageimageUrl}" class="object-contain w-full h-full" alt="Page Image" />
                                                
-                                                <audio id="audio" className="ml-4"
+                                                <audio id="audio" class="ml-4"
                                                      src="${data.data.pageList[pageIndex]?.pageVoiceUrl}" type="audio/mpeg">
                                                     Your browser does not support the audio element.
                                                 </audio>
                                         `
                                                 : `<div class="flex flex-col items-center justify-center text-2xl text-black break-keep px-16 font-storyFont font-bold text-left leading-10">${data.data.pageList[pageIndex]?.pageStory}</div>
                                               
-                                                   <audio id="audio" className="ml-4"
+                                                   <audio id="audio" class="ml-4"
                                                         src="${data.data.pageList[pageIndex]?.pageVoiceUrl}" type="audio/mpeg">
                                                        Your browser does not support the audio element.
                                                    </audio>
@@ -206,24 +197,24 @@ const TurnPage = () => {
     }, [jQueryLoaded, turnLoaded, data])
 
     useEffect(() => {
-        // Trigger audio playback when isAutoPlaying changes to true
         if (isAutoPlaying) {
             playAudioForCurrentPage()
         } else if (currentAudio) {
             currentAudio.pause()
         }
-    }, [isAutoPlaying, currentAudio])
+    }, [isAutoPlaying])
 
     if (!allLoaded) {
-        return <Loading /> // 로딩 중에는 로딩 컴포넌트 표시
+        return <Loading />
     }
+
     return (
         <>
             <div className="flex min-h-screen flex-col items-center justify-center bg-[#FFFDEA] font-ourFont">
                 {/* Header Div */}
                 <div
                     id="headerDiv"
-                    className=" flex w-full items-center justify-between px-4"
+                    className="flex w-full items-center justify-between px-4"
                 >
                     <Link
                         href="/"
@@ -288,7 +279,6 @@ const TurnPage = () => {
                                             cursor: 'pointer',
                                         }}
                                     />
-
                                     <div className="text-sm text-black">
                                         소리끄기
                                     </div>
@@ -309,7 +299,7 @@ const TurnPage = () => {
                                             cursor: 'pointer',
                                         }}
                                     />
-                                    <div className=" text-sm text-black">
+                                    <div className="text-sm text-black">
                                         정지
                                     </div>
                                 </>
@@ -323,7 +313,7 @@ const TurnPage = () => {
                                             cursor: 'pointer',
                                         }}
                                     />
-                                    <div className=" text-sm text-black">
+                                    <div className="text-sm text-black">
                                         자동재생
                                     </div>
                                 </>
@@ -335,7 +325,7 @@ const TurnPage = () => {
                 {data ? (
                     <div
                         id="book"
-                        className="book-container relative  flex h-[550px] w-[1100px] items-center justify-center bg-white shadow-lg"
+                        className="book-container relative flex h-[550px] w-[1100px] items-center justify-center bg-white shadow-lg"
                         style={{
                             boxShadow:
                                 'rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px 3px, rgba(0, 0, 0, 0.2) 0px 3px 0px inset',
@@ -370,7 +360,7 @@ const TurnPage = () => {
                 ) : null}
                 <div
                     id="controls"
-                    className="z-10 my-5 flex w-[800px] items-center  justify-center text-2xl font-bold"
+                    className="z-10 my-5 flex w-[800px] items-center justify-center text-2xl font-bold"
                 >
                     <CaretCircleLeft
                         size={32}
