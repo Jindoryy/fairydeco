@@ -117,7 +117,7 @@ export default function LoginBox() {
                     ></input>
                 </div>
                 <div className="mt-8 flex w-11/12 justify-between px-8">
-                    {/* <div className="flex w-2/3 flex-col"> 임시로 회원가입 막기
+                    <div className="flex w-2/3 flex-col">
                         <div className="text-xl font-bold">
                             아직 회원이 아니세요?
                         </div>
@@ -129,7 +129,7 @@ export default function LoginBox() {
                                 하기
                             </button>
                         </div>
-                    </div> */}
+                    </div>
                     <div className="w-1/3">
                         <button
                             className="btn btn-sm mb-2 mt-4 h-12 w-full border-none bg-customYellow text-lg text-black shadow-customShadow hover:bg-customYellow"
