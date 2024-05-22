@@ -70,7 +70,7 @@
 
 |랜딩 페이지|아이 선택 페이지|
 |:---:|:---:|
-|<img src="../img/landing.png" width="470" height="260">|<img src="../img/children.gif" width="470" height="260">|
+|<img src="../img/landing.gif" width="470" height="260">|<img src="../img/children.gif" width="470" height="260">|
 
 |동화 감상 페이지|다른 동화 추천 및 선택 페이지|
 |:---:|:---:|
