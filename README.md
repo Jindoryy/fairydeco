@@ -134,4 +134,4 @@
 
 => **아이들도 간편하고 쉽게 사용할 수 있도록 하나의 과정으로 통합**
 
-<img src="../img/footer" style="width: 100%;" />
+<img src="../img/footer.png" style="width: 100%;" />
