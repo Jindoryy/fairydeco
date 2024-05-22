@@ -32,7 +32,57 @@
 
 ***
 
-## 2. 기술스택
+## 2. 프로젝트 특징 
+
+**아이가 그림을 그리면 그림에서 키워드를 분석해 8페이지 동화를 만들어 줍니다.**
+
+**아이의 나이에 따라 그림체와 스토리의 단어, 분량, 내용 등에 차이가 있습니다.**
+
+|3~5세 아이 동화 화면|6~7세 아이 동화 화면|
+|:---:|:---:|
+|![나이 어린 동화](https://github.com/sunhyeok99/Baekjoon/assets/132821972/35a1829e-7b4b-4ad7-a2ac-765b756b0365)|![나이 많은 동화](https://github.com/sunhyeok99/Baekjoon/assets/132821972/2cd34ed8-ebff-45b1-8556-8e7007c67f93)|
+ 
+
+***
+
+## 3. 기능소개 
+### 주요 기능
+
+- 아이가 그린 그림으로 나이대 별 동화 생성
+- 나이에 따라 다른 아이가 만든 동화 추천
+- 내가 만든 동화 자동재생 기능
+
+### 세부 기능
+
+|기능|내용|
+|:---:|:---:|
+|동화 생성|동화를 생성하는 아이의 나이에 따라서 동화의 길이, 말투, 사용되는 단어 등을 다르게 생성한다.|
+|그림 드로잉 기능|아이가 직접 그림을 그릴 수 있으며 그린 그림을 저장할 수 있다.|
+|동화 TTS 기능|동화를 감상할 때 동화 스토리에 해당하는 내용을 음성으로 지원한다.|
+|자동재생|아이가 생성한 동화들을 자동재생을 통하여 감상할 수 있다.|
+|퍼즐놀이|2X2 크기부터 5X5 크기까지 완성되어 있는 정답 그림을 참고하여 퍼즐놀이를 즐길 수 있다.|
+
+### 주요 페이지 소개
+
+|메인 페이지|그림 드로잉 페이지|
+|:---:|:---:|
+|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/4b8df413-9b9c-44fa-a1a4-d2e353513400" width="470" height="260">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/adfaead3-e70e-4d5d-a6dc-e0b13cf4febf" width="470" height="260">|
+
+|랜딩 페이지|아이 선택 페이지|
+|:---:|:---:|
+|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/4b8df413-9b9c-44fa-a1a4-d2e353513400" width="470" height="260">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/24041dfa-9922-4f10-a38c-aa49b16277b2" width="470" height="260">|
+
+|동화 감상 페이지|다른 동화 추천 및 선택 페이지|
+|:---:|:---:|
+|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/ae25f0b9-d387-46da-b1fa-8c61e65598b5" width="470" height="260">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/aacfc9a3-f2bf-4476-a959-7158a5ceece8" width="470" height="260">|
+
+|퍼즐 게임|마이 페이지|
+|:---:|:---:|
+|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/165a2c18-d777-4953-ad5f-02cf3d039d71" width="470" height="260">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/165a2c18-d777-4953-ad5f-02cf3d039d71" width="470" height="260">|
+
+***
+
+## 4. 기술스택
 
 ### Front-end
 
@@ -58,97 +108,21 @@
 |:---:|:---:|:---:|:---:|:---:|
 |OpenAi|StableDiffusion|MySQL|Gerrit|Jira|
 
-
-## 3. 기능소개 
-### 주요 기능
-
-- 아이가 그린 그림으로 나이대 별 동화 생성
-- 나이에 따라 다른 아이가 만든 동화 추천
-- 내가 만든 동화 자동재생 기능
-
-### 세부 기능
-
-|기능|내용|
-|:---:|:---:|
-|동화 생성|동화를 생성하는 아이의 나이에 따라서 동화의 길이, 말투, 사용되는 단어 등을 다르게 생성한다.|
-|그림 드로잉 기능|아이가 직접 그림을 그릴 수 있으며 그린 그림을 저장할 수 있다.|
-|동화 TTS 기능|동화를 감상할 때 동화 스토리에 해당하는 내용을 음성으로 지원한다.|
-|자동재생|아이가 생성한 동화들을 자동재생을 통하여 감상할 수 있다.|
-|퍼즐놀이|2X2 크기부터 5X5 크기까지 완성되어 있는 정답 그림을 참고하여 퍼즐놀이를 즐길 수 있다.|
-
-### 주요 페이지
-
-|랜딩 페이지|
-|:---:|
-|![2024_05_19 23_41_1 (3)](https://github.com/sunhyeok99/Baekjoon/assets/132821972/4b8df413-9b9c-44fa-a1a4-d2e353513400)|
-
-- 처음 사이트를 방문하게 되면 저희 서비스를 전체적으로 이해할 수 있는 랜딩 페이지가 나오게 됩니다.
-- 이후 로그인이 된 상태이면 재방문해도 뜨지 않습니다.
-
-|아이 선택 페이지|
-|:---:|
-|![아이선택](https://github.com/sunhyeok99/Baekjoon/assets/132821972/24041dfa-9922-4f10-a38c-aa49b16277b2)|
-
-- 로그인을 진행하게 되면 해당 유저의 아이를 선택할 수 있습니다.
-
-|그림 드로잉 서비스|
-|:---:|
-|![그림](https://github.com/sunhyeok99/Baekjoon/assets/132821972/adfaead3-e70e-4d5d-a6dc-e0b13cf4febf)|
-
-- 동화를 만들기 전, 동화의 스토리를 만들기 위한 그림을 아이가 직접 그립니다.
-
-|동화 생성|
-|:---:|
-|![동화생성](https://github.com/sunhyeok99/Baekjoon/assets/132821972/64d78d8d-c6af-431a-b10f-9fee83229501)|
-
-- 그림을 업로드 또는 그린 이후 동화 생성 버튼을 누르게 되면 동화 생성이 시작됩니다.
-- 동화 생성 과정은 그림의 키워드 분석 -> 동화 스토리 생성 -> 이미지 생성의 과정으로 이루어집니다.
-- 키워드를 정상적으로 분석하게 되면 성공 메세지가 뜨게 되고 분석하지 못하면 실패 메세지가 뜨게 됩니다.
-  
-|동화 보기|
-|:---:|
-|![동화보기](https://github.com/sunhyeok99/Baekjoon/assets/132821972/ae25f0b9-d387-46da-b1fa-8c61e65598b5)|
-
-- 동화를 클릭하게 되면 동화를 감상할 수 있는 페이지로 넘어올 수 있습니다.
-- 동화 보기 페이지에서는 텍스트를 읽어주는 TTS 기능과, 자동재생 기능을 제공하고 있습니다.
-
-|다른 동화 감상|
-|:---:|
-|![동화추천](https://github.com/sunhyeok99/Baekjoon/assets/132821972/aacfc9a3-f2bf-4476-a959-7158a5ceece8)|
-
-- 메인메뉴의 동화 보기 버튼을 누르게 되면 다른 아이들이 만든 동화를 감상할 수 있습니다.
-- 현재 로그인 되어 있는 아이의 나이를 고려하여 비슷한 나이대의 아이들이 생성한 추천 동화의 리스트를 확인할 수 있습니다.
-
-|퍼즐 게임|
-|:---:|
-|![퍼즐](https://github.com/sunhyeok99/Baekjoon/assets/132821972/165a2c18-d777-4953-ad5f-02cf3d039d71)|
-
-- 메인메뉴의 놀이터를 클릭하게 되면 퍼즐 게임을 플레이할 수 있습니다.
-- 2X2 크기부터 5X5크기의 퍼즐을 제공하며 적절한 크기를 선택하여 즐길 수 있습니다.
-
-|푸쉬 알람|
-|:---:|
-|![알림](https://github.com/sunhyeok99/Baekjoon/assets/132821972/a9c83031-f5cd-45dd-9d88-cfa15c3522e3)|
-
-- 아이가 생성한 동화가 이미지 과정까지 완성되게 되면 좌측 상단에 푸쉬 알람이 뜨게 됩니다.
-- 알람이 뜨지 않더라도 새로 생성된 동화는 마이페이지에서 확인할 수 있습니다.
-
-
 ***
 
-## 4. 아키텍쳐
+## 5. 아키텍쳐
 
 ![image](https://github.com/sunhyeok99/Baekjoon/assets/132821972/1bd6676b-734e-4041-8382-50d62c69d6a0)
 
 ***
 
-## 5. ERD
+## 6. ERD
 
 ![image](https://github.com/sunhyeok99/Baekjoon/assets/132821972/d17f4b05-2fde-40d2-a5b9-1f6f1e38407d)
 
 ***
 
-## 6. 변화 과정
+## 7. 변화 과정
 
 
 ![image](https://github.com/sunhyeok99/Baekjoon/assets/132821972/a141995c-cf38-4714-a274-99c92cfd171c) | ![image](https://github.com/sunhyeok99/Baekjoon/assets/132821972/e2152a95-365c-464c-952e-a13211d19e96)
@@ -161,4 +135,3 @@
 => **아이들도 간편하고 쉽게 사용할 수 있도록 하나의 과정으로 통합**
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=C3E5AE&height=150&section=footer" style="width: 100%;" />
- 
