@@ -1,10 +1,14 @@
-<center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/df369c86-190d-4e23-ae7f-db0e64094435" width="1000" height="600"></center>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=C3E5AE&height=150&section=header&text=&fontSize=90" />
 
 
-# <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/35a05e83-ef44-42f5-b373-d77c376f2e86" width="90" height="75"></center> 동꾸 (동화 꾸미기) 
+
+# <center><img src="../img/logoonlybook.png"  width="90"  height="75" /></center> 동꾸 (동화 꾸미기) 
 ### 동꾸(동화 꾸미기)는 아이가 직접 만들어가는 AI 동화 창작 서비스입니다.
 
-***
+<center>![동화꾸미기메인.gif](../img/동화꾸미기메인.gif)</center>
+
+
+
 ## 1. 프로젝트 개요
 
 ### 개발 기간
@@ -156,5 +160,5 @@
 
 => **아이들도 간편하고 쉽게 사용할 수 있도록 하나의 과정으로 통합**
 
-***
+<img src="https://capsule-render.vercel.app/api?type=waving&color=C3E5AE&height=150&section=footer" />
  
