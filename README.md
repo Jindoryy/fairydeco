@@ -1,4 +1,4 @@
-<img src="../img/header"  style="width: 100%;"  />
+<img src="../img/header.png" style="width: 100%;"/>
 
 
 
@@ -18,7 +18,7 @@
 ### 팀원 소개
 |이건희|박지원|김연화|이진규|김선혁|최영진|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-|<img src="../img/이건희" width="80" height="100">|<img src="../img/박지원" width="85" height="100">|<img src="../img/김연화" width="85" height="100">|<img src="../img/이진규" width="85" height="100">|<img src="../img/김선혁" width="85" height="100">|<img src="../img/최영진" width="85" height="100">|
+|<img src="../img/이건희.png" width="80" height="100">|<img src="../img/박지원.png" width="85" height="100">|<img src="../img/김연화.png" width="85" height="100">|<img src="../img/이진규.png" width="85" height="100">|<img src="../img/김선혁.png" width="85" height="100">|<img src="../img/최영진.png" width="85" height="100">|
 |팀장, Infra, AI|Frontend|Frontend|Backend, AI|Backend, AI|Backend, Frontend|
 
 ### 기획 배경
@@ -40,7 +40,7 @@
 
 |3~5세 아이 동화 화면|6~7세 아이 동화 화면|
 |:---:|:---:|
-|<img src="../img/3~5세 아이 동화 화면.png"|<img src="../img/6~7세 아이 동화 화면.png"|
+|<img src="../img/3~5세 아이 동화 화면.png">|<img src="../img/6~7세 아이 동화 화면.png">|
  
 
 ***
@@ -66,11 +66,11 @@
 
 |메인 페이지|그림 드로잉 페이지|
 |:---:|:---:|
-|<img src="../img/.gif" width="470" height="260">|<img src="../img/그림 드로잉 페이지.gif" width="470" height="260">|
+|<img src="../img/동화꾸미기메인1.gif" width="470" height="260">|<img src="../img/그림 드로잉 페이지.gif" width="470" height="260">|
 
 |랜딩 페이지|아이 선택 페이지|
 |:---:|:---:|
-|<img src="../img/" width="470" height="260">|<img src="../img/" width="470" height="260">|
+|<img src="../img/landing.png" width="470" height="260">|<img src="../img/children.gif" width="470" height="260">|
 
 |동화 감상 페이지|다른 동화 추천 및 선택 페이지|
 |:---:|:---:|
@@ -78,7 +78,7 @@
 
 |퍼즐 게임|마이 페이지|
 |:---:|:---:|
-|<img src="../img/퍼즐 게임.gif" width="470" height="260">|<img src="../img/" width="470" height="260">|
+|<img src="../img/퍼즐 게임.gif" width="470" height="260">|<img src="../img/mypage.gif" width="470" height="260">|
 
 ***
 
@@ -86,7 +86,7 @@
 
 ### Front-end
 
-|<img src="../img/Next.js" width="70" height="70">|<img src="../img/Node.js" width="70" height="70">|<img src="../img/Daisy.ui.png" width="70" height="70">|
+|<img src="../img/Next.js.png" width="70" height="70">|<img src="../img/Node.js.png" width="70" height="70">|<img src="../img/Daisy.ui.png" width="70" height="70">|
 |:---:|:---:|:---:|
 |Next.js|Node.js|Daisy.ui|
 
@@ -98,7 +98,7 @@
 
 ### Infra
 
-|<img src="../img/NGiNX.png" width="70" height="70">|<img src="../img/Jenkins.png" width="70" height="70">|<img src="../img/AWS EC2.jpg" width="70" height="70">|<img src="../img/Docker.png" width="70" height="70">|
+|<img src="../img/Nginx.png" width="70" height="70">|<img src="../img/Jenkins.png" width="70" height="70">|<img src="../img/AWS EC2.jpg" width="70" height="70">|<img src="../img/Docker.png" width="70" height="70">|
 |:---:|:---:|:---:|:---:|
 |NGiNX|Jenkins|AWS EC2|Docker|
 
