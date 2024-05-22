@@ -1,7 +1,7 @@
 <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/df369c86-190d-4e23-ae7f-db0e64094435" width="1000" height="600"></center>
 
 
-# <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/35a05e83-ef44-42f5-b373-d77c376f2e86" width="90" height="75"></center> 동꾸 (동화 꾸미기)
+# <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/35a05e83-ef44-42f5-b373-d77c376f2e86" width="90" height="75"></center> 동꾸 (동화 꾸미기) 
 ### 동꾸(동화 꾸미기)는 아이가 직접 만들어가는 AI 동화 창작 서비스입니다.
 
 ***
@@ -50,12 +50,12 @@
 
 ### ETC
 
-|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/ccde63b3-aac9-421d-bab3-b4d025bfe45f" width="70" height="70">| <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/94b36549-0f11-49ce-a0c9-5102e16f6b65" width="70" height="70"></center> |<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/2efd254f-fa07-4648-b649-0c51e905e0c9" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/52ceb0cb-38b8-4306-affe-22cf722c66ab" width="70" height="70">|
-|:---:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:---:|:---:|
-|OpenAi|                                                                 StableDiffusion                                                                  |MySQL|Gerrit|
+|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/ccde63b3-aac9-421d-bab3-b4d025bfe45f" width="70" height="70">| <center><img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/94b36549-0f11-49ce-a0c9-5102e16f6b65" width="70" height="70"></center> |<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/2efd254f-fa07-4648-b649-0c51e905e0c9" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/52ceb0cb-38b8-4306-affe-22cf722c66ab" width="70" height="70">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/a5fac266-2dd7-42c8-82a4-e7da9e5d00cf" width="80" height="70">|
+|:---:|:---:|:---:|:---:|:---:|
+|OpenAi|StableDiffusion|MySQL|Gerrit|Jira|
 
 
-## 3. 기능소개
+## 3. 기능소개 
 ### 주요 기능
 
 - 아이가 그린 그림으로 나이대 별 동화 생성
@@ -70,7 +70,7 @@
 |그림 드로잉 기능|아이가 직접 그림을 그릴 수 있으며 그린 그림을 저장할 수 있다.|
 |동화 TTS 기능|동화를 감상할 때 동화 스토리에 해당하는 내용을 음성으로 지원한다.|
 |자동재생|아이가 생성한 동화들을 자동재생을 통하여 감상할 수 있다.|
-|퍼즐놀이|2X2 크기부터 4X4 크기까지 완성되어 있는 정답 그림을 참고하여 퍼즐놀이를 즐길 수 있다.|
+|퍼즐놀이|2X2 크기부터 5X5 크기까지 완성되어 있는 정답 그림을 참고하여 퍼즐놀이를 즐길 수 있다.|
 
 ### 주요 페이지
 
@@ -100,7 +100,7 @@
 - 그림을 업로드 또는 그린 이후 동화 생성 버튼을 누르게 되면 동화 생성이 시작됩니다.
 - 동화 생성 과정은 그림의 키워드 분석 -> 동화 스토리 생성 -> 이미지 생성의 과정으로 이루어집니다.
 - 키워드를 정상적으로 분석하게 되면 성공 메세지가 뜨게 되고 분석하지 못하면 실패 메세지가 뜨게 됩니다.
-
+  
 |동화 보기|
 |:---:|
 |![동화보기](https://github.com/sunhyeok99/Baekjoon/assets/132821972/ae25f0b9-d387-46da-b1fa-8c61e65598b5)|
@@ -120,7 +120,7 @@
 |![퍼즐](https://github.com/sunhyeok99/Baekjoon/assets/132821972/165a2c18-d777-4953-ad5f-02cf3d039d71)|
 
 - 메인메뉴의 놀이터를 클릭하게 되면 퍼즐 게임을 플레이할 수 있습니다.
-- 2X2 크기부터 4X4크기의 퍼즐을 제공하며 적절한 크기를 선택하여 즐길 수 있습니다.
+- 2X2 크기부터 5X5크기의 퍼즐을 제공하며 적절한 크기를 선택하여 즐길 수 있습니다.
 
 |푸쉬 알람|
 |:---:|
@@ -134,7 +134,7 @@
 
 ## 4. 아키텍쳐
 
-![image](https://github.com/sunhyeok99/Baekjoon/assets/132821972/2fb81b05-13fd-499a-8873-f2bbb0c738d8)
+![image](https://github.com/sunhyeok99/Baekjoon/assets/132821972/1bd6676b-734e-4041-8382-50d62c69d6a0)
 
 ***
 
