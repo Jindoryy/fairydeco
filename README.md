@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=C3E5AE&height=150&section=header&text=&fontSize=300"  style="width: 100%;"  />
+<img src="../img/header"  style="width: 100%;"  />
 
 
 
@@ -18,7 +18,7 @@
 ### 팀원 소개
 |이건희|박지원|김연화|이진규|김선혁|최영진|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/baebca60-5144-4f2c-88df-8654ecdb0630" width="80" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/4c9f5efd-cffc-42ab-8946-9a33c30b2751" width="85" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/7f39161b-ba1e-441e-8b45-a79600b1028f" width="85" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/7a3594f9-91aa-4131-8f5c-59bf755788d2" width="85" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/7ce97644-5a46-44ec-820f-e1b6e492c66b" width="85" height="100">|<img src="https://github.com/sunhyeok99/Baekjoon/assets/132821972/c2066cd2-4a89-4fa1-90db-4ed5427dd8a6" width="85" height="100">|
+|<img src="../img/이건희" width="80" height="100">|<img src="../img/박지원" width="85" height="100">|<img src="../img/김연화" width="85" height="100">|<img src="../img/이진규" width="85" height="100">|<img src="../img/김선혁" width="85" height="100">|<img src="../img/최영진" width="85" height="100">|
 |팀장, Infra, AI|Frontend|Frontend|Backend, AI|Backend, AI|Backend, Frontend|
 
 ### 기획 배경
@@ -104,7 +104,7 @@
 
 ### ETC
 
-|<img src="../img/OpenAI.png" width="70" height="70">| <center><img src="../img/StableDiffusion.png" width="70" height="70"></center> |<img src="../img/MySQL.png" width="70" height="70">|<img src="../img/Gerrig.png" width="70" height="70">|<img src="../img/Jira.png" width="80" height="70">|
+|<img src="../img/OpenAI.png" width="70" height="70">| <center><img src="../img/StableDiffusion.png" width="70" height="70"></center> |<img src="../img/MySQL.png" width="70" height="70">|<img src="../img/Gerrit.png" width="70" height="70">|<img src="../img/Jira.png" width="80" height="70">|
 |:---:|:---:|:---:|:---:|:---:|
 |OpenAi|StableDiffusion|MySQL|Gerrit|Jira|
 
@@ -134,4 +134,4 @@
 
 => **아이들도 간편하고 쉽게 사용할 수 있도록 하나의 과정으로 통합**
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=C3E5AE&height=150&section=footer" style="width: 100%;" />
+<img src="../img/footer" style="width: 100%;" />
