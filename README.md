@@ -1,13 +1,9 @@
-<img src="../img/header.png" style="width: 100%;"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=150&section=header&text=&fontSize=90" style="width: 100%;"/>
 
-
-
-# <center><img src="../img/logoonlybook.png"  width="90"  height="75" /></center> 동꾸 (동화 꾸미기) 
+# <center><img src="/img/logoonlybook.png"  width="90"  height="75" /></center> 동꾸 (동화 꾸미기) 
 ### 동꾸(동화 꾸미기)는 아이가 직접 만들어가는 AI 동화 창작 서비스입니다.
 
-<center>![동화꾸미기메인1.gif](../img/동화꾸미기메인1.gif)</center>
-
-
+ ![동화꾸미기메인1.gif](./img/동화꾸미기메인1.gif)
 
 ## 1. 프로젝트 개요
 
@@ -18,7 +14,7 @@
 ### 팀원 소개
 |이건희|박지원|김연화|이진규|김선혁|최영진|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-|<img src="../img/이건희.png" width="80" height="100">|<img src="../img/박지원.png" width="85" height="100">|<img src="../img/김연화.png" width="85" height="100">|<img src="../img/이진규.png" width="85" height="100">|<img src="../img/김선혁.png" width="85" height="100">|<img src="../img/최영진.png" width="85" height="100">|
+|<img src="/img/이건희.png" width="80" height="100">|<img src="/img/박지원.png" width="85" height="100">|<img src="/img/김연화.png" width="85" height="100">|<img src="/img/이진규.png" width="85" height="100">|<img src="/img/김선혁.png" width="85" height="100">|<img src="/img/최영진.png" width="85" height="100">|
 |팀장, Infra, AI|Frontend|Frontend|Backend, AI|Backend, AI|Backend, Frontend|
 
 ### 기획 배경
@@ -40,14 +36,14 @@
 
 |3~5세 아이 동화 화면|6~7세 아이 동화 화면|
 |:---:|:---:|
-|<img src="../img/3~5세 아이 동화 화면.png">|<img src="../img/6~7세 아이 동화 화면.png">|
+|<img src="/img/3~5세 아이 동화 화면.png">|<img src="/img/6~7세 아이 동화 화면.png">|
  
 
 ***
 
 ## 3. 프로젝트 흐름
 
-<img src="../img/flow.png">
+<img src="/img/flow.png">
 
 ***
 
@@ -72,19 +68,19 @@
 
 |메인 페이지|그림 드로잉 페이지|
 |:---:|:---:|
-|<img src="../img/동화꾸미기메인1.gif" width="470" height="260">|<img src="../img/그림 드로잉 페이지.gif" width="470" height="260">|
+|<img src="/img/동화꾸미기메인1.gif" width="470" height="260">|<img src="/img/그림 드로잉 페이지.gif" width="470" height="260">|
 
 |랜딩 페이지|아이 선택 페이지|
 |:---:|:---:|
-|<img src="../img/landing.gif" width="470" height="260">|<img src="../img/children.gif" width="470" height="260">|
+|<img src="/img/landing.gif" width="470" height="260">|<img src="/img/children.gif" width="470" height="260">|
 
 |동화 감상 페이지|다른 동화 추천 및 선택 페이지|
 |:---:|:---:|
-|<img src="../img/동화 감상 페이지.gif" width="470" height="260">|<img src="../img/다른 동화 추천 및 선택 페이지.gif" width="470" height="260">|
+|<img src="/img/동화 감상 페이지.gif" width="470" height="260">|<img src="/img/다른 동화 추천 및 선택 페이지.gif" width="470" height="260">|
 
 |퍼즐 게임|마이 페이지|
 |:---:|:---:|
-|<img src="../img/퍼즐 게임.gif" width="470" height="260">|<img src="../img/mypage.gif" width="470" height="260">|
+|<img src="/img/퍼즐 게임.gif" width="470" height="260">|<img src="/img/mypage.gif" width="470" height="260">|
 
 ***
 
@@ -92,25 +88,25 @@
 
 ### Front-end
 
-|<img src="../img/Next.js.png" width="70" height="70">|<img src="../img/Node.js.png" width="70" height="70">|<img src="../img/Daisy.ui.png" width="70" height="70">|
+|<img src="/img/Next.js.png" width="70" height="70">|<img src="/img/Node.js.png" width="70" height="70">|<img src="/img/Daisy.ui.png" width="70" height="70">|
 |:---:|:---:|:---:|
 |Next.js|Node.js|Daisy.ui|
 
 ### Back-end
 
-|<img src="../img/Java.svg" width="70" height="70">|<img src="../img/Spring Boot.png" width="70" height="70">| <center><img src="../img/Spring Security.png" width="70" height="70"></center> |<img src="../img/jpa.png" width="70" height="70">|
+|<img src="/img/Java.svg" width="70" height="70">|<img src="/img/Spring Boot.png" width="70" height="70">| <center><img src="/img/Spring Security.png" width="70" height="70"></center> |<img src="/img/jpa.png" width="70" height="70">|
 |:---:|:---:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:---:|
 |Java|Spring Boot|                                                                  SpringSecurity                                                                  |Jpa|
 
 ### Infra
 
-|<img src="../img/Nginx.png" width="70" height="70">|<img src="../img/Jenkins.png" width="70" height="70">|<img src="../img/AWS EC2.jpg" width="70" height="70">|<img src="../img/Docker.png" width="70" height="70">|
+|<img src="/img/Nginx.png" width="70" height="70">|<img src="/img/Jenkins.png" width="70" height="70">|<img src="/img/AWS EC2.jpg" width="70" height="70">|<img src="/img/Docker.png" width="70" height="70">|
 |:---:|:---:|:---:|:---:|
 |NGiNX|Jenkins|AWS EC2|Docker|
 
 ### ETC
 
-|<img src="../img/OpenAI.png" width="70" height="70">| <center><img src="../img/StableDiffusion.png" width="70" height="70"></center> |<img src="../img/MySQL.png" width="70" height="70">|<img src="../img/Gerrit.png" width="70" height="70">|<img src="../img/Jira.png" width="80" height="70">|
+|<img src="/img/OpenAI.png" width="70" height="70">| <center><img src="/img/StableDiffusion.png" width="70" height="70"></center> |<img src="/img/MySQL.png" width="70" height="70">|<img src="/img/Gerrit.png" width="70" height="70">|<img src="/img/Jira.png" width="80" height="70">|
 |:---:|:---:|:---:|:---:|:---:|
 |OpenAi|StableDiffusion|MySQL|Gerrit|Jira|
 
@@ -118,26 +114,27 @@
 
 ## 6. 아키텍쳐
 
-![image](../img/아키텍쳐.png)
+![image](/img/아키텍쳐.png)
 
 ***
 
 ## 7. ERD
 
-![image](../img/ERD.png)
+![image](/img/ERD.png)
 
 ***
 
 ## 8. 변화 과정
 
 
-![image](../img/변화과정1.png) | ![image](../img/변화과정2.png)
+![image](/img/변화과정1.png) | ![image](/img/변화과정2.png)
 ---|---|
 
 기존에는 부모님과 같이 이용하는 서비스를 계획해서 그림 또는 프롬프트 입력을 통해 스토리 생성 -> 스토리 확인 후 이미지 생성
 
-![image](../img/변화과정3.png)
+![image](/img/변화과정3.png)
 
 => **아이들도 간편하고 쉽게 사용할 수 있도록 하나의 과정으로 통합**
 
-<img src="../img/footer.png" style="width: 100%;" />
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=150&section=footer&text=&fontSize=90" style="width: 100%;"/>
