@@ -1,0 +1,15 @@
+spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+  profiles:
+    active: db, s3, swagger, clova
+
+openai:
+  model1: ${OPENAI_MODEL_Y}
+  model2: ${OPENAI_MODEL_O}
+  model3: ${OPENAI_MODEL_F}
+  api:
+    key: ${OPENAI_API_KEY}
+    image: ${OPENAI_API_KEY_IMAGE}
+    url: ${OPENAI_API_URL}

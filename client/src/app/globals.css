@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    background-color: white;
+    color: black;
+    scrollbar-width: thin;
+    scrollbar-color: #e9ffe5 #fffdea;
+    border-radius: 30;
+}
+
+@media (prefers-color-scheme: dark) {
+}
+
+body {
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
+@font-face {
+    font-family: 'TTHakgyoansimMonggeulmonggeulR';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_keris@1.0/TTHakgyoansimMonggeulmonggeulR.woff2')
+        format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Nanum Myeongjo', serif;
+    font-style: normal;
+    font-weight: 800;
+    src: url('https://fonts.gstatic.com/s/nanummyeongjo/v22/9Btx3DZF0dXLMZlywRbVRNhxy1LuEGI-gZ_Ll9dMHVruCTvHYAnNT2g.0.woff2')
+        format('woff2');
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap');
+
+.nanum-myeongjo-regular {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 800;
+    font-style: normal;
+}
+
+.paint_hold {
+    cursor: url('./../../public/image/paint_hold.cur'), auto;
+}
+
+.paint_hover {
+    cursor: url('./../../public/image/paint_hover.cur'), auto;
+}
+
+.puzzle-cursor {
+    cursor: url('./../../public/image/puzzle.cur'), auto;
+}

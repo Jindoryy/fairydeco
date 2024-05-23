@@ -1,0 +1,5 @@
+naver:
+  clova:
+    client-id: ${CLOVA_CLIENT_ID}
+    client-secret: ${CLOVA_CLIENT_SECRET}
+    url: ${CLOVA_URL}
