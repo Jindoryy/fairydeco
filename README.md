@@ -114,7 +114,8 @@
 
 ## 6. 아키텍쳐
 
-![image](/img/아키텍쳐.png)
+![image](https://github.com/Jindoryy/fairydeco/assets/87755660/a25d5179-15ff-4902-bd7e-63a459c2a513)
+
 
 ***
 
